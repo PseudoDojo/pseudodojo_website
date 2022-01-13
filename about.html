@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8)  ]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+<title>Pseudo Dojo</title>
+<meta charset="utf-8"/>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+<div class="wrapper">
+<div class="table">
+  <aside class="infobox">
+    <div class="intro">
+      <h1 class="logo"><a href="index.html" title="The Pseudo Dojo">The Pseudo Dojo</a></h1>
+    </div>
+    <div class="download_button">
+     About
+    </div>
+    <div class="menubar">
+      <div class="menutext">
+        <p>
+          <a href="index.html"><span>Home</span></a>
+          <a href="faq.html"><span>F.A.Q.</span></a>
+          <a href="contribute.html"><span>Contribute</span></a>
+          <span><a href="paperlist.html">Papers</a></span>
+        </p>
+      </div>
+    </div>
+
+<lu class="generaltext">
+<H1>About PseudoDojo</H1>
+The PseudoDojo.org website gives access to the latest released version of the pseudopotentials of the PseudoDojo project.<BR>
+The PseudoDojo project is hosted on <a href="https://github.com/gmatteo/pseudo_dojo">github</a>.
+It is a python package to develop, test and store pseudo potentials.<BR>
+Previous versions can be found in the git repository.<BR>
+
+<P> The web interface provides various files:</P>
+<ul>
+<li><b>psp8</b>   : (NC) the pseudo in the psp8 format (abinit)</li>
+<li><b>upf</b>    : (NC) the pseudoo in the upf format (quantum esperesso)</li>
+<li><b>psml</b>   : (NC) the pseudoo in the psml format (siesta)</li>
+<li><b>xml</b>    : (PAW) the paw dataset in xml format (abinit)</li>
+<li><b>html</b>   : (NC) the test report of the pseudo as a static html version of the dojo report jupyter notebook.</li>
+<li><b>djrepo</b> : (NC) the test report of the pseudo as a json document.</li>
+</ul>
+
+<P> The current version provided at this web interface are<BR>
+ NC version 0.4: ONCVPSP_PDv0.4 in the git repository.<BR>
+ NC version 0.3: ONCVPSP_PDv0.3 in the git repository.<BR>
+ PAW JTH version 1.0.<BR>
+</P>
+
+<H1>Contributors Pseudo Dojo</H1>
+  <table>
+<tr><td>Matteo Giantomassi</td><td>python infrastructure, NC tables</td></tr>
+<tr><td>Michiel J. van Setten</td><td>python infrastructure, NC tables, web interface</td></tr>
+<tr><td>François Jollet</td><td>PAW tables</td></tr>
+<tr><td>Marc Torrent</td><td>PAW tables</td></tr>
+<tr><td>Eric Bousquet</td><td>NC lanthanides</td></tr>
+<tr><td>Don Hamann</td><td>NC tables</td></tr>
+<tr><td>Jean-Michel Beuken</td><td>web interface</td></tr>
+<tr><td>Gian-Marco Rignanese</td><td>advisor, web interface</td></tr>
+<tr><td>Matthieu Verstraete</td><td>advisor, psml format</td></tr>
+<tr><td>Xavier Gonze</td><td>advisor</td></tr>
+    </table>
+</lu>
+</aside>
+</div>
+</div>
+
+<script type="text/javascript" language="javascript">
+<!--
+// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+// Random encryption key feature coded by Andrew Moulden
+// This code is freeware provided these four comment lines remain intact
+// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+{ coded = "gyKWydT.o74Pd88d4@xKTcxo7y4.hd"
+  key = "759T0NGqdsyKjorHngtOE1up2h3MUASRafzlXZFPeIicLv4w8mC6xYBWDbQVJk"
+  shift=coded.length
+  link=""
+  for (i=0; i<coded.length; i++) {
+    if (key.indexOf(coded.charAt(i))==-1) {
+      ltr = coded.charAt(i)
+      link += (ltr)
+    }
+    else {
+      ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+      link += (key.charAt(ltr))
+    }
+  }
+document.write("<a href='mailto:"+link+"'>contact us</a>")
+}
+//-->
+</script><noscript>Sorry, you need Javascript for this.</noscript>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-97858927-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</body>
+</html>
