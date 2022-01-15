@@ -5,9 +5,9 @@ function.prototype.method = function (name func) {
 }
 */
 
-var keys = ['hh', 'hl', 'hn', 'nv', 'd', 'dp', 'gb'];
+const ALL_KEYS = ['hh', 'hl', 'hn', 'nv', 'd', 'dp', 'gb'];
 
-var els = [
+const ALL_ELEMENTS = [
   'H', 'He', 
   'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne','Na', 'Mg', "Al", "Si", 'P', 'S', 'Cl', 'Ar', 
   'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr',
@@ -19,7 +19,7 @@ var els = [
 
 function getParameterByName(name) {
     var url = window.location.href;
-    console.log(url);
+    //console.log(url);
     var name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
     var results = regex.exec(url);
@@ -72,22 +72,22 @@ function set_info(info, animate) {
     var averages = [0,0,0,0,0,0,0];
     var sums = [0,0,0,0,0,0,0];
     if (animate * localStorage.getItem('animate') === 1){
-        console.log('added animating');
+        //console.log('added animating');
         $('.plugin').removeClass('anim');
         $('.plugin').removeClass('chaos');
         setTimeout("$('.plugin').addClass('anim')",10)
     }
-    for (el in els) {
-        for (key in keys){
-            var id_key = els[el] + '_' + keys[key];
+    for (el in ALL_ELEMENTS) {
+        for (key in ALL_KEYS){
+            var id_key = ALL_ELEMENTS[el] + '_' + ALL_KEYS[key];
             var x = document.getElementById(id_key);
-            var el_info = info[els[el]];
+            var el_info = info[ALL_ELEMENTS[el]];
             var val = 'na';
             if (typeof(el_info) == 'undefined') {
                 val = 'na';
             }
             else {
-                val = el_info[keys[key]];
+                val = el_info[ALL_KEYS[key]];
             }
             if (val === 'na' || val === 'nan'){
                 var xx = 1;
@@ -124,7 +124,8 @@ function loadJSON(file, callback) {
     xobj.open('GET', file, true);
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == 200) {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            // Required use of an anonymous callback as .open will NOT return a value 
+            // but simply returns undefined in asynchronous mode
             callback(xobj.responseText);
           }
     };
@@ -133,6 +134,7 @@ function loadJSON(file, callback) {
 
 function store_available_files() {
     // Get list of files from files.json and store it in the localStorage.
+    //console.log("Loading files.json");
     loadJSON('files.json', function(response) {
         var info = JSON.parse(response);
         localStorage.setItem('files', info);
@@ -153,15 +155,15 @@ function load_set_info(animate) {
 
 function set_X(elm, color, n){
     // Update params shown in the X_n box.
-    if (els.indexOf(elm) >= 0){
+    if (ALL_ELEMENTS.indexOf(elm) >= 0){
         document.getElementById('N').innerHTML = n;
         var x = document.getElementById('X_n');
         x.style.backgroundColor = color;
         var x = document.getElementById('X_el');
         x.innerHTML = elm;
-        for (key in keys){
-            var id_key = 'X_' + keys[key];
-            var id_key_in = elm + '_' + keys[key];
+        for (key in ALL_KEYS){
+            var id_key = 'X_' + ALL_KEYS[key];
+            var id_key_in = elm + '_' + ALL_KEYS[key];
             // Get the params from the pseudo associated to this element and copy to the X box.
             var x = document.getElementById(id_key_in);
             var y = document.getElementById(id_key);
@@ -176,15 +178,15 @@ function reset_X(){
     document.getElementById('X_el').innerHTML = 'Mean'
     document.getElementById('N').innerHTML = '';
     document.getElementById('X_n').style.backgroundColor = "#ffffff";
-    for (key in keys){
-        document.getElementById("X_" + keys[key]).innerHTML = document.getElementById("av_" + keys[key]).innerHTML
+    for (key in ALL_KEYS){
+        document.getElementById("X_" + ALL_KEYS[key]).innerHTML = document.getElementById("av_" + ALL_KEYS[key]).innerHTML
     }
 }
 
 function set_av(val){
     document.getElementById('av_el').innerHTML = 'Mean'
-    for (key in keys){
-        document.getElementById("av_"+keys[key]).innerHTML = val[key]
+    for (key in ALL_KEYS){
+        document.getElementById("av_" + ALL_KEYS[key]).innerHTML = val[key]
     }
 }
 
@@ -299,14 +301,14 @@ function dojoTour_guidedtour() {
     intro.start();
 }
 
-function dynamicdropdown(listindex){
+function dynamicdropdown(type){
   // Set the values of the XC/Accuracy/Format widgets given the pseudo type.
-  console.log('dynamic dropdown: setting', listindex)
+  console.log('dynamic dropdown: setting', type)
   document.getElementById("ACC").length = 0;
   document.getElementById("XCF").length = 0;
   document.getElementById("FMT").length = 0;
 
-  switch (listindex)
+  switch (type)
   {
     case "paw" :
       document.getElementById('warning_box').innerHTML = "";
@@ -381,7 +383,9 @@ function dynamicdropdown(listindex){
       document.getElementById("ACC").options[0]=new Option("standard","standard");
       document.getElementById("XCF").options[0]=new Option("PBE","pbe");
       document.getElementById("FMT").options[2]=new Option("FC","fc");
+      break;
   }
+
   return true;
 }
 
