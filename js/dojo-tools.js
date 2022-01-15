@@ -1,9 +1,7 @@
 /*
-function.prototype.method = function (name func) {
-    this.prototype[name] = func
-    return this
-}
 */
+
+const DEBUG = true;
 
 const ALL_KEYS = ['hh', 'hl', 'hn', 'nv', 'd', 'dp', 'gb'];
 
@@ -17,6 +15,7 @@ const ALL_ELEMENTS = [
   'Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Po','At','Rn'
 ];
 
+
 function getParameterByName(name) {
     var url = window.location.href;
     //console.log(url);
@@ -27,6 +26,7 @@ function getParameterByName(name) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
 
 function set_warning(txt) {
   // Set the text in the warning box
@@ -68,15 +68,18 @@ function make_light() {
     document.getElementById("X_gb").setAttribute('style', 'font-size:20px; padding:2px');
 }
 
+
 function set_info(info, animate) {
-    var averages = [0,0,0,0,0,0,0];
-    var sums = [0,0,0,0,0,0,0];
+    var averages = [0, 0, 0, 0, 0, 0, 0];
+    var sums = [0, 0, 0, 0, 0, 0, 0];
+
     if (animate * localStorage.getItem('animate') === 1){
         //console.log('added animating');
         $('.plugin').removeClass('anim');
         $('.plugin').removeClass('chaos');
-        setTimeout("$('.plugin').addClass('anim')",10)
+        setTimeout("$('.plugin').addClass('anim')", 10)
     }
+
     for (el in ALL_ELEMENTS) {
         for (key in ALL_KEYS){
             var id_key = ALL_ELEMENTS[el] + '_' + ALL_KEYS[key];
@@ -100,9 +103,10 @@ function set_info(info, animate) {
         }
     }
     for (i in averages){
-        averages[i] = averages[i]/sums[i]
+        averages[i] = averages[i] / sums[i]
         averages[i] = averages[i].toFixed(2)
     }
+
     var summary = "The averages of this table:\n\n"
     summary += "low hint\t\t\t\t: " + averages[1] + " Ha\n"
     summary += "normal hint\t\t\t: " + averages[2] + " Ha\n"
@@ -118,7 +122,7 @@ function set_info(info, animate) {
 }
 
 function loadJSON(file, callback) {
-    // Helper function to load a json file.
+    // Helper function to load a json file and execute a callback that receives the json string
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
     xobj.open('GET', file, true);
@@ -132,26 +136,49 @@ function loadJSON(file, callback) {
     xobj.send(null);
  }
 
+
+var FILES = null;
+var TARGZ = null;
+
+
 function store_available_files() {
-    // Get list of files from files.json and store it in the localStorage.
-    //console.log("Loading files.json");
-    loadJSON('files.json', function(response) {
-        var info = JSON.parse(response);
-        localStorage.setItem('files', info);
+    // Load dictionaries from json files and set global variables: FILES and TARGZ.
+    loadJSON('files.json', function(text) {
+        FILES = JSON.parse(text);
+    });
+    loadJSON('targz.json', function(text) {
+        TARGZ = JSON.parse(text);
     });
 }
 
+
 function load_set_info(animate) {
-    acc = document.getElementById('ACC').value;
-    xcf = document.getElementById('XCF').value;
     type = document.getElementById('TYP').value;
+    xcf = document.getElementById('XCF').value;
+    acc = document.getElementById('ACC').value;
+
     set_info({}, 0);
     var file = type + '_' + xcf + '_' + acc + '.json';
-    loadJSON(file, function(response) {
-        var info = JSON.parse(response);
+
+    // Build dictionary element_symbol -> metadata.
+    var meta = {};
+    for (const elm of ALL_ELEMENTS) {
+        try {
+            meta[elm] = FILES[type][xcf][acc][elm]["meta"];
+        }
+        catch (error) {
+            console.log("Cannot find element", elm, error);
+            meta[elm] = {};
+        }
+    }
+    //console.log("meta:", meta);
+
+    loadJSON(file, function(text) {
+        var info = JSON.parse(text);
         set_info(info, animate);
     });
 }
+
 
 function set_X(elm, color, n){
     // Update params shown in the X_n box.
@@ -173,6 +200,7 @@ function set_X(elm, color, n){
     }
 }
 
+
 function reset_X(){
     // Reset the params shown in the X_n box.
     document.getElementById('X_el').innerHTML = 'Mean'
@@ -183,6 +211,7 @@ function reset_X(){
     }
 }
 
+
 function set_av(val){
     document.getElementById('av_el').innerHTML = 'Mean'
     for (key in ALL_KEYS){
@@ -190,15 +219,18 @@ function set_av(val){
     }
 }
 
+
 function show_X(){
     // Show the X_n box.
     document.getElementById('X_n').style.visibility = "visible";
 }
 
+
 function hide_X(){
     // Hide the X_n box.
     document.getElementById('X_n').style.visibility = "hidden";
 }
+
 
 function humanize(size) {
 	var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
@@ -207,6 +239,7 @@ function humanize(size) {
 	var s = Math.round((size / Math.pow(1024, ord)) * 100) / 100;
 	return s + ' ' + units[ord];
 }
+
 
 function dojoTour_guidedtour() {
     var intro = introJs();
@@ -301,93 +334,85 @@ function dojoTour_guidedtour() {
     intro.start();
 }
 
-function dynamicdropdown(type){
+
+function dynamic_dropdown(type){
   // Set the values of the XC/Accuracy/Format widgets given the pseudo type.
-  console.log('dynamic dropdown: setting', type)
+  if (DEBUG) console.log('dynamic dropdown: setting for type:', type);
   document.getElementById("ACC").length = 0;
   document.getElementById("XCF").length = 0;
   document.getElementById("FMT").length = 0;
+  document.getElementById('warning_box').innerHTML = "";
 
   switch (type)
   {
     case "paw" :
-      document.getElementById('warning_box').innerHTML = "";
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      document.getElementById("ACC").options[1]=new Option("stringent","stringent");
-      document.getElementById("XCF").options[1]=new Option("LDA","pw");
-      document.getElementById("XCF").options[0]=new Option("PBE","pbe");
-      document.getElementById("FMT").options[0]=new Option("xml","xml");
+      document.getElementById("ACC").options[0] = new Option("standard","standard");
+      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
+      document.getElementById("XCF").options[1] = new Option("LDA","pw");
+      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+      document.getElementById("FMT").options[0] = new Option("xml","xml");
       break;
 
     case "nc-sr" :
-      document.getElementById('warning_box').innerHTML = "";
       set_warning(' this version is outdated')
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      document.getElementById("ACC").options[1]=new Option("stringent","stringent");
-      document.getElementById("XCF").options[2]=new Option("LDA","pw");
-      document.getElementById("XCF").options[0]=new Option("PBE","pbe");
-      document.getElementById("XCF").options[1]=new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0]=new Option("psp8","psp8");
-      document.getElementById("FMT").options[1]=new Option("upf","upf");
-      document.getElementById("FMT").options[2]=new Option("html","html");
-      document.getElementById("FMT").options[3]=new Option("djrepo","djrepo");
+      document.getElementById("ACC").options[0] = new Option("standard","standard");
+      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
+      document.getElementById("XCF").options[2] = new Option("LDA","pw");
+      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+      document.getElementById("XCF").options[1] = new Option("PBEsol","pbesol");
+      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
+      document.getElementById("FMT").options[1] = new Option("upf","upf");
+      document.getElementById("FMT").options[2] = new Option("html","html");
+      document.getElementById("FMT").options[3] = new Option("djrepo","djrepo");
       break;
 
     case "nc-sr-04" :
-      document.getElementById('warning_box').innerHTML = "";
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      document.getElementById("ACC").options[1]=new Option("stringent","stringent");
-      document.getElementById("XCF").options[2]=new Option("LDA","pw");
-      document.getElementById("XCF").options[0]=new Option("PBE","pbe");
-      document.getElementById("XCF").options[1]=new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0]=new Option("psp8","psp8");
-      document.getElementById("FMT").options[1]=new Option("upf","upf");
-      document.getElementById("FMT").options[2]=new Option("psml","psml");
-      document.getElementById("FMT").options[3]=new Option("html","html");
-      document.getElementById("FMT").options[4]=new Option("djrepo","djrepo");
+      document.getElementById("ACC").options[0] = new Option("standard","standard");
+      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
+      document.getElementById("XCF").options[2] = new Option("LDA","pw");
+      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+      document.getElementById("XCF").options[1] = new Option("PBEsol","pbesol");
+      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
+      document.getElementById("FMT").options[1] = new Option("upf","upf");
+      document.getElementById("FMT").options[2] = new Option("psml","psml");
+      document.getElementById("FMT").options[3] = new Option("html","html");
+      document.getElementById("FMT").options[4] = new Option("djrepo","djrepo");
       break;
 
     case "nc-fr-04" :
-      document.getElementById('warning_box').innerHTML = "";
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      document.getElementById("ACC").options[1]=new Option("stringent","stringent");
-      //document.getElementById("XCF").options[2]=new Option("LDA","pw");
-      document.getElementById("XCF").options[0]=new Option("PBE","pbe");
-      document.getElementById("XCF").options[1]=new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0]=new Option("psp8","psp8");
-      document.getElementById("FMT").options[1]=new Option("upf","upf");
-      document.getElementById("FMT").options[2]=new Option("psml","psml");
-      document.getElementById("FMT").options[3]=new Option("html","html");
-      document.getElementById("FMT").options[4]=new Option("djrepo","djrepo");
+      document.getElementById("ACC").options[0] = new Option("standard","standard");
+      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
+      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+      document.getElementById("XCF").options[1] = new Option("PBEsol","pbesol");
+      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
+      document.getElementById("FMT").options[1] = new Option("upf","upf");
+      document.getElementById("FMT").options[2] = new Option("psml","psml");
+      document.getElementById("FMT").options[3] = new Option("html","html");
+      document.getElementById("FMT").options[4] = new Option("djrepo","djrepo");
       break;
 
     case "nc-sr-04-3plus" :
       set_warning(" this table contains Lanthanide potentials for use in the 3+ configuration only. <b>They all have the f-electrons frozen in the core.</b> The hints are based on the convergence of the nitride lattice parameter, see the report under format:html for details.");
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      // document.getElementById("ACC").options[1]=new Option("stringent","stringent");
-      // document.getElementById("XCF").options[]=new Option("LDA","pw");
-      document.getElementById("XCF").options[0]=new Option("PBE","pbe");
-      // document.getElementById("XCF").options[]=new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0]=new Option("psp8","psp8");
-      document.getElementById("FMT").options[1]=new Option("upf","upf");
-      document.getElementById("FMT").options[2]=new Option("psml","psml");
-      document.getElementById("FMT").options[3]=new Option("html","html");
-      document.getElementById("FMT").options[4]=new Option("djrepo","djrepo");
+      document.getElementById("ACC").options[0] = new Option("standard","standard");
+      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
+      document.getElementById("FMT").options[1] = new Option("upf","upf");
+      document.getElementById("FMT").options[2] = new Option("psml","psml");
+      document.getElementById("FMT").options[3] = new Option("html","html");
+      document.getElementById("FMT").options[4] = new Option("djrepo","djrepo");
       break;
 
     case "core" :
       // TODO or perhaps add new format and handle file download.
-      document.getElementById('warning_box').innerHTML = "";
-      document.getElementById("ACC").options[0]=new Option("","standard");
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      document.getElementById("ACC").options[0]=new Option("standard","standard");
-      document.getElementById("XCF").options[0]=new Option("PBE","pbe");
-      document.getElementById("FMT").options[2]=new Option("FC","fc");
+      document.getElementById("ACC").options[0] = new Option("","standard");
+      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+      document.getElementById("FMT").options[2] = new Option("FC","fc");
       break;
   }
 
   return true;
 }
+
 
 function chaos() {
     localStorage.setItem('animate', 1)
@@ -399,6 +424,7 @@ function chaos() {
       var plugin = plugins[i];
       animatePlugin(plugin);
     }
+
     function animatePlugin(plugin) {
       var xMax = 500;
       var yMax = 500;
@@ -432,4 +458,260 @@ function chaos() {
       }
     var animationPlayer = plugin.animate(plugin.keyframes, plugin.animProps);
     }
+}
+
+
+function _get_pseudo_selection(dom_object){
+
+  var str = dom_object.attr("class");
+  var res = str.split(" ");
+  var dum = res[2];
+  var n = parseInt(dum.split("_")[0]);
+  var color = colors[res[1]];
+  var res = dum.split("_");
+  var elm = res[1];
+
+  var type = $("#TYP").val();
+  var xcf = $("#XCF").val();
+  var acc = $("#ACC").val();
+  var fmt = $("#FMT").val();
+  
+  try {
+    var url = FILES[type][xcf][acc][elm][fmt];
+  } 
+  catch (error) {
+    console.log("Error in _get_pseudo_selection:", error);
+    var url = null;
+  }
+  if (DEBUG) console.log("in _get_pseudo_selection with url:", url)
+
+  var select = {elm: elm, url: url, type: type, xcf: xcf, acc: acc, fmt: fmt, color: color, n: n};
+  console.log("select:", select);
+  return select;
+}
+
+
+function _get_targz_selection(){
+  var type = $("#TYP").val();
+  var xcf = $("#XCF").val();
+  var acc = $("#ACC").val();
+  var fmt = $("#FMT").val();
+
+  try {
+    var url = TARGZ[type][xcf][acc][fmt];
+  } 
+  catch (error) {
+    console.log("Error in _get_targz_selection:", error);
+    var url = null;
+  }
+  if (DEBUG) console.log("in _get_targz_selection with url:", url)
+
+  return {url: url, type: type, xcf: xcf, acc: acc, fmt: fmt};
+}
+
+
+function build_ui(){
+  var params = decodeURIComponent(window.location.search.slice(1))
+              .split('&')
+              .reduce(function _reduce (/*Object*/ a, /*String*/ b) {
+                        b = b.split('=');
+                        a[b[0]] = b[1];
+                        return a;
+              }, {});
+
+  colors = {
+    "bg_hydrogen": "#d16969",
+    "bg_alkali": "#d19292",
+    "bg_alkaline": "#d1bd92",
+    "bg_transition_metal":"#a9c4d4",
+    "bg_post_transition_metal": "#a3b2d6",
+    "bg_metalloid": "#bdd6a3",
+    "bg_nonmetal": "#d6a3be",
+    "bg_halogen": "#d2d6a3",
+    "bg_noble_gas": "#c4cdff",
+    "bg_lanthanoid": "#edb8ff",
+    "bg_actinoid": "#bf96ff",
+    "bg_unknown": "#dcdcdc"
+  };
+
+  jQuery(document).ready(function($) {
+    $(".plugin:nth-of-type(2)").addClass('nth-of-type-float');
+    $(".plugin:nth-of-type(5), .plugin:nth-of-type(13)").addClass('nth-of-type-margin');
+    $(".plugin:nth-of-type(1), .plugin:nth-of-type(3), .plugin:nth-of-type(11), .plugin:nth-of-type(19), .plugin:nth-of-type(37), .plugin:nth-of-type(55)").addClass('nth-of-type-clear');
+
+    // .hover(handlerIn, handlerOut)
+    $('.plugin').hover(function(){
+      var mythis = $(this);
+      var sel = _get_pseudo_selection(mythis);
+      
+      // update the X_n box.
+      set_X(sel.elm, sel.color, sel.n);
+      
+      if (sel.url) {
+          mythis.css("background-color", "#44AA44");
+          mythis.css("color", "#FFFFFF");
+      }
+      else {
+          mythis.css("background-color", "#CC4444");
+          mythis.css("color", "#FFFFFF");
+      }
+
+      }, function(){
+      reset_X();
+      var str = $(this).attr("class");
+      var res = str.split(" ");
+      var bgori = colors[res[1]];
+      var mythis = $(this);
+      mythis.css("background-color", bgori);
+      mythis.css("color", "#4B4B4D");
+    });
+
+    $('.plugin').on('click', function() {
+      // get the element selected by the user.
+      var mythis = $(this);
+      var sel = _get_pseudo_selection(mythis);
+
+      if (sel.fmt === 'html'){
+        //var url = trunk.concat(typ,"_",xcf,"_",acc,"/",elm,".",fmt);
+        $.get(sel.url)
+          .done(function() {
+            // exists code
+            window.location.href = sel.url;
+          }).fail(function() {
+            // not exists code
+          })}
+      else {
+        //var url = trunk.concat(typ,"_",xcf,"_",acc,"/",elm,".",fmt,'.gz');
+        $.get(sel.url)
+          .done(function() {
+            // exists code
+            window.downloadFile(sel.url);
+          }).fail(function() {
+            // not exists code
+          })}
+    });
+
+    // .hover( handlerIn, handlerOut)
+    $('.download_button').hover(
+      function(){
+        // Download the targz file with the full table.
+        var mythis = $(this);
+        var sel = _get_targz_selection();
+
+        if (sel.url) {
+            mythis.css("background-color", "#44AA44");
+            mythis.css("color", "#FFFFFF");
+        }
+        else {
+            // tgz not available.
+            mythis.css("background-color", "#CC4444");
+            mythis.css("color", "#FFFFFF");
+        }
+        }, 
+      function(){
+        var mythis = $(this);
+        mythis.css("background-color", "#4D4D4D");
+        mythis.css("color", "#FFFFFF");
+        setTimeout(function(){
+          mythis.css("background-color", "#4D4D4D");
+          mythis.css("color", "#FFFFFF");
+        },500);
+    });
+
+    $('.download_button').on('click', function(e) {
+      // Download the targz file with the full table.
+      var sel = _get_targz_selection();
+
+      $.get(sel.url)
+        .done(function() {
+            // exists code
+          window.location.href = sel.url;
+        }).fail(function() {
+            // not exists code
+        })
+    });
+
+    window.downloadFile = function (sUrl) {
+        //iOS devices do not support downloading.
+        // We have to inform user about this.
+        if (/(iP)/g.test(navigator.userAgent)) {
+            alert('Your device does not support files downloading. Please try again in desktop browser.');
+            return false;
+        }
+    
+        //If in Chrome or Safari - download via virtual link click
+        if (window.downloadFile.isChrome || window.downloadFile.isSafari) {
+            //Creating new link node.
+            var link = document.createElement('a');
+            link.href = sUrl;
+    
+            if (link.download !== undefined) {
+                // Set HTML5 download attribute. This will prevent file from opening if supported.
+                var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+                link.download = fileName;
+            }
+    
+            // Dispatching click event.
+            if (document.createEvent) {
+                var e = document.createEvent('MouseEvents');
+                e.initEvent('click', true, true);
+                link.dispatchEvent(e);
+                return true;
+            }
+        }
+    
+        // Force file download (whether supported by server).
+        var query = '?download';
+    
+        window.open(sUrl + query, '_self');
+    }
+    
+    window.downloadFile.isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+    window.downloadFile.isSafari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
+
+  });
+}
+
+
+function set_options(){
+  var typ = getParameterByName('typ');
+  if (typ === null){
+    typ = document.getElementById('TYP').value;
+  }
+  var options = document.getElementById('TYP').options;
+  for (i in options){
+    if (options[i].value == typ){
+         options[i].selected = true;
+    }
+  }
+
+  dynamic_dropdown(typ);
+
+  // if XCF ACC and FMT have been changed previously set them back to those selections 
+  if (localStorage.getItem('selectedXCF')) {
+    var options = document.getElementById('XCF').options
+    for (i in options){
+       if (options[i].value == localStorage.getItem('selectedXCF')){
+         options[i].selected = true;
+       }
+    }
+  }
+
+  if (localStorage.getItem('selectedACC')) {
+    var options = document.getElementById('ACC').options
+    for (i in options){
+       if (options[i].value == localStorage.getItem('selectedACC')){
+         options[i].selected = true;
+       }
+    }
+  }
+
+  if (localStorage.getItem('selectedFMT')) {
+    var options = document.getElementById('FMT').options
+    for (i in options){
+       if (options[i].value == localStorage.getItem('selectedFMT')){
+         options[i].selected = true;
+       }
+    }
+  }
 }
