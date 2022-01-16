@@ -9,10 +9,10 @@ const ALL_ELEMENTS = [
   'H', 'He', 
   'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne','Na', 'Mg', "Al", "Si", 'P', 'S', 'Cl', 'Ar', 
   'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr',
-  'Rb','Sr','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I','Xe',
-  'Cs','Ba',
-  'La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu',
-  'Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Po','At','Rn'
+  'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
+  'Cs', 'Ba',
+  'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er','Tm','Yb', 'Lu',
+  'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn'
 ];
 
 
@@ -157,9 +157,6 @@ function load_set_info(animate) {
     xcf = document.getElementById('XCF').value;
     acc = document.getElementById('ACC').value;
 
-    set_info({}, 0);
-    var file = type + '_' + xcf + '_' + acc + '.json';
-
     // Build dictionary element_symbol -> metadata.
     var meta = {};
     for (const elm of ALL_ELEMENTS) {
@@ -167,16 +164,18 @@ function load_set_info(animate) {
             meta[elm] = FILES[type][xcf][acc][elm]["meta"];
         }
         catch (error) {
-            console.log("Cannot find element", elm, error);
+            console.log("Cannot find element:", elm, "with type:", type, "xcf:", xcf, "acc:", acc, "\n", error);
             meta[elm] = {};
         }
     }
     //console.log("meta:", meta);
-
-    loadJSON(file, function(text) {
-        var info = JSON.parse(text);
-        set_info(info, animate);
-    });
+   
+    //set_info({}, 0);
+    //var file = type + '_' + xcf + '_' + acc + '.json';
+    //loadJSON(file, function(text) {
+    //    var info = JSON.parse(text);
+    //    set_info(info, animate);
+    //});
 }
 
 
@@ -317,7 +316,7 @@ function dojoTour_guidedtour() {
         },
         {
           element: ".logo",
-          intro:  "Finally, if you want to learn the periodic table by heart try clicking here. (p.s. Don't try to download Oganesson, bad things may happen.)"
+          intro:  "Finally, if you want to learn the periodic table by heart try clicking here."
         }
       ],
       showProgress: true,
@@ -342,75 +341,64 @@ function dynamic_dropdown(type){
   document.getElementById("XCF").length = 0;
   document.getElementById("FMT").length = 0;
   document.getElementById('warning_box').innerHTML = "";
+  //set_warning(' this version is outdated')
 
   switch (type)
   {
-    case "paw" :
-      document.getElementById("ACC").options[0] = new Option("standard","standard");
-      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
-      document.getElementById("XCF").options[1] = new Option("LDA","pw");
-      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
-      document.getElementById("FMT").options[0] = new Option("xml","xml");
+    case "jth-sr-v1.1" :
+      document.getElementById("ACC").options[0] = new Option("standard", "standard");
+      document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      document.getElementById("XCF").options[1] = new Option("LDA", "LDA");
+      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
+      document.getElementById("FMT").options[0] = new Option("xml", "xml");
       break;
 
-    case "nc-sr" :
-      set_warning(' this version is outdated')
-      document.getElementById("ACC").options[0] = new Option("standard","standard");
-      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
-      document.getElementById("XCF").options[2] = new Option("LDA","pw");
-      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
-      document.getElementById("XCF").options[1] = new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
-      document.getElementById("FMT").options[1] = new Option("upf","upf");
-      document.getElementById("FMT").options[2] = new Option("html","html");
-      document.getElementById("FMT").options[3] = new Option("djrepo","djrepo");
+    case "nc-sr-v0.4" :
+      document.getElementById("ACC").options[0] = new Option("standard", "standard");
+      document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      document.getElementById("XCF").options[2] = new Option("LDA", "LDA");
+      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
+      document.getElementById("XCF").options[1] = new Option("PBEsol", "PBEsol");
+      document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
+      document.getElementById("FMT").options[1] = new Option("upf", "upf");
+      document.getElementById("FMT").options[2] = new Option("psml", "psml");
+      document.getElementById("FMT").options[3] = new Option("html", "html");
+      document.getElementById("FMT").options[4] = new Option("djrepo", "djrepo");
       break;
 
-    case "nc-sr-04" :
-      document.getElementById("ACC").options[0] = new Option("standard","standard");
-      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
-      document.getElementById("XCF").options[2] = new Option("LDA","pw");
-      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
-      document.getElementById("XCF").options[1] = new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
-      document.getElementById("FMT").options[1] = new Option("upf","upf");
-      document.getElementById("FMT").options[2] = new Option("psml","psml");
-      document.getElementById("FMT").options[3] = new Option("html","html");
-      document.getElementById("FMT").options[4] = new Option("djrepo","djrepo");
-      break;
-
-    case "nc-fr-04" :
-      document.getElementById("ACC").options[0] = new Option("standard","standard");
-      document.getElementById("ACC").options[1] = new Option("stringent","stringent");
-      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
-      document.getElementById("XCF").options[1] = new Option("PBEsol","pbesol");
-      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
-      document.getElementById("FMT").options[1] = new Option("upf","upf");
-      document.getElementById("FMT").options[2] = new Option("psml","psml");
-      document.getElementById("FMT").options[3] = new Option("html","html");
-      document.getElementById("FMT").options[4] = new Option("djrepo","djrepo");
+    case "nc-fr-v0.4" :
+      document.getElementById("ACC").options[0] = new Option("standard", "standard");
+      document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
+      document.getElementById("XCF").options[1] = new Option("PBEsol", "PBEsol");
+      document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
+      document.getElementById("FMT").options[1] = new Option("upf", "upf");
+      document.getElementById("FMT").options[2] = new Option("psml", "psml");
+      document.getElementById("FMT").options[3] = new Option("html", "html");
+      document.getElementById("FMT").options[4] = new Option("djrepo", "djrepo");
       break;
 
     case "nc-sr-04-3plus" :
       set_warning(" this table contains Lanthanide potentials for use in the 3+ configuration only. <b>They all have the f-electrons frozen in the core.</b> The hints are based on the convergence of the nitride lattice parameter, see the report under format:html for details.");
-      document.getElementById("ACC").options[0] = new Option("standard","standard");
-      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
-      document.getElementById("FMT").options[0] = new Option("psp8","psp8");
-      document.getElementById("FMT").options[1] = new Option("upf","upf");
-      document.getElementById("FMT").options[2] = new Option("psml","psml");
-      document.getElementById("FMT").options[3] = new Option("html","html");
-      document.getElementById("FMT").options[4] = new Option("djrepo","djrepo");
+      document.getElementById("ACC").options[0] = new Option("standard", "standard");
+      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
+      document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
+      document.getElementById("FMT").options[1] = new Option("upf", "upf");
+      document.getElementById("FMT").options[2] = new Option("psml", "psml");
+      document.getElementById("FMT").options[3] = new Option("html", "html");
+      document.getElementById("FMT").options[4] = new Option("djrepo", "djrepo");
       break;
 
-    case "core" :
-      // TODO or perhaps add new format and handle file download.
-      document.getElementById("ACC").options[0] = new Option("","standard");
-      document.getElementById("XCF").options[0] = new Option("PBE","pbe");
-      document.getElementById("FMT").options[2] = new Option("FC","fc");
-      break;
+    //case "core" :
+    //  // TODO or perhaps add new format and handle file download.
+    //  document.getElementById("ACC").options[0] = new Option("", "standard");
+    //  document.getElementById("XCF").options[0] = new Option("PBE","pbe");
+    //  document.getElementById("FMT").options[2] = new Option("FC","fc");
+    //  break;
+    default:
+      throw 'Invalid type:' + type;
   }
 
-  return true;
 }
 
 

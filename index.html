@@ -118,12 +118,13 @@ Format
 <td>
 <div class="styled-longselect" onchange="load_set_info();">
   <select id="TYP" onchange="dynamic_dropdown(this.options[this.selectedIndex].value);">
-    <!-- this is were you add a new table, also add the option to the dynamic_dropdown funtion in dojo-tools.js -->
-    <option value="nc-sr-04" selected>NC SR (ONCVPSP v0.4)</option>
-    <option value="nc-fr-04" >NC FR (ONCVPSP v0.4)</option>
+    <!--
+    this is where one adds a new table, also add the option to the dynamic_dropdown funtion in dojo-tools.js 
+    -->
+    <option value="nc-sr-v0.4" selected>NC SR (ONCVPSP v0.4)</option>
+    <option value="nc-fr-v0.4" >NC FR (ONCVPSP v0.4)</option>
     <option value="nc-sr-04-3plus">NC SR 3+ (ONCVPSP v0.4)</option>
-    <option value="nc-sr" >NC SR (ONCVPSP v0.3)</option>
-    <option value="paw">PAW (JTH v1.0)</option>
+    <option value="jth-sr-v1.1">PAW (JTH v1.1)</option>
   </select>
 </div>
 </td>
@@ -1492,14 +1493,14 @@ Format
       <div class="name">Livermorium</div>
     </div>
   </div>
-  <div class="plugin bg_unknown 117_Ts" onclick="make_light()">
+  <div class="plugin bg_unknown 117_Ts"> <!-- onclick="make_light()" !--> 
     <div class="element">Ts</div>
     <div class="empty"></div>
     <div class="name-wrap">
       <div class="name">Tennessine</div>
     </div>
   </div>
-  <div class="plugin bg_unknown 118_Og" onclick="chaos()">
+  <div class="plugin bg_unknown 118_Og"> <!-- onclick="chaos()" !--> 
     <div class="element">Og</div>
     <div class="empty"></div>
     <div class="name-wrap">
@@ -1512,16 +1513,16 @@ Format
 </div>
 </div>
 
-<script>
-  load_set_info(0);
-</script>
-
 <!--<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
 <script>
-    build_ui();
+  load_set_info(0);
+  build_ui();
+  if (getParameterByName('layout') === 'light'){
+    make_light();
+  }
 </script>
 
 <script>
@@ -1532,12 +1533,6 @@ Format
 
   ga('create', 'UA-97858927-1', 'auto');
   ga('send', 'pageview');
-</script>
-
-<script>
-  if (getParameterByName('layout') === 'light'){
-    make_light();
-  }
 </script>
 
 <!-- Introjs for Guided Tour -->

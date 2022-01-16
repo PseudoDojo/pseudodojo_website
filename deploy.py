@@ -4,22 +4,28 @@ from __future__ import annotations
 import sys
 import os
 import argparse
-import json
 import abc
+import json
+import posixpath
+import tempfile
+import shutil
 import hashlib
 import requests
 
 from collections import defaultdict
 from urllib.parse import urlsplit
-#from tqdm import tqdm
+from tqdm import tqdm
 
 
-NAME_URL_LIST = [
-    ("nc-sr-04_pbe", ),
-    #("nc-fr-04_pbe", ),
-    #("nc-sr-04_pbesol", ),
-    #("nc-fr-04_pbesol", ),
-]
+ALL_ELEMENTS = set([
+  'H', 'He',
+  'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne','Na', 'Mg', "Al", "Si", 'P', 'S', 'Cl', 'Ar',
+  'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr',
+  'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
+  'Cs', 'Ba',
+  'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er','Tm','Yb', 'Lu',
+  'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
+])
 
 
 def download_repo_from_url(url: str, save_dirpath: str,
@@ -84,14 +90,6 @@ class PseudosRepo(abc.ABC):
     """
     """
 
-    #def __init__(self, name: str, url: str) -> None:
-    #    self.name = name
-    #    self.url = url
-    #    self.xc_name = None
-    #    self.ps_generator = "ONCVPSP"
-    #    self.workdir = "FOO"
-    #    self.formats = ["psp8", "upf", "psml", "html", "djrepo"]
-
     def __init__(self, ps_generator: str, xc_name: str, relativity_type: str, project_name: str,
                  version: str, url: str):
         """
@@ -146,11 +144,16 @@ class PseudosRepo(abc.ABC):
     def formats(self):
         """List of file formats provided by the repository."""
 
-    def download(self) -> None:
-        """Get the targz from github and unpack it inside `workdir`"""
-        download_repo_from_url(self.url, self.name)
+    def setup(self, from_scratch: bool) -> None:
 
-    def setup(self) -> None:
+        doit = from_scratch or (not from_scratch and not os.path.isdir(self.name))
+
+        if doit:
+            # Get the targz from github and unpack it inside directory `self.name`.
+            print("Downloading:", self.url, "to:", self.name)
+            download_repo_from_url(self.url, self.name)
+        else:
+            print("Skipping dowload step as", self.name, "directory already exists")
 
         table_paths = [f for f in os.listdir(self.name) if f.endswith(".txt")]
         table_paths = [os.path.join(self.name, t) for t in table_paths]
@@ -180,12 +183,19 @@ class PseudosRepo(abc.ABC):
             for ext, rpaths in table.items():
                 if not rpaths: continue
                 tar_path = os.path.join(self.name, f"{self.type}_{self.xc_name}_{table_name}_{ext}.tgz")
-                print("Creating tarball:", tar_path)
-                targz = tarfile.open(tar_path, "w:gz")
-                for rpath in rpaths:
-                    targz.add(rpath, arcname=os.path.basename(rpath))
-                targz.close()
+                doit = from_scratch or (not from_scratch and not os.path.isfile(tar_path))
+                if doit:
+                    print("Creating tarball:", tar_path)
+                    targz = tarfile.open(tar_path, "w:gz")
+                    for rpath in rpaths:
+                        targz.add(rpath, arcname=os.path.basename(rpath))
+                    targz.close()
+                else:
+                    print("Skipping tarball creation:", tar_path)
+                    assert os.path.isfile(tar_path)
+
                 self.targz[table_name][ext] = tar_path
+            print("")
 
 
 class OncvpspRepo(PseudosRepo):
@@ -220,6 +230,15 @@ class OncvpspRepo(PseudosRepo):
         return f"{self.ps_generator}-{self.xc_name}-{self.relativity_type}-{self.project_name}v{self.version}"
 
     @property
+    def type(self) -> str:
+        if self.relativity_type == "FR":
+            return f"nc-fr-v{self.version}"
+        elif self.relativity_type == "SR":
+            return f"nc-sr-v{self.version}"
+        else:
+            raise ValueError(f"Invalid relativity_type {self.relativity_type}")
+
+    @property
     def formats(self):
         return ["psp8", "upf", "psml", "html", "djrepo"]
 
@@ -248,6 +267,21 @@ class JthRepo(PseudosRepo):
         print(f"\nValidating md5 checksums of {repr(self)} ...")
         cprint("WARNING: JTH-PAW repository does not support md5 checksums!!!", color="red")
 
+    @property
+    def type(self) -> str:
+        # FIXME
+        if self.relativity_type == "FR":
+            return f"jth-fr-v{self.version}"
+        elif self.relativity_type == "SR":
+            return f"jth-sr-v{self.version}"
+        else:
+            raise ValueError(f"Invalid relativity_type {self.relativity_type}")
+
+    @property
+    def formats(self):
+        return ["xml", "upf"]
+
+
 
 class Website:
     """
@@ -260,8 +294,8 @@ class Website:
         # Create list of repositories.
         _mk_onc = OncvpspRepo.from_github
         _mk_jth = JthRepo.from_abinit_website
+
         self.repos = [
-            #
             # ONCVPSP repositories
             _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
             _mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),
@@ -269,51 +303,48 @@ class Website:
             #_mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),  FIXME: checksum fails
             #
             # JTH repositories
-            #_mk_jth(xc_name="LDA", relativity_type="SR", version="1.1"),
-            #_mk_jth(xc_name="PBE", relativity_type="SR", version="1.1"),
+            _mk_jth(xc_name="LDA", relativity_type="SR", version="1.1"),
+            _mk_jth(xc_name="PBE", relativity_type="SR", version="1.1"),
         ]
-        #for name, url in NAME_URL_LIST:
-        #    self.repos.append(Repo(name, url))
-
-        #repo = PseudosRepo(name="foo", url="bar")
-        #repo.workdir = "ONCVPSP-PBE-SR-PDv0.4"
-        #repo.xc_name = "pbe"
-        #repo.type = "nc-sr-04"
-        #repo.download()
-        #repo.setup()
-        #self.repos.append(repo)
 
 
-    def build(self) -> None:
+    def build(self, from_scratch: bool) -> None:
         # files[typ][xc_name][acc][elm][fmt]
         # targz[typ][xc_name][acc][fmt]
         files = defaultdict(dict)
         targz = defaultdict(dict)
+
         for repo in self.repos:
-            repo.download()
-            repo.setup()
+            repo.setup(from_scratch)
+            if repo.type in files and repo.xc_name in files[repo.type]:
+                raise ValueError(f"repo.type: {repo.type}, repo.xc_name: {repo.xc_name} is already in {files.keys()}")
+
             files[repo.type][repo.xc_name] = defaultdict(dict)
             targz[repo.type][repo.xc_name] = defaultdict(dict)
+
             for table_name, table in repo.tables.items():
                 files[repo.type][repo.xc_name][table_name] = defaultdict(dict)
                 targz[repo.type][repo.xc_name][table_name] = defaultdict(dict)
                 for fmt, rpaths in table.items():
+
                     # Store the relative location of the targz file
                     if fmt in repo.targz[table_name]:
-                        targz[repo.type][repo.xc_name][table_name][fmt] = os.path.relpath(repo.targz[table_name][fmt],
-                                                                                      start=self.workdir)
+                        p = os.path.relpath(repo.targz[table_name][fmt], start=self.workdir)
+                        targz[repo.type][repo.xc_name][table_name][fmt] = p
 
                     for rpath in rpaths:
                         # Get the element symbol from the relative path.
                         if repo.ps_generator == "ONCVPSP":
                             # ONCVPSP-PBE-SR-PDv0.4/Ag/Ag-sp.psp8
                             elm = rpath.split(os.sep)[-2]
-                        elif repo.ps_generator == "atompaw":
-                            raise NotImplementedError()
+                        elif repo.ps_generator == "ATOMPAW":
+                            # ATOMICDATA/Ag.LDA_PW-JTH.xml
+                            elm = os.path.basename(rpath).split(".")[0]
                         else:
                             raise ValueError("Invalid value for repo.ps_generator: {repo.ps_generator}")
-                        #print(elm)
-                        #assert elm in periodic_table
+
+                        if elm not in ALL_ELEMENTS:
+                            raise ValueError(f"Invalid element symbol: `{elm}`")
 
                         files[repo.type][repo.xc_name][table_name][elm][fmt] = rpath
 
@@ -321,14 +352,20 @@ class Website:
                             # Get hints from djrepo file if NC pseudo.
                             # TODO: Extract hints from PAW xml
                             with open(rpath, "r") as fh:
-                                hints = json.load(fh)["hints"]
-                                d = {"hl": hints["low"]["ecut"],
-                                     "hn": hints["normal"]["ecut"],
-                                     "hh": hints["high"]["ecut"]}
+                                data = json.load(fh)
+                                hints = data["hints"]
+                                d = {
+                                    # TODO: Add nv but I need to parse the pseudo.
+                                    #"nv":
+                                    "hl": hints["low"]["ecut"],
+                                    "hn": hints["normal"]["ecut"],
+                                    "hh": hints["high"]["ecut"]
+                                }
+
                                 files[repo.type][repo.xc_name][table_name][elm]["meta"] = d
                                 #print(d)
 
-        # Write files.json and targz.json.
+        print("Writing files.json and targz.json")
         with open(os.path.join(self.workdir, "files.json"), "w") as fh:
             json.dump(files, fh, indent=4, sort_keys=True)
 
@@ -348,7 +385,7 @@ def new(options) -> int:
     1) download tables from github 2) generate new json files
     """
     website = Website(".", options.verbose)
-    website.build()
+    website.build(from_scratch=True)
     return 0
 
 
@@ -357,6 +394,7 @@ def update(options) -> int:
     Update pre-existent installation.
     """
     website = Website(".", options.verbose)
+    website.build(from_scratch=False)
     #make_papers()
     return 0
 
@@ -405,6 +443,9 @@ def get_parser(with_epilog=False):
 
     # Subparser for new command.
     p_new = subparsers.add_parser('new', parents=[copts_parser], help="Deploy website from scratch.")
+
+    # Subparser for new command.
+    p_update = subparsers.add_parser('update', parents=[copts_parser], help="Update tables.")
 
     # Subparser for rapid command.
     #p_rapid = subparsers.add_parser('rapid', parents=[copts_parser], help="Run all tasks in rapidfire mode.")
