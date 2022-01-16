@@ -23,6 +23,12 @@
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- 
+This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md 
+-->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
 
@@ -38,7 +44,7 @@
 
 <div class="detail detail_av" id="av" >
       <div class="element_l" id="av_el">Mean</div>
-    <div class="l_top_l">hints</div>
+    <div class="l_top_l">hints (Ha)</div>
     <div class="l_follow_l" id="av_hl" title="low cutoff energy hint">l</div>
     <div class="l_follow_l" id="av_hn" title="normal cutoff energy hint">n</div>
     <div class="l_follow_l" id="av_hh" title="high cutoff energy hint">h</div>
@@ -62,7 +68,7 @@
     <div class="atom_number_detail" id="N"></div>
     <div class="detail detail_position" id="X_n">
       <div class="element" id="X_el">X</div>
-      <div class="l_top" id="det_hints">hints</div>
+      <div class="l_top" id="det_hints">hints (Ha)</div>
       <div class="l_follow" id="X_hl" title="low cutoff energy hint (Ha)">low</div>
       <div class="l_follow" id="X_hn" title="normal cutoff energy hint (Ha)">normal</div>
       <div class="l_follow" id="X_hh" title="high cutoff energy hint (Ha)">high</div>
@@ -1513,8 +1519,9 @@ Format
 </div>
 </div>
 
-<!--<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>-->
+<!--<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+-->
 
 
 <script>

@@ -74,24 +74,28 @@ function set_info(info, animate) {
     var sums = [0, 0, 0, 0, 0, 0, 0];
 
     if (animate * localStorage.getItem('animate') === 1){
-        //console.log('added animating');
+        //console.log('in set_info with animate option');
         $('.plugin').removeClass('anim');
         $('.plugin').removeClass('chaos');
         setTimeout("$('.plugin').addClass('anim')", 10)
     }
 
     for (el in ALL_ELEMENTS) {
-        for (key in ALL_KEYS){
+        for (key in ALL_KEYS) {
             var id_key = ALL_ELEMENTS[el] + '_' + ALL_KEYS[key];
             var x = document.getElementById(id_key);
             var el_info = info[ALL_ELEMENTS[el]];
+            //console.log("el:", el, "key", key, "el_info", el_info);
+
             var val = 'na';
-            if (typeof(el_info) == 'undefined') {
+            if (typeof(el_info) === 'undefined') {
                 val = 'na';
             }
             else {
                 val = el_info[ALL_KEYS[key]];
+                if (typeof(val) === 'undefined') val = "na";
             }
+
             if (val === 'na' || val === 'nan'){
                 var xx = 1;
             }
@@ -99,25 +103,28 @@ function set_info(info, animate) {
                 averages[key] += parseFloat(val);
                 sums[key] += 1;
             }
+
             x.innerHTML = val;
         }
     }
+
     for (i in averages){
         averages[i] = averages[i] / sums[i]
         averages[i] = averages[i].toFixed(2)
     }
 
-    var summary = "The averages of this table:\n\n"
-    summary += "low hint\t\t\t\t: " + averages[1] + " Ha\n"
-    summary += "normal hint\t\t\t: " + averages[2] + " Ha\n"
-    summary += "high hint\t\t\t\t: " + averages[0] + " Ha\n"
-    summary += "nuber of valence shells\t: " + averages[3] + " \n"
-    summary += "delta\t\t\t\t\t: " + averages[4] + " meV\n"
-    summary += "normalized delta\t\t: " + averages[5] + " \n"
-    summary += "gbrv\t\t\t\t\t: " + averages[6] + " %\n"
+    //var summary = "The averages of this table:\n\n";
+    //summary += "low hint\t\t\t\t: " + averages[1] + " Ha\n";
+    //summary += "normal hint\t\t\t: " + averages[2] + " Ha\n";
+    //summary += "high hint\t\t\t\t: " + averages[0] + " Ha\n";
+    //summary += "nuber of valence shells\t: " + averages[3] + " \n";
+    //summary += "delta\t\t\t\t\t: " + averages[4] + " meV\n";
+    //summary += "normalized delta\t\t: " + averages[5] + " \n";
+    //summary += "gbrv\t\t\t\t\t: " + averages[6] + " %\n";
+
     if (sums[0] > 0) {
         set_av(averages);
-        reset_X()
+        reset_X();
     }
 }
 
@@ -156,6 +163,7 @@ function load_set_info(animate) {
     type = document.getElementById('TYP').value;
     xcf = document.getElementById('XCF').value;
     acc = document.getElementById('ACC').value;
+    if (DEBUG) console.log("In load_set_info with type:", type, "xcf:", xcf, "acc:", acc);
 
     // Build dictionary element_symbol -> metadata.
     var meta = {};
@@ -168,7 +176,8 @@ function load_set_info(animate) {
             meta[elm] = {};
         }
     }
-    //console.log("meta:", meta);
+    console.log("meta:", meta);
+    set_info(meta, animate);
    
     //set_info({}, 0);
     //var file = type + '_' + xcf + '_' + acc + '.json';
@@ -249,7 +258,8 @@ function dojoTour_guidedtour() {
         },
         {
           element: '#TYP',
-          intro: 'Here you select the type of pseudopotential. SR stands for scalar relativistic, FR for fully relativistic (including SOC). '+
+          intro: "Here you select the type of pseudopotential. " + 
+                 "SR stands for scalar relativistic, FR for fully relativistic (including SOC). " +
                  'The options for xc, accuracy and format are adjusted based on your choice.'
         },
         {
@@ -276,7 +286,8 @@ function dojoTour_guidedtour() {
         },
         {
           element: "#X_hl",
-          intro:  "This is the low cutoff energy hint (Ha). Good for a quick calculation or as a starting point for your convergence studies."
+          intro:  "This is the low cutoff energy hint (Ha). " + 
+                  "Good for a quick calculation or as a starting point for your convergence studies."
         },
         {
           element: "#X_hn",
@@ -284,35 +295,42 @@ function dojoTour_guidedtour() {
         },
         {
           element: "#X_hh",
-          intro:  "This is the high cutoff energy hint (Ha), beyond this value you should not observe significant changes in the results anymore."
+          intro:  "This is the high cutoff energy hint (Ha), beyond this value you should not observe " +
+                  "significant changes in the results anymore."
         },
         {
           element: "#X_nv",
-          intro:  "The number of valence shells."
+          intro:  "The number of valence electrons."
         },
-        {
-          element: "#X_d",
-          intro:  "The results of the delta gauge test (meV). This is the integral between the equation of state calculated using the pseudo potential and a reference all electron equation of state."
-        },
-        {
-          element: "#X_dp",
-          intro:  "The normalized delta gauge."
-        },
-        {
-          element: "#X_gb",
-          intro:  "The gbrv fcc and bcc average (%). This is the relative error in the lattice parameter with respect to reference all electrons results."
-        },
+        //{
+        //  element: "#X_d",
+        //  intro:  "The results of the delta gauge test (meV). " + 
+        //          "This is the integral between the equation of state calculated using the pseudo potential " +
+        //          "and a reference all electron equation of state."
+        //},
+        //{
+        //  element: "#X_dp",
+        //  intro:  "The normalized delta gauge."
+        //},
+        //{
+        //  element: "#X_gb",
+        //  intro:  "The gbrv fcc and bcc average (%). " +
+        //          "This is the relative error in the lattice parameter with respect to reference all electrons results."
+        //},
         {
           element: "#silicon",
-          intro:  "You can now click all the elements in the table to download or view the selected file for a single element. If the box turns green the file is available, if it turns red we are still working on it."
+          intro:  "Click all the elements in the table to download or view the selected file for a single element. " + 
+                  "If the box turns green the file is available, if it turns red we are still working on it."
         },
         {
           element: ".download_button",
-          intro:  "Alternatively, with the download button you can get a tar of the full table, always one pseudopotential per element."
+          intro:  "Alternatively, with the download button you can get a tar of the full table, " +
+                  "always one pseudopotential per element."
         },
         {
           element: "#papers",
-          intro:  "A list of papers using PseudoDojo pseudopotentials. Did you use them? Send us the DOI and we'll add yours as well."
+          intro:  "A list of papers using PseudoDojo pseudopotentials. Did you use them? " +
+                  "Send us the DOI and we'll add yours as well."
         },
         {
           element: ".logo",
@@ -337,9 +355,13 @@ function dojoTour_guidedtour() {
 function dynamic_dropdown(type){
   // Set the values of the XC/Accuracy/Format widgets given the pseudo type.
   if (DEBUG) console.log('dynamic dropdown: setting for type:', type);
-  document.getElementById("ACC").length = 0;
-  document.getElementById("XCF").length = 0;
-  document.getElementById("FMT").length = 0;
+  var acc = document.getElementById("ACC");
+  var xcf = document.getElementById("XCF");
+  var fmt = document.getElementById("FMT");
+
+  //document.getElementById("ACC").length = 0;
+  //document.getElementById("XCF").length = 0;
+  //document.getElementById("FMT").length = 0;
   document.getElementById('warning_box').innerHTML = "";
   //set_warning(' this version is outdated')
 
@@ -347,56 +369,56 @@ function dynamic_dropdown(type){
   {
     case "jth-sr-v1.1" :
       // List of tables
-      document.getElementById("ACC").options[0] = new Option("standard", "standard");
-      document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      acc.options[0] = new Option("standard", "standard");
+      acc.options[1] = new Option("stringent", "stringent");
       // List of XC functionals
-      document.getElementById("XCF").options[1] = new Option("LDA", "LDA");
-      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
+      xcf.options[1] = new Option("LDA", "LDA");
+      xcf.options[0] = new Option("PBE", "PBE");
       // List of file formats
-      document.getElementById("FMT").options[0] = new Option("xml", "xml");
-      //document.getElementById("FMT").options[1] = new Option("upf", "upf");
+      fmt.options[0] = new Option("xml", "xml");
+      //fmt.options[1] = new Option("upf", "upf");
       break;
 
     case "nc-sr-v0.4" :
       // List of tables
-      document.getElementById("ACC").options[0] = new Option("standard", "standard");
-      document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      acc.options[0] = new Option("standard", "standard");
+      acc.options[1] = new Option("stringent", "stringent");
       // List of XC functionals
-      document.getElementById("XCF").options[2] = new Option("LDA", "LDA");
-      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
-      document.getElementById("XCF").options[1] = new Option("PBEsol", "PBEsol");
+      xcf.options[2] = new Option("LDA", "LDA");
+      xcf.options[0] = new Option("PBE", "PBE");
+      xcf.options[1] = new Option("PBEsol", "PBEsol");
       // List of file formats
-      document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
-      document.getElementById("FMT").options[1] = new Option("upf", "upf");
-      document.getElementById("FMT").options[2] = new Option("psml", "psml");
-      document.getElementById("FMT").options[3] = new Option("html", "html");
-      document.getElementById("FMT").options[4] = new Option("djrepo", "djrepo");
+      fmt.options[0] = new Option("psp8", "psp8");
+      fmt.options[1] = new Option("upf", "upf");
+      fmt.options[2] = new Option("psml", "psml");
+      fmt.options[3] = new Option("html", "html");
+      fmt.options[4] = new Option("djrepo", "djrepo");
       break;
 
     case "nc-fr-v0.4" :
       // List of tables
-      document.getElementById("ACC").options[0] = new Option("standard", "standard");
-      document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      acc.options[0] = new Option("standard", "standard");
+      acc.options[1] = new Option("stringent", "stringent");
       // List of XC functionals
-      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
-      document.getElementById("XCF").options[1] = new Option("PBEsol", "PBEsol");
+      xcf.options[0] = new Option("PBE", "PBE");
+      xcf.options[1] = new Option("PBEsol", "PBEsol");
       // List of file formats
-      document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
-      document.getElementById("FMT").options[1] = new Option("upf", "upf");
-      document.getElementById("FMT").options[2] = new Option("psml", "psml");
-      document.getElementById("FMT").options[3] = new Option("html", "html");
-      document.getElementById("FMT").options[4] = new Option("djrepo", "djrepo");
+      fmt.options[0] = new Option("psp8", "psp8");
+      fmt.options[1] = new Option("upf", "upf");
+      fmt.options[2] = new Option("psml", "psml");
+      fmt.options[3] = new Option("html", "html");
+      fmt.options[4] = new Option("djrepo", "djrepo");
       break;
 
     case "nc-sr-04-3plus" :
       set_warning(" this table contains Lanthanide potentials for use in the 3+ configuration only. <b>They all have the f-electrons frozen in the core.</b> The hints are based on the convergence of the nitride lattice parameter, see the report under format:html for details.");
-      document.getElementById("ACC").options[0] = new Option("standard", "standard");
-      document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
-      document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
-      document.getElementById("FMT").options[1] = new Option("upf", "upf");
-      document.getElementById("FMT").options[2] = new Option("psml", "psml");
-      document.getElementById("FMT").options[3] = new Option("html", "html");
-      document.getElementById("FMT").options[4] = new Option("djrepo", "djrepo");
+      acc.options[0] = new Option("standard", "standard");
+      xcf.options[0] = new Option("PBE", "PBE");
+      fmt.options[0] = new Option("psp8", "psp8");
+      fmt.options[1] = new Option("upf", "upf");
+      fmt.options[2] = new Option("psml", "psml");
+      fmt.options[3] = new Option("html", "html");
+      fmt.options[4] = new Option("djrepo", "djrepo");
       break;
 
     //case "core" :
@@ -568,6 +590,23 @@ function build_ui(){
       // get the element selected by the user.
       var mythis = $(this);
       var sel = _get_pseudo_selection(mythis);
+      // console.log("sel.url:", sel.url);
+
+      if (! sel.url) {
+        Toastify({
+          text: "This element is not available!",
+          duration: 3000,
+          newWindow: true,
+          close: true,
+          gravity: "top", // `top` or `bottom`
+          position: "left", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+          },
+        }).showToast();
+        return;
+      }
 
       if (sel.fmt === 'html'){
         $.get(sel.url)
@@ -617,6 +656,22 @@ function build_ui(){
     $('.download_button').on('click', function(e) {
       // Download the targz file with the full table.
       var sel = _get_targz_selection();
+
+      if (! sel.url) {
+        Toastify({
+          text: "This targz file is not available!",
+          duration: 3000,
+          newWindow: true,
+          close: true,
+          gravity: "top", // `top` or `bottom`
+          position: "left", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+          },
+        }).showToast();
+        return;
+      }
 
       $.get(sel.url)
         .done(function() {
@@ -670,6 +725,7 @@ function build_ui(){
 
 
 function set_options(){
+  // fill the options for XCF ACC and FMT based on the type.
   var typ = getParameterByName('typ');
   if (typ === null){
     typ = document.getElementById('TYP').value;
