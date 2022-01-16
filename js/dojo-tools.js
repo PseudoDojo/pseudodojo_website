@@ -346,19 +346,26 @@ function dynamic_dropdown(type){
   switch (type)
   {
     case "jth-sr-v1.1" :
+      // List of tables
       document.getElementById("ACC").options[0] = new Option("standard", "standard");
       document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      // List of XC functionals
       document.getElementById("XCF").options[1] = new Option("LDA", "LDA");
       document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
+      // List of file formats
       document.getElementById("FMT").options[0] = new Option("xml", "xml");
+      //document.getElementById("FMT").options[1] = new Option("upf", "upf");
       break;
 
     case "nc-sr-v0.4" :
+      // List of tables
       document.getElementById("ACC").options[0] = new Option("standard", "standard");
       document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      // List of XC functionals
       document.getElementById("XCF").options[2] = new Option("LDA", "LDA");
       document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
       document.getElementById("XCF").options[1] = new Option("PBEsol", "PBEsol");
+      // List of file formats
       document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
       document.getElementById("FMT").options[1] = new Option("upf", "upf");
       document.getElementById("FMT").options[2] = new Option("psml", "psml");
@@ -367,10 +374,13 @@ function dynamic_dropdown(type){
       break;
 
     case "nc-fr-v0.4" :
+      // List of tables
       document.getElementById("ACC").options[0] = new Option("standard", "standard");
       document.getElementById("ACC").options[1] = new Option("stringent", "stringent");
+      // List of XC functionals
       document.getElementById("XCF").options[0] = new Option("PBE", "PBE");
       document.getElementById("XCF").options[1] = new Option("PBEsol", "PBEsol");
+      // List of file formats
       document.getElementById("FMT").options[0] = new Option("psp8", "psp8");
       document.getElementById("FMT").options[1] = new Option("upf", "upf");
       document.getElementById("FMT").options[2] = new Option("psml", "psml");
@@ -396,7 +406,7 @@ function dynamic_dropdown(type){
     //  document.getElementById("FMT").options[2] = new Option("FC","fc");
     //  break;
     default:
-      throw 'Invalid type:' + type;
+      throw 'Invalid type: ' + type;
   }
 
 }
@@ -560,7 +570,6 @@ function build_ui(){
       var sel = _get_pseudo_selection(mythis);
 
       if (sel.fmt === 'html'){
-        //var url = trunk.concat(typ,"_",xcf,"_",acc,"/",elm,".",fmt);
         $.get(sel.url)
           .done(function() {
             // exists code
@@ -569,7 +578,6 @@ function build_ui(){
             // not exists code
           })}
       else {
-        //var url = trunk.concat(typ,"_",xcf,"_",acc,"/",elm,".",fmt,'.gz');
         $.get(sel.url)
           .done(function() {
             // exists code

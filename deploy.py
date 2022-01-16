@@ -15,6 +15,7 @@ import requests
 from collections import defaultdict
 from urllib.parse import urlsplit
 from tqdm import tqdm
+from pymatgen.io.abinit.pseudos import Pseudo, PawXmlSetup
 
 
 ALL_ELEMENTS = set([
@@ -145,6 +146,14 @@ class PseudosRepo(abc.ABC):
         """List of file formats provided by the repository."""
 
     def setup(self, from_scratch: bool) -> None:
+        """
+        Perform the initialization step:
+
+            1) Download the tarball from the github url, unpack it and save it in the self.name directory.
+            2) Build list of tables by extracting the relative paths from the `table_name.txt` files.
+               found in the top-level directory and build self.tables
+            3) Create targz files with all pseudos associated to a given table.
+        """
 
         doit = from_scratch or (not from_scratch and not os.path.isdir(self.name))
 
@@ -159,13 +168,14 @@ class PseudosRepo(abc.ABC):
         table_paths = [os.path.join(self.name, t) for t in table_paths]
         assert table_paths
 
-        # Get the list of table names from `tables.txt` and create tar.gz
+        # Get the list of table names from `table_name.txt` and create tar.gz
         self.tables = defaultdict(dict)
         for table_path in table_paths:
             table_name, _ = os.path.splitext(os.path.basename(table_path))
             with open(table_path, "r") as fh:
                 relpaths = [f.strip() for f in fh.readlines() if f.strip()]
                 relpaths = [os.path.splitext(p)[0] for p in relpaths]
+                # For all the formats provided by the repo.
                 for ext in self.formats:
                     all_files = [os.path.join(self.name, f"{rpath}.{ext}") for rpath in relpaths]
                     files = list(filter(os.path.isfile, all_files))
@@ -177,6 +187,7 @@ class PseudosRepo(abc.ABC):
 
         # Build targz file with all pseudos belonging to table_name
         # so that the user can download it via the web interface.
+        # This part is slow but we do it only once.
         import tarfile
         self.targz = defaultdict(dict)
         for table_name, table in self.tables.items():
@@ -240,7 +251,28 @@ class OncvpspRepo(PseudosRepo):
 
     @property
     def formats(self):
+        """List of file formats provided by the repository."""
         return ["psp8", "upf", "psml", "html", "djrepo"]
+
+
+    def get_meta_from_djrepo(self, path: str) -> dict:
+        dirname = os.path.dirname(path)
+        with open(path, "r") as fh:
+            data = json.load(fh)
+            hints = data["hints"]
+            # parse the pseudo to geh the number of valence electrons.
+            pseudo_path = os.path.join(dirname, data["basename"])
+            pseudo = Pseudo.from_file(pseudo_path)
+
+            meta = {
+                "nv": pseudo.Z_val,
+                "hl": hints["low"]["ecut"],
+                "hn": hints["normal"]["ecut"],
+                "hh": hints["high"]["ecut"]
+            }
+            #print(f"meta for path: {path}\n", meta)
+            return meta
+
 
 
 
@@ -279,12 +311,35 @@ class JthRepo(PseudosRepo):
 
     @property
     def formats(self):
+        """List of file formats provided by the repository."""
         return ["xml", "upf"]
 
+
+    def get_meta_from_pawxml(self, path: str) -> dict:
+        pseudo = PawXmlSetup(path)
+        meta = {
+            "nv": pseudo.valence,
+        }
+
+        e = pseudo.root.find("pw_ecut")
+        if e is None:
+            print("Cannot find hints (pw_ecut) element in:", path)
+            low, normal, high = -1, -1, -1
+        else:
+            hints = e.attrib
+            low = float(hints["low"])
+            normal = float(hints["medium"])
+            high = float(hints["high"])
+
+        meta.update(hl=low, hn=normal, hh=high)
+        #print(f"meta for path: {path}\n", meta)
+        return meta
 
 
 class Website:
     """
+    files[typ][xc_name][acc][elm][fmt]
+    targz[typ][xc_name][acc][fmt]
     """
 
     def __init__(self, workdir: str, verbose: int) -> None:
@@ -325,6 +380,7 @@ class Website:
             for table_name, table in repo.tables.items():
                 files[repo.type][repo.xc_name][table_name] = defaultdict(dict)
                 targz[repo.type][repo.xc_name][table_name] = defaultdict(dict)
+
                 for fmt, rpaths in table.items():
 
                     # Store the relative location of the targz file
@@ -333,13 +389,26 @@ class Website:
                         targz[repo.type][repo.xc_name][table_name][fmt] = p
 
                     for rpath in rpaths:
-                        # Get the element symbol from the relative path.
+
                         if repo.ps_generator == "ONCVPSP":
+                            # Get the element symbol from the relative path.
                             # ONCVPSP-PBE-SR-PDv0.4/Ag/Ag-sp.psp8
                             elm = rpath.split(os.sep)[-2]
+
+                            if fmt == "djrepo":
+                                # Get hints from djrepo file if NC pseudo.
+                                meta = repo.get_meta_from_djrepo(rpath)
+                                files[repo.type][repo.xc_name][table_name][elm]["meta"] = meta
+
                         elif repo.ps_generator == "ATOMPAW":
+                            # Get the element symbol from the relative path.
                             # ATOMICDATA/Ag.LDA_PW-JTH.xml
                             elm = os.path.basename(rpath).split(".")[0]
+                            # Extract hints from PAW xml
+                            if fmt == "xml":
+                                meta = repo.get_meta_from_pawxml(rpath)
+                                files[repo.type][repo.xc_name][table_name][elm]["meta"] = meta
+
                         else:
                             raise ValueError("Invalid value for repo.ps_generator: {repo.ps_generator}")
 
@@ -348,29 +417,12 @@ class Website:
 
                         files[repo.type][repo.xc_name][table_name][elm][fmt] = rpath
 
-                        if fmt == "djrepo":
-                            # Get hints from djrepo file if NC pseudo.
-                            # TODO: Extract hints from PAW xml
-                            with open(rpath, "r") as fh:
-                                data = json.load(fh)
-                                hints = data["hints"]
-                                d = {
-                                    # TODO: Add nv but I need to parse the pseudo.
-                                    #"nv":
-                                    "hl": hints["low"]["ecut"],
-                                    "hn": hints["normal"]["ecut"],
-                                    "hh": hints["high"]["ecut"]
-                                }
-
-                                files[repo.type][repo.xc_name][table_name][elm]["meta"] = d
-                                #print(d)
-
         print("Writing files.json and targz.json")
         with open(os.path.join(self.workdir, "files.json"), "w") as fh:
-            json.dump(files, fh, indent=4, sort_keys=True)
+            json.dump(files, fh, indent=2, sort_keys=True)
 
         with open(os.path.join(self.workdir, "targz.json"), "w") as fh:
-            json.dump(targz, fh, indent=4, sort_keys=True)
+            json.dump(targz, fh, indent=2, sort_keys=True)
 
         #make_papers()
 
