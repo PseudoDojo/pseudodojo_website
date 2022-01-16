@@ -519,7 +519,7 @@ function build_ui(){
     "bg_noble_gas": "#c4cdff",
     "bg_lanthanoid": "#edb8ff",
     "bg_actinoid": "#bf96ff",
-    "bg_unknown": "#dcdcdc"
+    "bg_she": "#82E0AA"
   };
 
   jQuery(document).ready(function($) {
