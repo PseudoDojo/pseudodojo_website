@@ -1,3 +1,4 @@
 abipy
 requests
 tqdm
+jupyter

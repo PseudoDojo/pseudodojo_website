@@ -158,7 +158,6 @@ class PseudosRepo(abc.ABC):
                found in the top-level directory and build self.tables
             3) Create targz files with all pseudos associated to a given table.
         """
-
         doit = from_scratch or (not from_scratch and not os.path.isdir(self.name))
 
         if doit:
@@ -172,22 +171,33 @@ class PseudosRepo(abc.ABC):
         table_paths = [os.path.join(self.name, t) for t in table_paths]
         assert table_paths
 
-        # Get the list of table names from `table_name.txt` and create tar.gz
-        self.tables = defaultdict(dict)
+        # Get the list of table names from `table_name.txt`
+        relpaths_table = {}
         for table_path in table_paths:
             table_name, _ = os.path.splitext(os.path.basename(table_path))
             with open(table_path, "r") as fh:
-                relpaths = [f.strip() for f in fh.readlines() if f.strip()]
-                relpaths = [os.path.splitext(p)[0] for p in relpaths]
-                # For all the formats provided by the repo.
-                for ext in self.formats:
-                    all_files = [os.path.join(self.name, f"{rpath}.{ext}") for rpath in relpaths]
-                    files = list(filter(os.path.isfile, all_files))
-                    if len(files) != len(all_files):
-                        print(f"{table_path} WARNING: cannot find files with ext: {ext}.",
-                              f"expected: {len(all_files)}, found: {len(files)}")
-                    self.tables[table_name][ext] = files
-                    #print("table:", table_name, "ext:", ext, "\n", self.tables[table_name][ext])
+                rps = [f.strip() for f in fh.readlines() if f.strip()]
+                relpaths_table[table_name] = [os.path.splitext(p)[0] for p in rps]
+
+        if self.ps_generator == "ONCVPSP":
+            from pseudo_dojo.util.notebook import write_notebook_html
+            # Generate HTML files from djrepo
+            unique_paths = set(tuple(l) for l in relpaths_table.values())
+            print(unique_paths)
+            for p in unique_paths:
+                djrepo_path = p + ".djrepo"
+                write_notebook_html(djrep_path)
+
+        self.tables = defaultdict(dict)
+        for table_name, relpaths in relpaths_table.items():
+            for ext in self.formats:
+                all_files = [os.path.join(self.name, f"{rpath}.{ext}") for rpath in relpaths]
+                files = list(filter(os.path.isfile, all_files))
+                if len(files) != len(all_files):
+                    print(f"{table_path} WARNING: cannot find files with ext: {ext}.",
+                          f"expected: {len(all_files)}, found: {len(files)}")
+                self.tables[table_name][ext] = files
+                #print("table:", table_name, "ext:", ext, "\n", self.tables[table_name][ext])
 
         # Build targz file with all pseudos belonging to table_name
         # so that the user can download it via the web interface.
