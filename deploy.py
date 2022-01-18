@@ -26,6 +26,10 @@ ALL_ELEMENTS = set([
   'Cs', 'Ba',
   'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er','Tm','Yb', 'Lu',
   'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
+  "Fr", "Ra",
+  "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",
+  "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og",
+  "Uue", "Ubn",
 ])
 
 
@@ -351,13 +355,13 @@ class Website:
         _mk_jth = JthRepo.from_abinit_website
 
         self.repos = [
-            # ONCVPSP repositories
+            # ONCVPSP repositories.
             _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
             _mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),
             _mk_onc(xc_name="PBE", relativity_type="SR", version="0.4"),
             #_mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),  FIXME: checksum fails
             #
-            # JTH repositories
+            # JTH repositories.
             _mk_jth(xc_name="LDA", relativity_type="SR", version="1.1"),
             _mk_jth(xc_name="PBE", relativity_type="SR", version="1.1"),
         ]
@@ -466,8 +470,8 @@ def get_epilog() -> str:
 
 Usage example:
 
-  deploy.py new           =>
-  deploy.py update        =>
+  deploy.py new           =>  Upload git repos and deploy website from SCRATCH.
+  deploy.py update        =>  Update git repos.
 """
 
 

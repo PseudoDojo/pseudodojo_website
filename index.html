@@ -23,24 +23,21 @@
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-<!-- 
-This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md 
--->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<!-- This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<!-- Introjs for Guided Tour -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.7.0/intro.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.7.0/introjs.min.css" />
+<script src="js/dojo-tools.js"></script>
 </head>
+
 <body>
 
-<div id="warning_box">
-</div>
-
-<script src="js/dojo-tools.js"></script>
-
-<script>
-  store_available_files();
-  localStorage.setItem('animate', 0)
-</script>
+<div id="warning_box"></div>
 
 <div class="detail detail_av" id="av" >
       <div class="element_l" id="av_el">Mean</div>
@@ -48,16 +45,13 @@ This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md
     <div class="l_follow_l" id="av_hl" title="low cutoff energy hint">l</div>
     <div class="l_follow_l" id="av_hn" title="normal cutoff energy hint">n</div>
     <div class="l_follow_l" id="av_hh" title="high cutoff energy hint">h</div>
-    <div class="valence_l" id="av_nv" title="number of valence shells">n</div>
+    <div class="valence_l" id="av_nv" title="number of valence electrons">n</div>
     <div class="r_top_l" >tests</div>
     <div class="r_follow_l" id="av_d" title="delta gauge">d</div>
     <div class="r_follow_l" id="av_dp" title="normalized delta gauge">d</div>
     <div class="r_follow_l" id="av_gb" title="gbrv bcc test">g</div>
   </div>
 
-<script>
-  document.getElementById('av').style.visibility="hidden";
-</script>
 
 <div class="wrapper">
 <div class="table">
@@ -72,7 +66,7 @@ This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md
       <div class="l_follow" id="X_hl" title="low cutoff energy hint (Ha)">low</div>
       <div class="l_follow" id="X_hn" title="normal cutoff energy hint (Ha)">normal</div>
       <div class="l_follow" id="X_hh" title="high cutoff energy hint (Ha)">high</div>
-      <div class="valence" id="X_nv" title="number of valence shells">nv</div>
+      <div class="valence" id="X_nv" title="number of valence electrons">nv</div>
       <div class="r_top" id="det_test">tests</div>
       <div class="r_follow" id="X_d" title="delta gauge (meV):&#013;Integral between the equation of state calculated using the pseudo potential &#013;and a reference all electron equation of state.">delta</div>
       <div class="r_follow" id="X_dp" title="normalized delta gauge:&#013;Normalized version of the delta gauge.">delta1</div>
@@ -89,8 +83,11 @@ This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md
 
     <div class="description">
       <p>
-        Select the flavor and <a href="./about.html">format</a>, then click "Download" to
-        get the complete table of pseudos or choose a specific element. "HTML" gives full test results.
+        Select the flavor and the <a href="./about.html">format</a>, then click on the "Download Table" button
+        to get the full table or choose a specific element. 
+        <!--
+        The "HTML" format gives access to the validation tests.
+        -->
       </p>
     </div>
     <div class="menubar">
@@ -107,43 +104,38 @@ This for toastify. https://github.com/apvarun/toastify-js/blob/master/README.md
     <div class="selection_bar">
         <table style="color:#FFFFFF;margin-top:0px; font-size: 16px;">
 <tr>
-<th>
-Type
-</th>
-<th>
-XC
-</th>
-<th>
-Accuracy
-</th>
-<th>
-Format
-</th>
+<th> Type </th>
+<th> XC </th>
+<th> Table </th>
+<th> Format </th>
 </tr>
+
 <tr>
 <td>
 <div class="styled-longselect" onchange="load_set_info();">
   <select id="TYP" onchange="dynamic_dropdown(this.options[this.selectedIndex].value);">
     <!--
-    this is where one adds a new table, also add the option to the dynamic_dropdown funtion in dojo-tools.js 
+    This is where one adds a new table, also add the option to the dynamic_dropdown funtion in dojo-tools.js 
     -->
     <option value="nc-sr-v0.4" selected>NC SR (ONCVPSP v0.4)</option>
     <option value="nc-fr-v0.4" >NC FR (ONCVPSP v0.4)</option>
-    <option value="nc-sr-04-3plus">NC SR 3+ (ONCVPSP v0.4)</option>
     <option value="jth-sr-v1.1">PAW (JTH v1.1)</option>
+    <!--
+    <option value="nc-sr-04-3plus">NC SR 3+ (ONCVPSP v0.4)</option>
+    -->
   </select>
 </div>
 </td>
 <td>
-<div class="styled-select" onchange="localStorage.setItem('selectedXCF', document.getElementById('XCF').value); load_set_info(animate=0);">
-    <select id="XCF" >
-    </select>
+<div class="styled-select" 
+     onchange="localStorage.setItem('selectedXCF', document.getElementById('XCF').value); load_set_info();">
+    <select id="XCF"></select>
 </div>
 </td>
 <td>
-<div class="styled-select" onchange="localStorage.setItem('selectedACC', document.getElementById('ACC').value); load_set_info(animate=0);">
-    <select id="ACC" >
-    </select>
+<div class="styled-select" 
+     onchange="localStorage.setItem('selectedACC', document.getElementById('ACC').value); load_set_info();">
+    <select id="ACC"></select>
 </div>
 </td>
 <td>
@@ -158,11 +150,6 @@ Format
 </div>
 </aside>
 
-
-<!-- fill the options for XCF ACC and FMT based on the type -->
-<script>
-    set_options();
-</script>
 
   <div class="plugin bg_hydrogen 001_H">
     <div class="element">H</div>
@@ -1284,252 +1271,431 @@ Format
   </div>
   <div class="plugin bg_alkali 87_Fr">
     <div class="element">Fr</div>
-    <!--<div class="l_top" id="Fr_hl">hl</div>
-    <div class="l_follow" id="Fr_hn">hn</div>
-    <div class="l_follow" id="Fr_hh">hh</div>
-    <div class="valence" id="Fr_nv">nv</div>
-    <div class="r_top" id="Fr_d">d</div>
-    <div class="r_follow" id="Fr_dp">dp</div>
-    <div class="r_follow" id="Fr_gb">gb</div>-->
-    <div class="empty"></div>
+    <div class="l_top hide" id="Fr_hl">hl</div>
+    <div class="l_follow hide" id="Fr_hn">hn</div>
+    <div class="l_follow hide" id="Fr_hh">hh</div>
+    <div class="valence hide" id="Fr_nv">nv</div>
+    <div class="r_top hide" id="Fr_d">d</div>
+    <div class="r_follow hide" id="Fr_dp">dp</div>
+    <div class="r_follow hide" id="Fr_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Francium</div>
     </div>
   </div>
   <div class="plugin bg_alkaline 88_Ra">
     <div class="element">Ra</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Ra_hl">hl</div>
+    <div class="l_follow hide" id="Ra_hn">hn</div>
+    <div class="l_follow hide" id="Ra_hh">hh</div>
+    <div class="valence hide" id="Ra_nv">nv</div>
+    <div class="r_top hide" id="Ra_d">d</div>
+    <div class="r_follow hide" id="Ra_dp">dp</div>
+    <div class="r_follow hide" id="Ra_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Radium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 89_Ac">
     <div class="element">Ac</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Ac_hl">hl</div>
+    <div class="l_follow hide" id="Ac_hn">hn</div>
+    <div class="l_follow hide" id="Ac_hh">hh</div>
+    <div class="valence hide" id="Ac_nv">nv</div>
+    <div class="r_top hide" id="Ac_d">d</div>
+    <div class="r_follow hide" id="Ac_dp">dp</div>
+    <div class="r_follow hide" id="Ac_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Actinium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 90_Th">
     <div class="element">Th</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Th_hl">hl</div>
+    <div class="l_follow hide" id="Th_hn">hn</div>
+    <div class="l_follow hide" id="Th_hh">hh</div>
+    <div class="valence hide" id="Th_nv">nv</div>
+    <div class="r_top hide" id="Th_d">d</div>
+    <div class="r_follow hide" id="Th_dp">dp</div>
+    <div class="r_follow hide" id="Th_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Thorium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 91_Pa">
     <div class="element">Pa</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Pa_hl">hl</div>
+    <div class="l_follow hide" id="Pa_hn">hn</div>
+    <div class="l_follow hide" id="Pa_hh">hh</div>
+    <div class="valence hide" id="Pa_nv">nv</div>
+    <div class="r_top hide" id="Pa_d">d</div>
+    <div class="r_follow hide" id="Pa_dp">dp</div>
+    <div class="r_follow hide" id="Pa_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Protactinium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 92_U">
     <div class="element">U</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="U_hl">hl</div>
+    <div class="l_follow hide" id="U_hn">hn</div>
+    <div class="l_follow hide" id="U_hh">hh</div>
+    <div class="valence hide" id="U_nv">nv</div>
+    <div class="r_top hide" id="U_d">d</div>
+    <div class="r_follow hide" id="U_dp">dp</div>
+    <div class="r_follow hide" id="U_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Uranium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 93_Np">
     <div class="element">Np</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Np_hl">hl</div>
+    <div class="l_follow hide" id="Np_hn">hn</div>
+    <div class="l_follow hide" id="Np_hh">hh</div>
+    <div class="valence hide" id="Np_nv">nv</div>
+    <div class="r_top hide" id="Np_d">d</div>
+    <div class="r_follow hide" id="Np_dp">dp</div>
+    <div class="r_follow hide" id="Np_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Neptunium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 94_Pu">
     <div class="element">Pu</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Pu_hl">hl</div>
+    <div class="l_follow hide" id="Pu_hn">hn</div>
+    <div class="l_follow hide" id="Pu_hh">hh</div>
+    <div class="valence hide" id="Pu_nv">nv</div>
+    <div class="r_top hide" id="Pu_d">d</div>
+    <div class="r_follow hide" id="Pu_dp">dp</div>
+    <div class="r_follow hide" id="Pu_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Plutonium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 95_Am">
     <div class="element">Am</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Am_hl">hl</div>
+    <div class="l_follow hide" id="Am_hn">hn</div>
+    <div class="l_follow hide" id="Am_hh">hh</div>
+    <div class="valence hide" id="Am_nv">nv</div>
+    <div class="r_top hide" id="Am_d">d</div>
+    <div class="r_follow hide" id="Am_dp">dp</div>
+    <div class="r_follow hide" id="Am_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Americium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 96_Cm">
     <div class="element">Cm</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Cm_hl">hl</div>
+    <div class="l_follow hide" id="Cm_hn">hn</div>
+    <div class="l_follow hide" id="Cm_hh">hh</div>
+    <div class="valence hide" id="Cm_nv">nv</div>
+    <div class="r_top hide" id="Cm_d">d</div>
+    <div class="r_follow hide" id="Cm_dp">dp</div>
+    <div class="r_follow hide" id="Cm_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Curium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 97_Bk">
     <div class="element">Bk</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Bk_hl">hl</div>
+    <div class="l_follow hide" id="Bk_hn">hn</div>
+    <div class="l_follow hide" id="Bk_hh">hh</div>
+    <div class="valence hide" id="Bk_nv">nv</div>
+    <div class="r_top hide" id="Bk_d">d</div>
+    <div class="r_follow hide" id="Bk_dp">dp</div>
+    <div class="r_follow hide" id="Bk_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Berkelium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 98_Cf">
     <div class="element">Cf</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Cf_hl">hl</div>
+    <div class="l_follow hide" id="Cf_hn">hn</div>
+    <div class="l_follow hide" id="Cf_hh">hh</div>
+    <div class="valence hide" id="Cf_nv">nv</div>
+    <div class="r_top hide" id="Cf_d">d</div>
+    <div class="r_follow hide" id="Cf_dp">dp</div>
+    <div class="r_follow hide" id="Cf_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Californium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 99_Es">
     <div class="element">Es</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Es_hl">hl</div>
+    <div class="l_follow hide" id="Es_hn">hn</div>
+    <div class="l_follow hide" id="Es_hh">hh</div>
+    <div class="valence hide" id="Es_nv">nv</div>
+    <div class="r_top hide" id="Es_d">d</div>
+    <div class="r_follow hide" id="Es_dp">dp</div>
+    <div class="r_follow hide" id="Es_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Einsteinium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 100_Fm">
     <div class="element">Fm</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Fm_hl">hl</div>
+    <div class="l_follow hide" id="Fm_hn">hn</div>
+    <div class="l_follow hide" id="Fm_hh">hh</div>
+    <div class="valence hide" id="Fm_nv">nv</div>
+    <div class="r_top hide" id="Fm_d">d</div>
+    <div class="r_follow hide" id="Fm_dp">dp</div>
+    <div class="r_follow hide" id="Fm_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Fermium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 101_Md">
     <div class="element">Md</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Md_hl">hl</div>
+    <div class="l_follow hide" id="Md_hn">hn</div>
+    <div class="l_follow hide" id="Md_hh">hh</div>
+    <div class="valence hide" id="Md_nv">nv</div>
+    <div class="r_top hide" id="Md_d">d</div>
+    <div class="r_follow hide" id="Md_dp">dp</div>
+    <div class="r_follow hide" id="Md_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Mendelevium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 102_No">
     <div class="element">No</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="No_hl">hl</div>
+    <div class="l_follow hide" id="No_hn">hn</div>
+    <div class="l_follow hide" id="No_hh">hh</div>
+    <div class="valence hide" id="No_nv">nv</div>
+    <div class="r_top hide" id="No_d">d</div>
+    <div class="r_follow hide" id="No_dp">dp</div>
+    <div class="r_follow hide" id="No_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Nobelium</div>
     </div>
   </div>
   <div class="plugin bg_actinoid 103_Lr">
     <div class="element">Lr</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Lr_hl">hl</div>
+    <div class="l_follow hide" id="Lr_hn">hn</div>
+    <div class="l_follow hide" id="Lr_hh">hh</div>
+    <div class="valence hide" id="Lr_nv">nv</div>
+    <div class="r_top hide" id="Lr_d">d</div>
+    <div class="r_follow hide" id="Lr_dp">dp</div>
+    <div class="r_follow hide" id="Lr_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Lawrencium</div>
     </div>
   </div>
   <div class="plugin bg_she 104_Rf">
     <div class="element">Rf</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Rf_hl">hl</div>
+    <div class="l_follow hide" id="Rf_hn">hn</div>
+    <div class="l_follow hide" id="Rf_hh">hh</div>
+    <div class="valence hide" id="Rf_nv">nv</div>
+    <div class="r_top hide" id="Rf_d">d</div>
+    <div class="r_follow hide" id="Rf_dp">dp</div>
+    <div class="r_follow hide" id="Rf_gb">gb</div>
     <div class="name-wrap-double">
       <div class="name">Ruther- fordium</div>
     </div>
   </div>
   <div class="plugin bg_she 105_Db">
     <div class="element">Db</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Db_hl">hl</div>
+    <div class="l_follow hide" id="Db_hn">hn</div>
+    <div class="l_follow hide" id="Db_hh">hh</div>
+    <div class="valence hide" id="Db_nv">nv</div>
+    <div class="r_top hide" id="Db_d">d</div>
+    <div class="r_follow hide" id="Db_dp">dp</div>
+    <div class="r_follow hide" id="Db_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Dubnium</div>
     </div>
   </div>
   <div class="plugin bg_she 106_Sg">
     <div class="element">Sg</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Sg_hl">hl</div>
+    <div class="l_follow hide" id="Sg_hn">hn</div>
+    <div class="l_follow hide" id="Sg_hh">hh</div>
+    <div class="valence hide" id="Sg_nv">nv</div>
+    <div class="r_top hide" id="Sg_d">d</div>
+    <div class="r_follow hide" id="Sg_dp">dp</div>
+    <div class="r_follow hide" id="Sg_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Seaborgium</div>
     </div>
   </div>
   <div class="plugin bg_she 107_Bh">
     <div class="element">Bh</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Bh_hl">hl</div>
+    <div class="l_follow hide" id="Bh_hn">hn</div>
+    <div class="l_follow hide" id="Bh_hh">hh</div>
+    <div class="valence hide" id="Bh_nv">nv</div>
+    <div class="r_top hide" id="Bh_d">d</div>
+    <div class="r_follow hide" id="Bh_dp">dp</div>
+    <div class="r_follow hide" id="Bh_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Bohrium</div>
     </div>
   </div>
   <div class="plugin bg_she 108_Hs">
     <div class="element">Hs</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Hs_hl">hl</div>
+    <div class="l_follow hide" id="Hs_hn">hn</div>
+    <div class="l_follow hide" id="Hs_hh">hh</div>
+    <div class="valence hide" id="Hs_nv">nv</div>
+    <div class="r_top hide" id="Hs_d">d</div>
+    <div class="r_follow hide" id="Hs_dp">dp</div>
+    <div class="r_follow hide" id="Hs_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Hassium</div>
     </div>
   </div>
   <div class="plugin bg_she 109_Mt">
     <div class="element">Mt</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Mt_hl">hl</div>
+    <div class="l_follow hide" id="Mt_hn">hn</div>
+    <div class="l_follow hide" id="Mt_hh">hh</div>
+    <div class="valence hide" id="Mt_nv">nv</div>
+    <div class="r_top hide" id="Mt_d">d</div>
+    <div class="r_follow hide" id="Mt_dp">dp</div>
+    <div class="r_follow hide" id="Mt_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Meitnerium</div>
     </div>
   </div>
   <div class="plugin bg_she 110_Ds">
     <div class="element">Ds</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Ds_hl">hl</div>
+    <div class="l_follow hide" id="Ds_hn">hn</div>
+    <div class="l_follow hide" id="Ds_hh">hh</div>
+    <div class="valence hide" id="Ds_nv">nv</div>
+    <div class="r_top hide" id="Ds_d">d</div>
+    <div class="r_follow hide" id="Ds_dp">dp</div>
+    <div class="r_follow hide" id="Ds_gb">gb</div>
     <div class="name-wrap-double">
       <div class="name">Darm- stadtium</div>
     </div>
   </div>
   <div class="plugin bg_she 111_Rg">
     <div class="element">Rg</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Rg_hl">hl</div>
+    <div class="l_follow hide" id="Rg_hn">hn</div>
+    <div class="l_follow hide" id="Rg_hh">hh</div>
+    <div class="valence hide" id="Rg_nv">nv</div>
+    <div class="r_top hide" id="Rg_d">d</div>
+    <div class="r_follow hide" id="Rg_dp">dp</div>
+    <div class="r_follow hide" id="Rg_gb">gb</div>
     <div class="name-wrap-double">
       <div class="name">Roent- genium</div>
     </div>
   </div>
   <div class="plugin bg_she 112_Cn">
     <div class="element">Cn</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Cn_hl">hl</div>
+    <div class="l_follow hide" id="Cn_hn">hn</div>
+    <div class="l_follow hide" id="Cn_hh">hh</div>
+    <div class="valence hide" id="Cn_nv">nv</div>
+    <div class="r_top hide" id="Cn_d">d</div>
+    <div class="r_follow hide" id="Cn_dp">dp</div>
+    <div class="r_follow hide" id="Cn_gb">gb</div>
     <div class="name-wrap-double">
       <div class="name">Coper- nicium</div>
     </div>
   </div>
   <div class="plugin bg_she 113_Nh">
     <div class="element">Nh</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Nh_hl">hl</div>
+    <div class="l_follow hide" id="Nh_hn">hn</div>
+    <div class="l_follow hide" id="Nh_hh">hh</div>
+    <div class="valence hide" id="Nh_nv">nv</div>
+    <div class="r_top hide" id="Nh_d">d</div>
+    <div class="r_follow hide" id="Nh_dp">dp</div>
+    <div class="r_follow hide" id="Nh_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Nihonium</div>
     </div>
   </div>
   <div class="plugin bg_she 114_Fl">
     <div class="element">Fl</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Fl_hl">hl</div>
+    <div class="l_follow hide" id="Fl_hn">hn</div>
+    <div class="l_follow hide" id="Fl_hh">hh</div>
+    <div class="valence hide" id="Fl_nv">nv</div>
+    <div class="r_top hide" id="Fl_d">d</div>
+    <div class="r_follow hide" id="Fl_dp">dp</div>
+    <div class="r_follow hide" id="Fl_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Flerovium</div>
     </div>
   </div>
   <div class="plugin bg_she 115_Mc">
     <div class="element">Mc</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Mc_hl">hl</div>
+    <div class="l_follow hide" id="Mc_hn">hn</div>
+    <div class="l_follow hide" id="Mc_hh">hh</div>
+    <div class="valence hide" id="Mc_nv">nv</div>
+    <div class="r_top hide" id="Mc_d">d</div>
+    <div class="r_follow hide" id="Mc_dp">dp</div>
+    <div class="r_follow hide" id="Mc_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Moscovium</div>
     </div>
   </div>
   <div class="plugin bg_she 116_Lv">
     <div class="element">Lv</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Lv_hl">hl</div>
+    <div class="l_follow hide" id="Lv_hn">hn</div>
+    <div class="l_follow hide" id="Lv_hh">hh</div>
+    <div class="valence hide" id="Lv_nv">nv</div>
+    <div class="r_top hide" id="Lv_d">d</div>
+    <div class="r_follow hide" id="Lv_dp">dp</div>
+    <div class="r_follow hide" id="Lv_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Livermorium</div>
     </div>
   </div>
   <div class="plugin bg_she 117_Ts"> <!-- onclick="make_light()" !--> 
     <div class="element">Ts</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Ts_hl">hl</div>
+    <div class="l_follow hide" id="Ts_hn">hn</div>
+    <div class="l_follow hide" id="Ts_hh">hh</div>
+    <div class="valence hide" id="Ts_nv">nv</div>
+    <div class="r_top hide" id="Ts_d">d</div>
+    <div class="r_follow hide" id="Ts_dp">dp</div>
+    <div class="r_follow hide" id="Ts_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Tennessine</div>
     </div>
   </div>
   <div class="plugin bg_she 118_Og"> <!-- onclick="chaos()" !--> 
     <div class="element">Og</div>
-    <div class="empty"></div>
+    <div class="l_top hide" id="Og_hl">hl</div>
+    <div class="l_follow hide" id="Og_hn">hn</div>
+    <div class="l_follow hide" id="Og_hh">hh</div>
+    <div class="valence hide" id="Og_nv">nv</div>
+    <div class="r_top hide" id="Og_d">d</div>
+    <div class="r_follow hide" id="Og_dp">dp</div>
+    <div class="r_follow hide" id="Og_gb">gb</div>
     <div class="name-wrap">
       <div class="name">Oganesson</div>
     </div>
   </div>
 
 </div>
-<div class="footer">
-</div>
-</div>
 
-<!--<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
--->
-
+<div class="footer"> </div>
+</div>
 
 <script>
-  load_set_info(0);
-  build_ui();
-  if (getParameterByName('layout') === 'light'){
-    make_light();
-  }
+    document.addEventListener("DOMContentLoaded", function() {
+    // this function runs when the DOM is ready, i.e. when the document has been parsed
+    dojo_start();
+});
 </script>
 
 <script>
@@ -1541,10 +1707,6 @@ Format
   ga('create', 'UA-97858927-1', 'auto');
   ga('send', 'pageview');
 </script>
-
-<!-- Introjs for Guided Tour -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.7.0/intro.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.7.0/introjs.min.css" />
 
 </body>
 </html>

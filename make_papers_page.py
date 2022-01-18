@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 create the input for the paper page from the papers_using_pseudodojo.tex list of DOIs
 """

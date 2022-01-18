@@ -39,31 +39,39 @@
       </div>
     </div>
 
-<lu class="generaltext">
+<div class="generaltext">
 <h1>General</h1>
 
 <h2>&#9670; What are all these numbers?</h2>
-<div class="relative_position detail"    id="legend">
+
+<div class="relative_position detail" id="legend">
       <div class="element" id="X_el">X</div>
-      <div class="l_top">hints</div>
+      <div class="l_top">hints (Ha)</div>
       <div class="l_follow" id="X_hl" title="low cutoff energy hint (Ha)">low</div>
       <div class="l_follow" id="X_hn" title="normal cutoff energy hint (Ha)">normal</div>
       <div class="l_follow" id="X_hh" title="high cutoff energy hint (Ha)">high</div>
       <div class="valence" id="X_nv" title="number of valence shells">nv</div>
+      <!--
       <div class="r_top" >tests</div>
       <div class="r_follow" id="X_d" title="delta gauge (meV):&#013;Integral between the equation of state calculated using the pseudo potential &#013;and a reference all electron equation of state.">delta</div>
       <div class="r_follow" id="X_dp" title="normalized delta gauge:&#013;Normalized version of the delta gauge.">delta1</div>
       <div class="r_follow" id="X_gb" title="gbrv fcc bcc average (%):&#013;Relative error in the lattice parameter with respect to reference&#013;all electron results for elemental fcc and bcc structures.">gbrv</div>
+      -->
 </div>
-The number in the upper right corner of the element boxes (nv) give how many valence shells are includes in this pseudopotential.
-For instance a 4 for Copper means that 1s, 2s, and 2p are frozen in the core but 3s, 3p, 3d, and 4s are treated as valence.<BR>
+
+The number in the upper right corner of the element boxes (nv) give how many 
+valence electrons are included in this pseudopotential.
+<BR>
 <BR>
 The numbers in lower left corner (hints) represent the cutoff hints in Hartree.
-The exact meaning of the hints can be found in the corresponding <a href="https://doi.org/10.1016/j.cpc.2018.01.012">paper</a> suggested below.
-In general, low is a good starting point for you own convergence studies.
-Normal should be a safe guess for just a quick calculation or for automated high-throughput calculations.
+The exact meaning of the hints can be found in the corresponding 
+<a href="https://doi.org/10.1016/j.cpc.2018.01.012">paper</a> suggested below.
+In general, low is a good starting point for your convergence studies.
+Normal can be used as a safe guess for quick calculations or for automated high-throughput calculations.
 High is for testing convergence.<BR>
 <BR>
+
+<!--
 The numbers in the lower right corner are the results of various tests performed on this pseudo potential.<BR>
 
 <Table cellpadding="4">
@@ -71,8 +79,10 @@ The numbers in the lower right corner are the results of various tests performed
  <tr><td valign="top">delta1</td><td valign="top">Renormalized Delta gauge</td><td valign="top">Renormalized version of the Delta gauge, especially usefull for very soft materials. <a target="blank" href="https://doi.org/10.1016/j.cpc.2013.12.023">full description</a></td></tr>
  <tr><td valign="top">gbrv</td><td valign="top">Average FCC BCC GBRV test (%)</td><td valign="top">Measures the agreement of the lattice parameter for an elemental FCC and BCC solid with respect to all electron reference calculations. <a target="blank" href="https://doi.org/10.1016/j.commatsci.2013.08.053">full description</a></td></tr>
 </Table>
+-->
 
 <h2>&#9670; How do I cite the PseudoDojo?</h2>
+
 A detailed paper on the PseudoDojo and the NC pseudopotentials has been published in Computer Physics Communications:<BR>
 
 <table><tr><td width="100" align="center">
@@ -174,13 +184,13 @@ These are currently under development.<BR>
 <h2>&#9670; Do you also have the other elements?</h2>
 We are currently working on the Lanthanides.<BR>
 
-<h2>&#9670; Is it also possible to get the pseudos in other formats?</h2>
+<h2>&#9670; Is it possible to generate NC pseudos in other formats?</h2>
 ONCVPSP currently supports psp8 and upf natively.<BR>
 Using the <a href="https://launchpad.net/pspgenpatch">psml patch</a> we also generated psml files
 for use with <a href="https://launchpad.net/siesta/psml-support">Siesta</a><BR>
 The psml format is available from version 0.4.<BR>
 
-</lu>
+</div>
 </aside>
 </div>
 </div>
