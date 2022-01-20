@@ -1,13 +1,10 @@
-/*
-*/
 "use strict";
 
 const DEBUG = false;
 
 const ANIMATE = 1;
 
-const ALL_KEYS = ['hh', 'hl', 'hn', 'nv'];
-//const ALL_KEYS = ['hh', 'hl', 'hn', 'nv', 'd', 'dp', 'gb'];
+const ALL_KEYS = ['hh', 'hl', 'hn', 'nv'];  // 'd', 'dp', 'gb'];
 
 const ALL_ELEMENTS = [
   'H', 'He', 
@@ -64,20 +61,21 @@ function set_warning(txt) {
   var close = document.getElementById("cbn");
   close.onclick = function(){
      var div = document.getElementById('warning_box');
-     setTimeout(function(){ div.innerHTML = ""; }, 100);
+     setTimeout(function(){div.innerHTML = "";}, 100);
   }
 }
 
 
 function make_light() {
     document.getElementById('FMT').value = 'psp8'
-    const hide_classes = ["hide", "name", 'intro', "styled-longselect", "selection_bar", "help_button", "description", "menubar"];
-    for (var j = 0; j < hide_classes.length; j++) {
-        var tohide = document.getElementsByClassName(hide_classes[j]);
-        for (var i = 0; i < tohide.length; i++) {
-            tohide[i].style.visibility = "hidden";
+    const hide_classes = ["hide", "name", 'intro', "styled-longselect", 
+                          "selection_bar", "help_button", "description", "menubar"];
+    for (cls of hide_class) {
+        for (tohide of document.getElementsByClassName(hide_class)) {
+            tohide.style.visibility = "hidden";
         }
     }
+
     document.getElementById('X_n').setAttribute("style","left:326px; top:91px; height:170px; width:140px;");
     document.getElementById('N').setAttribute("style","left:326px; top:91px; height:170px; width:140px; font-size=20px");
     document.getElementById("download_button").setAttribute("style","left:70px; top:151px; width:200px; height:55px; padding:15px");
@@ -114,7 +112,7 @@ function set_info(info) {
     }
 
     for (var el of ALL_ELEMENTS) {
-        for (const [ik, key] of ALL_KEYS.entries()) {
+        for (const key of ALL_KEYS) {
             var id_key = el + '_' + key;
             var x = document.getElementById(id_key);
             var el_info = info[el];
@@ -160,10 +158,10 @@ function dojo_start() {
     var a = $.getJSON("files.json");
     var b = $.getJSON("targz.json");
 
-    $.when(a, b).done(function(a, b){
+    $.when(a, b).done(function(v1, v2){
        // when all requests are successful
-       FILES = a[0];
-       TARGZ = b[0];
+       FILES = v1[0];
+       TARGZ = v2[0];
        build_ui();
     });
 }
@@ -272,21 +270,21 @@ function dojoTour_guidedtour() {
           element: '#TYP',
           intro: "Here you select the type of pseudopotential. " + 
                  "SR stands for scalar relativistic, FR for fully relativistic (including SOC). " +
-                 'The options for xc, table and format are adjusted based on your choice.'
+                 'The options for XC, table and format are adjusted based on your choice.'
         },
         {
           element: '#XCF',
-          intro:  "In this selector you can pick one of the available exchange-correlation functionals. " +
-                  "Have a look at the F.A.Q. if your fuctional of choice is not there."
+          intro:  "Here you can pick one of the available exchange-correlation functionals. " +
+                  "Have a look at the F.A.Q. if your fuctional of choice is not available."
         },
         {
           element: '#ACC',
-          intro:  "In this selector you can select one of the available tables. " +
+          intro:  "Here you can select one of the available tables. " +
                   "Have a look at the F.A.Q. for a detailed description."
         },
         {
           element: '#FMT',
-          intro:  "In this selector you can pick the format of the pseudopotential file. " +
+          intro:  "Here you can select the format of the pseudopotential file. " +
                   "PSP8 for ABINIT, UPF2 for Quantum Espresso, PSML1.1 is supported by Siesta. " +
                   "When you select HTML, clicking the elements will display a full report of all the tests we performed. " +
                   "Finally djrepo will give you all the numerical results of the tests in JSON format."
@@ -294,13 +292,13 @@ function dojoTour_guidedtour() {
         {
           element: '#X_n',
           intro:  "As long as you don't hover one of the elements, this box shows the average values " +
-                  " for the table you selected. " +
-                  "Once you hover the elements, it shows the values for that element. "
+                  " for the table you've selected. " +
+                  "Once you hover the element, the box shows the values for that element. "
         },
         {
           element: "#X_hl",
           intro:  "This is the low cutoff energy hint (Ha). " + 
-                  "Good for a quick calculation or as a starting point for your convergence studies."
+                  "Good for a quick calculation or as a starting point for convergence studies."
         },
         {
           element: "#X_hn",
@@ -333,12 +331,12 @@ function dojoTour_guidedtour() {
         {
           element: "#silicon",
           intro:  "Click all the elements in the table to download or view the selected file for a single element. " + 
-                  "If the box turns green the file is available, if it turns red we are still working on it."
+                  "If the box turns green the file is available, if it turns red the file is not available."
         },
         {
           element: ".download_button",
-          intro:  "Alternatively, with the download button you can get a tar of the full table, " +
-                  "always one pseudopotential per element."
+          intro:  "Alternatively, with the download button you can get a tarball with the full table, " +
+                  "one pseudopotential per element."
         },
         {
           element: "#papers",
@@ -379,8 +377,7 @@ function dynamic_dropdown(type){
   document.getElementById('warning_box').innerHTML = "";
   //set_warning(' this version is outdated')
 
-  switch (type)
-  {
+  switch (type) {
     case "jth-sr-v1.1" :
       // List of tables
       acc.options[0] = new Option("standard", "standard");
@@ -448,7 +445,6 @@ function dynamic_dropdown(type){
     default:
       throw 'Invalid type: ' + type;
   }
-
 }
 
 
@@ -552,6 +548,22 @@ function _get_targz_selection(){
 }
 
 
+function show_toast(text){
+  Toastify({
+    text: text,
+    duration: 3000,
+    newWindow: true,
+    close: true,
+    gravity: "bottom", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+  }).showToast();
+}
+
+
 function build_ui(){
   document.getElementById('av').style.visibility = "hidden";
   // fill the options for XCF ACC and FMT based on the type.
@@ -574,10 +586,9 @@ function build_ui(){
     // Here we hide the numbers on the right side. 
     // We keep it in the HTML so that we can easily reuse it if needed.
     const hide_classes = ["r_top", "r_follow"];
-    for (var j = 0; j < hide_classes.length; j++) {
-        var tohide = document.getElementsByClassName(hide_classes[j]);
-        for (var i = 0; i < tohide.length; i++) {
-            tohide[i].style.visibility = "hidden";
+    for (var cls of hide_classes) {
+        for (var tohide of document.getElementsByClassName(cls)) {
+            tohide.style.visibility = "hidden";
         }
     }
 
@@ -614,18 +625,7 @@ function build_ui(){
       var sel = _get_pseudo_selection(mythis);
 
       if (! sel.url) {
-        Toastify({
-          text: "This file is not available!",
-          duration: 3000,
-          newWindow: true,
-          close: true,
-          gravity: "bottom", // `top` or `bottom`
-          position: "right", // `left`, `center` or `right`
-          stopOnFocus: true, // Prevents dismissing of toast on hover
-          style: {
-            background: "linear-gradient(to right, #00b09b, #96c93d)",
-          },
-        }).showToast();
+        show_toast("Sorry but this file is not available!");
         return;
       }
 
@@ -634,6 +634,7 @@ function build_ui(){
           .done(function() {
             // exists code
             window.location.href = sel.url;
+            //window.open(sel.url, '_blank');
           })
           .fail(function() {
             // not exists code
@@ -682,18 +683,7 @@ function build_ui(){
       var sel = _get_targz_selection();
 
       if (! sel.url) {
-        Toastify({
-          text: "This targz is not available!",
-          duration: 3000,
-          newWindow: true,
-          close: true,
-          gravity: "bottom", // `top` or `bottom`
-          position: "right", // `left`, `center` or `right`
-          stopOnFocus: true, // Prevents dismissing of toast on hover
-          style: {
-            background: "linear-gradient(to right, #00b09b, #96c93d)",
-          },
-        }).showToast();
+        show_toast("Sorry but this targz is not available!");
         return;
       }
 

@@ -16,6 +16,8 @@ from collections import defaultdict
 from urllib.parse import urlsplit
 from tqdm import tqdm
 from pymatgen.io.abinit.pseudos import Pseudo, PawXmlSetup
+from abipy.flowtk.psrepos import download_repo_from_url  # md5_for_filepath
+from pseudo_dojo.util.notebook import write_notebook_html, write_notebook
 
 
 ALL_ELEMENTS = set([
@@ -33,62 +35,40 @@ ALL_ELEMENTS = set([
 ])
 
 
-def download_repo_from_url(url: str, save_dirpath: str,
-                           chunk_size: int = 2 * 1024**2, verbose: int = 0) -> None:
-    """
-    Dowload file from url.
+def execute_nb(nbpath):
+    import nbformat
+    from nbconvert import preprocessors
 
-    Args:
-        url: The url from which the targz is taken.
-        save_dirpath: The directory in which the tarball is unpacked.
-        chunk_size: Chunk size used for downloading the file.
-        verbose: Verbosity level
-    """
-    path = urlsplit(url).path
-    filename = posixpath.basename(path)
-    #print(path, filename)
+    # python -m ipykernel install --name <envname>
+    # python -m ipykernel install --name env3.9 --user
+    meta = {
+        'metadata': {
+            'path': '.',
+        }
 
-    # stream = True is required by the iter_content below
-    with requests.get(url, stream=True) as r:
-        #tmp_dir = tempfile.mkdtemp()
-        with tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=None) as tmp_dir:
-            tmp_filepath = os.path.join(tmp_dir, filename)
-            if verbose:
-                print("Writing temporary file:", tmp_filepath)
+    }
+    with open(nbpath, 'r') as nbf:
+        nbook = nbformat.read(nbf, as_version=4)
 
-            total_size_in_bytes = int(r.headers.get('content-length', 0))
-            progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    runner = preprocessors.ExecutePreprocessor(kernel_name='env3.9')
+    runner.preprocess(nbook, meta)
 
-            with open(tmp_filepath, 'wb') as fd:
-                for chunk in r.iter_content(chunk_size=chunk_size):
-                    fd.write(chunk)
-                    progress_bar.update(len(chunk))
-
-            progress_bar.close()
-            if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-                raise RuntimeError(f"Something went wrong while donwloading url: {url}")
-
-            shutil.unpack_archive(tmp_filepath, extract_dir=tmp_dir)
-
-            dirpaths = [os.path.join(tmp_dir, basen) for basen in os.listdir(tmp_dir) if basen != filename]
-
-            if len(dirpaths) != 1:
-                raise RuntimeError(f"Expecting single directory, got {dirpaths}")
-            if not os.path.isdir(dirpaths[0]):
-                raise RuntimeError(f"Expecting single directory, got {dirpaths}")
-
-            if verbose: print(f"Moving {dirpaths[0]} to {save_dirpath}")
-            shutil.move(dirpaths[0], save_dirpath)
+    with open(nbpath, 'w') as nbf:
+        nbformat.write(nbook, nbf)
 
 
-def md5_for_filepath(filepath: str) -> str:
-    """
-    Compute and return the md5 of a file.
-    """
-    with open(filepath, "rt") as fh:
-        text = fh.read()
-        m = hashlib.md5(text.encode("utf-8"))
-        return m.hexdigest()
+def convertNotebook(notebookPath, modulePath):
+  import nbformat
+  from nbconvert import PythonExporter, HTMLExporter
+
+  with open(notebookPath) as fh:
+    nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
+
+  exporter = HTMLExporter()
+  source, meta = exporter.from_notebook_node(nb)
+
+  with open(modulePath, 'w+') as fh:
+    fh.writelines(source)
 
 
 class PseudosRepo(abc.ABC):
@@ -149,7 +129,7 @@ class PseudosRepo(abc.ABC):
     def formats(self):
         """List of file formats provided by the repository."""
 
-    def setup(self, from_scratch: bool) -> None:
+    def setup(self, workdir, kernel_name, from_scratch: bool) -> None:
         """
         Perform the initialization step:
 
@@ -159,6 +139,7 @@ class PseudosRepo(abc.ABC):
             3) Create targz files with all pseudos associated to a given table.
         """
         doit = from_scratch or (not from_scratch and not os.path.isdir(self.name))
+        self.path = os.path.join(workdir, self.name)
 
         if doit:
             # Get the targz from github and unpack it inside directory `self.name`.
@@ -180,13 +161,27 @@ class PseudosRepo(abc.ABC):
                 relpaths_table[table_name] = [os.path.splitext(p)[0] for p in rps]
 
         if self.ps_generator == "ONCVPSP":
-            from pseudo_dojo.util.notebook import write_notebook_html
             # Generate HTML files from djrepo
-            unique_paths = set(tuple(l) for l in relpaths_table.values())
+            unique_paths = sorted(set(p for l in relpaths_table.values() for p in l))
             print(unique_paths)
             for p in unique_paths:
-                djrepo_path = p + ".djrepo"
-                write_notebook_html(djrep_path)
+                pseudo_path = os.path.join(self.path, p + ".psp8")
+                html_path = os.path.join(self.path, p + ".html")
+                if not from_scratch and os.path.exists(html_path): continue
+                print(pseudo_path)
+                retcode = write_notebook_html(pseudo_path, tmpfile=False, kernel_name="env3.9")
+                if retcode != 0:
+                    raise RuntimeError(f"Cannot generate HTML file for {pseudo_path}")
+
+                #import multiprocessing
+                #pool = multiprocessing.Pool(4)
+                #pool.map(retrieve_url, list_of_urls)
+
+                # See https://groups.google.com/g/jupyter/c/RYoVU314oyM
+                #nb_path = write_notebook(pseudo_path, tmpfile=False)
+                #with_validation=False, with_eos=True, hide_code=True,
+                #execute_nb(nb_path)
+                #convertNotebook(nb_path, os.path.join(self.path, p + ".html"))
 
         self.tables = defaultdict(dict)
         for table_name, relpaths in relpaths_table.items():
@@ -288,8 +283,6 @@ class OncvpspRepo(PseudosRepo):
             return meta
 
 
-
-
 class JthRepo(PseudosRepo):
 
     @classmethod
@@ -315,7 +308,6 @@ class JthRepo(PseudosRepo):
 
     @property
     def type(self) -> str:
-        # FIXME
         if self.relativity_type == "FR":
             return f"jth-fr-v{self.version}"
         elif self.relativity_type == "SR":
@@ -337,7 +329,7 @@ class JthRepo(PseudosRepo):
 
         e = pseudo.root.find("pw_ecut")
         if e is None:
-            print("Cannot find hints (pw_ecut) element in:", path)
+            print("Cannot find hints (pw_ecut) in:", path)
             low, normal, high = -1, -1, -1
         else:
             hints = e.attrib
@@ -356,9 +348,10 @@ class Website:
     targz[typ][xc_name][acc][fmt]
     """
 
-    def __init__(self, workdir: str, verbose: int) -> None:
-        self.workdir = os.path.abspath(workdir)
+    def __init__(self, path: str, kernel_name: str, verbose: int) -> None:
+        self.path = os.path.abspath(path)
         self.verbose = verbose
+        self.kernel_name = str(kernel_name)
 
         # Create list of repositories.
         _mk_onc = OncvpspRepo.from_github
@@ -384,7 +377,7 @@ class Website:
         targz = defaultdict(dict)
 
         for repo in self.repos:
-            repo.setup(from_scratch)
+            repo.setup(self.path, self.kernel_name, from_scratch)
             if repo.type in files and repo.xc_name in files[repo.type]:
                 raise ValueError(f"repo.type: {repo.type}, repo.xc_name: {repo.xc_name} is already in {files.keys()}")
 
@@ -396,30 +389,30 @@ class Website:
                 targz[repo.type][repo.xc_name][table_name] = defaultdict(dict)
 
                 for fmt, rpaths in table.items():
-
                     # Store the relative location of the targz file
                     if fmt in repo.targz[table_name]:
-                        p = os.path.relpath(repo.targz[table_name][fmt], start=self.workdir)
+                        p = os.path.relpath(repo.targz[table_name][fmt], start=self.path)
                         targz[repo.type][repo.xc_name][table_name][fmt] = p
 
                     for rpath in rpaths:
 
                         if repo.ps_generator == "ONCVPSP":
                             # Get the element symbol from the relative path.
-                            # ONCVPSP-PBE-SR-PDv0.4/Ag/Ag-sp.psp8
+                            # e.g. ONCVPSP-PBE-SR-PDv0.4/Ag/Ag-sp.psp8
                             elm = rpath.split(os.sep)[-2]
 
                             if fmt == "djrepo":
-                                # Get hints from djrepo file if NC pseudo.
+                                # Get hints from the djrepo file if NC pseudo.
                                 meta = repo.get_meta_from_djrepo(rpath)
                                 files[repo.type][repo.xc_name][table_name][elm]["meta"] = meta
 
                         elif repo.ps_generator == "ATOMPAW":
                             # Get the element symbol from the relative path.
-                            # ATOMICDATA/Ag.LDA_PW-JTH.xml
+                            # e.g. ATOMICDATA/Ag.LDA_PW-JTH.xml
                             elm = os.path.basename(rpath).split(".")[0]
-                            # Extract hints from PAW xml
+
                             if fmt == "xml":
+                                # Extract hints from PAW xml
                                 meta = repo.get_meta_from_pawxml(rpath)
                                 files[repo.type][repo.xc_name][table_name][elm]["meta"] = meta
 
@@ -431,11 +424,11 @@ class Website:
 
                         files[repo.type][repo.xc_name][table_name][elm][fmt] = rpath
 
-        print("Writing files.json and targz.json")
-        with open(os.path.join(self.workdir, "files.json"), "w") as fh:
+        print("\nWriting files.json and targz.json")
+        with open(os.path.join(self.path, "files.json"), "w") as fh:
             json.dump(files, fh, indent=2, sort_keys=True)
 
-        with open(os.path.join(self.workdir, "targz.json"), "w") as fh:
+        with open(os.path.join(self.path, "targz.json"), "w") as fh:
             json.dump(targz, fh, indent=2, sort_keys=True)
 
         #make_papers()
@@ -450,7 +443,7 @@ def new(options) -> int:
     Deploy new website in the current working directory.
     1) download tables from github 2) generate new json files
     """
-    website = Website(".", options.verbose)
+    website = Website(".", options.kernel_name, options.verbose)
     website.build(from_scratch=True)
     return 0
 
@@ -459,7 +452,7 @@ def update(options) -> int:
     """
     Update pre-existent installation.
     """
-    website = Website(".", options.verbose)
+    website = Website(".", options.kernel_name, options.verbose)
     website.build(from_scratch=False)
     #make_papers()
     return 0
@@ -483,8 +476,6 @@ Usage example:
   deploy.py new           =>  Upload git repos and deploy website from SCRATCH.
   deploy.py update        =>  Update git repos.
 """
-
-
     return usage
 
 
@@ -494,14 +485,13 @@ def get_parser(with_epilog=False):
     copts_parser = argparse.ArgumentParser(add_help=False)
     copts_parser.add_argument('-v', '--verbose', default=0, action='count', # -vv --> verbose=2
         help='verbose, can be supplied multiple times to increase verbosity.')
+    copts_parser.add_argument('-k', '--kernel-name', default="pseudodojo_website", help='Kernel name')
     #copts_parser.add_argument('--loglevel', default="ERROR", type=str,
     #    help="Set the loglevel. Possible values: CRITICAL, ERROR (default), WARNING, INFO, DEBUG.")
 
     # Build the main parser.
     parser = argparse.ArgumentParser(epilog=get_epilog() if with_epilog else "",
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('flowdir', nargs="?", help=("File or directory containing the ABINIT flow/work/task. "
-                                                    "If not given, the flow in the current workdir is selected."))
     #parser.add_argument('-V', '--version', action='version', version=abilab.__version__)
 
     # Create the parsers for the sub-commands
@@ -510,13 +500,8 @@ def get_parser(with_epilog=False):
     # Subparser for new command.
     p_new = subparsers.add_parser('new', parents=[copts_parser], help="Deploy website from scratch.")
 
-    # Subparser for new command.
+    # Subparser for update command.
     p_update = subparsers.add_parser('update', parents=[copts_parser], help="Update tables.")
-
-    # Subparser for rapid command.
-    #p_rapid = subparsers.add_parser('rapid', parents=[copts_parser], help="Run all tasks in rapidfire mode.")
-    #p_rapid.add_argument('-m', '--max-nlaunch', default=10, type=int,
-    #    help="Maximum number of launches. default: 10. Use -1 for no limit.")
 
     ## Subparser for scheduler command.
     #p_scheduler = subparsers.add_parser('scheduler', parents=[copts_parser],
@@ -556,12 +541,6 @@ def main():
 
     if options.verbose > 2:
         print(options)
-
-    #repo = PseudosRepo("foo", "bar")
-    #repo.workdir = "ONCVPSP-PBE-SR-PDv0.4"
-    #repo.download()
-    #repo.setup()
-    #return 0
 
     # Dispatch
     return globals()[options.command](options)
