@@ -6,18 +6,18 @@ import os
 import argparse
 import abc
 import json
-import posixpath
-import tempfile
-import shutil
-import hashlib
-import requests
+#import posixpath
+#import tempfile
+#import shutil
+#import hashlib
+#import requests
 
 from collections import defaultdict
-from urllib.parse import urlsplit
-from tqdm import tqdm
+#from urllib.parse import urlsplit
+#from tqdm import tqdm
 from pymatgen.io.abinit.pseudos import Pseudo, PawXmlSetup
 from abipy.flowtk.psrepos import download_repo_from_url  # md5_for_filepath
-from pseudo_dojo.util.notebook import write_notebook_html, write_notebook
+
 
 
 ALL_ELEMENTS = set([
@@ -73,6 +73,8 @@ def convertNotebook(notebookPath, modulePath):
 
 class PseudosRepo(abc.ABC):
     """
+    Base abstract class for a github repository containing pseudopotentials generated with the same XC
+    and the same treatment of relativistic effects.
     """
 
     def __init__(self, ps_generator: str, xc_name: str, relativity_type: str, project_name: str,
@@ -161,27 +163,37 @@ class PseudosRepo(abc.ABC):
                 relpaths_table[table_name] = [os.path.splitext(p)[0] for p in rps]
 
         if self.ps_generator == "ONCVPSP":
-            # Generate HTML files from djrepo
+            # Generate HTML files from the djrepo file.
             unique_paths = sorted(set(p for l in relpaths_table.values() for p in l))
-            print(unique_paths)
-            for p in unique_paths:
+
+            def make_html(p):
+                from pseudo_dojo.util.notebook import write_notebook_html, write_notebook
                 pseudo_path = os.path.join(self.path, p + ".psp8")
                 html_path = os.path.join(self.path, p + ".html")
-                if not from_scratch and os.path.exists(html_path): continue
-                print(pseudo_path)
-                retcode = write_notebook_html(pseudo_path, tmpfile=False, kernel_name="env3.9")
+                if not from_scratch and os.path.exists(html_path): return
+                #print(pseudo_path)
+                retcode = write_notebook_html(pseudo_path, tmpfile=False, kernel_name=kernel_name)
+                errmsg = ""
                 if retcode != 0:
-                    raise RuntimeError(f"Cannot generate HTML file for {pseudo_path}")
+                    errmsg = f"Cannot generate HTML file for {pseudo_path}"
+                    raise RuntimeError(errmsg)
+                #return dict(retcode=retcode, errmsg=errmsg)
 
-                #import multiprocessing
-                #pool = multiprocessing.Pool(4)
-                #pool.map(retrieve_url, list_of_urls)
-
+            # This section executes nbconvert to generate the HTML page with the validation tests.
+            # For the time being it's disabled as it requires pseudodojo and a properly configured
+            # env to execute jupyter notebooks and nbcovert.
+            for p in unique_paths:
+                if False: make_html(p)
                 # See https://groups.google.com/g/jupyter/c/RYoVU314oyM
                 #nb_path = write_notebook(pseudo_path, tmpfile=False)
                 #with_validation=False, with_eos=True, hide_code=True,
                 #execute_nb(nb_path)
                 #convertNotebook(nb_path, os.path.join(self.path, p + ".html"))
+
+            #from multiprocessing import Pool
+            #from multiprocessing.dummy import Pool
+            #with Pool(processes=self.num_procs) as pool:
+            #   pool.map(make_html, unique_paths)
 
         self.tables = defaultdict(dict)
         for table_name, relpaths in relpaths_table.items():
@@ -219,6 +231,9 @@ class PseudosRepo(abc.ABC):
 
 
 class OncvpspRepo(PseudosRepo):
+    """
+    A repository of pseudos generated with oncvpsp.
+    """
 
     @classmethod
     def from_github(cls, xc_name: str, relativity_type: str, version: str) -> OncvpspRepo:
@@ -284,6 +299,9 @@ class OncvpspRepo(PseudosRepo):
 
 
 class JthRepo(PseudosRepo):
+    """
+    A repository of pseudos generated with atompaw.
+    """
 
     @classmethod
     def from_abinit_website(cls, xc_name: str, relativity_type: str, version: str) -> JthRepo:
@@ -344,8 +362,8 @@ class JthRepo(PseudosRepo):
 
 class Website:
     """
-    files[typ][xc_name][acc][elm][fmt]
-    targz[typ][xc_name][acc][fmt]
+    files[typ][xc_name][table_name][elm][fmt]
+    targz[typ][xc_name][table_name][fmt]
     """
 
     def __init__(self, path: str, kernel_name: str, verbose: int) -> None:
@@ -371,8 +389,8 @@ class Website:
 
 
     def build(self, from_scratch: bool) -> None:
-        # files[typ][xc_name][acc][elm][fmt]
-        # targz[typ][xc_name][acc][fmt]
+        # files[typ][xc_name][table_name][elm][fmt]
+        # targz[typ][xc_name][table_name][fmt]
         files = defaultdict(dict)
         targz = defaultdict(dict)
 
@@ -450,7 +468,7 @@ def new(options) -> int:
 
 def update(options) -> int:
     """
-    Update pre-existent installation.
+    Update a pre-existent installation.
     """
     website = Website(".", options.kernel_name, options.verbose)
     website.build(from_scratch=False)
@@ -507,7 +525,6 @@ def get_parser(with_epilog=False):
     #p_scheduler = subparsers.add_parser('scheduler', parents=[copts_parser],
     #    help="Run all tasks with a Python scheduler. Requires scheduler.yml either in $PWD or ~/.abinit/abipy.")
     #p_scheduler.add_argument('-w', '--weeks', default=0, type=int, help="Number of weeks to wait.")
-    #p_scheduler.add_argument('-d', '--days', default=0, type=int, help="Number of days to wait.")
 
     return parser
 

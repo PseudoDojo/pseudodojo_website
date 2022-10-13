@@ -1,4 +1,9 @@
 #!/bin/bash
-conda create -n pseudodojo_website -y
+env_name="pseudodojo_website"
+
+conda create -n ${env_name} -y
 pip install -r requirements.txt
-conda activate pseudodojo_website
+conda activate ${env_name}
+
+# Register the python kernel needed by nbconver.
+python -m ipykernel install --name ${env_name}

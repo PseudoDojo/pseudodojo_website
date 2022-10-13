@@ -170,17 +170,17 @@ function dojo_start() {
 function load_set_info() {
     var type = document.getElementById('TYP').value;
     var xcf = document.getElementById('XCF').value;
-    var acc = document.getElementById('ACC').value;
-    //if (DEBUG) console.log("In load_set_info with type:", type, "xcf:", xcf, "acc:", acc);
+    var table = document.getElementById('TABLE').value;
+    //if (DEBUG) console.log("In load_set_info with type:", type, "xcf:", xcf, "table:", table);
 
     // Build dictionary element_symbol -> metadata.
     var meta = {};
     for (const elm of ALL_ELEMENTS) {
         try {
-            meta[elm] = FILES[type][xcf][acc][elm]["meta"];
+            meta[elm] = FILES[type][xcf][table][elm]["meta"];
         }
         catch (error) {
-            if (DEBUG) console.log("Cannot find element:", elm, "with type:", type, "xcf:", xcf, "acc:", acc, "\n", error);
+            if (DEBUG) console.log("Cannot find element:", elm, "with type:", type, "xcf:", xcf, "table:", table, "\n", error);
             meta[elm] = {};
         }
     }
@@ -278,7 +278,7 @@ function dojoTour_guidedtour() {
                   "Have a look at the F.A.Q. if your fuctional of choice is not available."
         },
         {
-          element: '#ACC',
+          element: '#TABLE',
           intro:  "Here you can select one of the available tables. " +
                   "Have a look at the F.A.Q. for a detailed description."
         },
@@ -364,13 +364,13 @@ function dojoTour_guidedtour() {
 
 
 function dynamic_dropdown(type){
-  // Set the values of the XC/Accuracy/Format widgets given the pseudo type.
+  // Set the values of the XC/Table/Format widgets given the pseudo type.
   if (DEBUG) console.log('dynamic dropdown: setting for type:', type);
-  var acc = document.getElementById("ACC");
+  var table = document.getElementById("TABLE");
   var xcf = document.getElementById("XCF");
   var fmt = document.getElementById("FMT");
   // Empty options before starting.
-  acc.length = 0;
+  table.length = 0;
   xcf.length = 0;
   fmt.length = 0;
 
@@ -380,8 +380,8 @@ function dynamic_dropdown(type){
   switch (type) {
     case "jth-sr-v1.1" :
       // List of tables
-      acc.options[0] = new Option("standard", "standard");
-      acc.options[1] = new Option("stringent", "stringent");
+      table.options[0] = new Option("standard", "standard");
+      table.options[1] = new Option("stringent", "stringent");
       // List of XC functionals
       xcf.options[0] = new Option("PBE", "PBE");
       xcf.options[1] = new Option("LDA", "LDA");
@@ -392,9 +392,9 @@ function dynamic_dropdown(type){
 
     case "nc-sr-v0.4" :
       // List of tables
-      acc.options[0] = new Option("standard", "standard");
-      acc.options[1] = new Option("stringent", "stringent");
-      //acc.options[2] = new Option("f-frozen", "f-frozen");
+      table.options[0] = new Option("standard", "standard");
+      table.options[1] = new Option("stringent", "stringent");
+      //table.options[2] = new Option("f-frozen", "f-frozen");
       // List of XC functionals
       xcf.options[0] = new Option("PBE", "PBE");
       xcf.options[1] = new Option("PBEsol", "PBEsol");
@@ -409,8 +409,8 @@ function dynamic_dropdown(type){
 
     case "nc-fr-v0.4" :
       // List of tables
-      acc.options[0] = new Option("standard", "standard");
-      acc.options[1] = new Option("stringent", "stringent");
+      table.options[0] = new Option("standard", "standard");
+      table.options[1] = new Option("stringent", "stringent");
       // List of XC functionals
       xcf.options[0] = new Option("PBE", "PBE");
       xcf.options[1] = new Option("PBEsol", "PBEsol");
@@ -427,7 +427,7 @@ function dynamic_dropdown(type){
     //  set_warning(" this table contains Lanthanide potentials for use in the 3+ configuration only. " +
     //            "<b>They all have the f-electrons frozen in the core.</b> " +
     //            "The hints are based on the convergence of the nitride lattice parameter, see the report under format:html for details.");
-    //  acc.options[0] = new Option("standard", "standard");
+    //  table.options[0] = new Option("standard", "standard");
     //  xcf.options[0] = new Option("PBE", "PBE");
     //  fmt.options[0] = new Option("psp8", "psp8");
     //  fmt.options[1] = new Option("upf", "upf");
@@ -438,7 +438,7 @@ function dynamic_dropdown(type){
 
     //case "core" :
     //  // TODO or perhaps add new format and handle file download.
-    //  document.getElementById("ACC").options[0] = new Option("", "standard");
+    //  document.getElementById("table").options[0] = new Option("", "standard");
     //  document.getElementById("XCF").options[0] = new Option("PBE","pbe");
     //  document.getElementById("FMT").options[2] = new Option("FC","fc");
     //  break;
@@ -505,21 +505,21 @@ function _get_pseudo_selection(dom_object){
 
   var type = $("#TYP").val();
   var xcf = $("#XCF").val();
-  var acc = $("#ACC").val();
+  var table = $("#TABLE").val();
   var fmt = $("#FMT").val();
   
   try {
-    var url = FILES[type][xcf][acc][elm][fmt];
+    var url = FILES[type][xcf][table][elm][fmt];
   } 
   catch (error) {
     var url = null;
     if (DEBUG) {
-        console.log("Error in _get_pseudo_selection for elm:", elm, "type: ", type, "xcf:", xcf, "acc:", acc, "fmt:", fmt);
+        console.log("Error in _get_pseudo_selection for elm:", elm, "type: ", type, "xcf:", xcf, "table:", table, "fmt:", fmt);
         console.log(error);
     }
   }
 
-  var select = {elm: elm, url: url, type: type, xcf: xcf, acc: acc, fmt: fmt, color: color, n: n};
+  var select = {elm: elm, url: url, type: type, xcf: xcf, table: table, fmt: fmt, color: color, n: n};
   if (DEBUG) {
     console.log("in _get_pseudo_selection with url:", url);
     console.log("select:", select);
@@ -532,11 +532,11 @@ function _get_pseudo_selection(dom_object){
 function _get_targz_selection(){
   var type = $("#TYP").val();
   var xcf = $("#XCF").val();
-  var acc = $("#ACC").val();
+  var table = $("#TABLE").val();
   var fmt = $("#FMT").val();
 
   try {
-    var url = TARGZ[type][xcf][acc][fmt];
+    var url = TARGZ[type][xcf][table][fmt];
   } 
   catch (error) {
     console.log("Error in _get_targz_selection:", error);
@@ -544,7 +544,7 @@ function _get_targz_selection(){
   }
   if (DEBUG) console.log("in _get_targz_selection with url:", url)
 
-  return {url: url, type: type, xcf: xcf, acc: acc, fmt: fmt};
+  return {url: url, type: type, xcf: xcf, table: table, fmt: fmt};
 }
 
 
@@ -566,7 +566,7 @@ function show_toast(text){
 
 function build_ui(){
   document.getElementById('av').style.visibility = "hidden";
-  // fill the options for XCF ACC and FMT based on the type.
+  // fill the options for XCF, TABLE and FMT based on the type.
   set_options();
   load_set_info();
 
@@ -744,7 +744,7 @@ function build_ui(){
 
 
 function set_options(){
-  // fill the options for XCF ACC and FMT based on the type.
+  // fill the options for XCF TABLE and FMT based on the type.
   var typ = getParameterByName('typ');
   if (typ === null){
     typ = document.getElementById('TYP').value;
@@ -758,7 +758,7 @@ function set_options(){
 
   dynamic_dropdown(typ);
 
-  // if XCF ACC and FMT have been changed previously set them back to those selections 
+  // if XCF TABLE and FMT have been changed previously set them back to those selections 
   if (localStorage.getItem('selectedXCF')) {
     var options = document.getElementById('XCF').options
     for (var i in options){
@@ -768,10 +768,10 @@ function set_options(){
     }
   }
 
-  if (localStorage.getItem('selectedACC')) {
-    var options = document.getElementById('ACC').options
+  if (localStorage.getItem('selectedTABLE')) {
+    var options = document.getElementById('TABLE').options
     for (var i in options){
-       if (options[i].value == localStorage.getItem('selectedACC')){
+       if (options[i].value == localStorage.getItem('selectedTABLE')){
          options[i].selected = true;
        }
     }
