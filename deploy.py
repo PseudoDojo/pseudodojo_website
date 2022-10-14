@@ -152,7 +152,8 @@ class PseudosRepo(abc.ABC):
 
         table_paths = [f for f in os.listdir(self.name) if f.endswith(".txt")]
         table_paths = [os.path.join(self.name, t) for t in table_paths]
-        assert table_paths
+        if not table_paths:
+            raise RuntimeError("Cannot find .txt files with list of pseudos. Likely PAW table.")
 
         # Get the list of table names from `table_name.txt`
         relpaths_table = {}
@@ -308,6 +309,7 @@ class JthRepo(PseudosRepo):
         ps_generator, project_name = "ATOMPAW", "JTH"
         # https://www.abinit.org/ATOMICDATA/JTH-LDA-atomicdata.tar.gz
         # ATOMPAW-LDA-JTHv0.4
+        # TODO: Should move ATOMPAW pseudos to github repo and add standard.txt file with pseudo list.
         url = f"https://www.abinit.org/ATOMICDATA/JTH-{xc_name}-atomicdata.tar.gz"
         return cls(ps_generator, xc_name, relativity_type, project_name, version, url)
 
@@ -383,8 +385,11 @@ class Website:
             #_mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),  FIXME: checksum fails
             #
             # JTH repositories.
-            _mk_jth(xc_name="LDA", relativity_type="SR", version="1.1"),
-            _mk_jth(xc_name="PBE", relativity_type="SR", version="1.1"),
+            #
+            # FIXME: These repos do no provide .txt files with pseudo list e.g. standard.txt, stringent
+            # so we temporarily disable them.
+            #_mk_jth(xc_name="LDA", relativity_type="SR", version="1.1"),
+            #_mk_jth(xc_name="PBE", relativity_type="SR", version="1.1"),
         ]
 
 
