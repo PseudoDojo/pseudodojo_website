@@ -145,13 +145,13 @@ class PseudosRepo(abc.ABC):
 
         if doit:
             # Get the targz from github and unpack it inside directory `self.name`.
-            print("Downloading:", self.url, "to:", self.name)
-            download_repo_from_url(self.url, self.name)
+            print("Downloading:", self.url, "to:", self.path)
+            download_repo_from_url(self.url, self.path)
         else:
-            print("Skipping dowload step as", self.name, "directory already exists")
+            print("Skipping dowload step as", self.path, "directory already exists")
 
-        table_paths = [f for f in os.listdir(self.name) if f.endswith(".txt")]
-        table_paths = [os.path.join(self.name, t) for t in table_paths]
+        table_paths = [f for f in os.listdir(self.path) if f.endswith(".txt")]
+        table_paths = [os.path.join(self.path, t) for t in table_paths]
         if not table_paths:
             raise RuntimeError("Cannot find .txt files with list of pseudos. Likely PAW table.")
 
@@ -199,7 +199,7 @@ class PseudosRepo(abc.ABC):
         self.tables = defaultdict(dict)
         for table_name, relpaths in relpaths_table.items():
             for ext in self.formats:
-                all_files = [os.path.join(self.name, f"{rpath}.{ext}") for rpath in relpaths]
+                all_files = [os.path.join(self.path, f"{rpath}.{ext}") for rpath in relpaths]
                 files = list(filter(os.path.isfile, all_files))
                 if len(files) != len(all_files):
                     print(f"{table_path} WARNING: cannot find files with ext: {ext}.",
@@ -215,7 +215,7 @@ class PseudosRepo(abc.ABC):
         for table_name, table in self.tables.items():
             for ext, rpaths in table.items():
                 if not rpaths: continue
-                tar_path = os.path.join(self.name, f"{self.type}_{self.xc_name}_{table_name}_{ext}.tgz")
+                tar_path = os.path.join(self.path, f"{self.type}_{self.xc_name}_{table_name}_{ext}.tgz")
                 doit = from_scratch or (not from_scratch and not os.path.isfile(tar_path))
                 if doit:
                     print("Creating tarball:", tar_path)
@@ -369,7 +369,8 @@ class Website:
     """
 
     def __init__(self, path: str, kernel_name: str, verbose: int) -> None:
-        self.path = os.path.abspath(path)
+        #self.path = os.path.abspath(path)
+        self.path = path
         self.verbose = verbose
         self.kernel_name = str(kernel_name)
 
@@ -380,8 +381,8 @@ class Website:
         self.repos = [
             # ONCVPSP repositories.
             _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
-            _mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),
-            _mk_onc(xc_name="PBE", relativity_type="SR", version="0.4"),
+            #_mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),
+            #_mk_onc(xc_name="PBE", relativity_type="SR", version="0.4"),
             #_mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),  FIXME: checksum fails
             #
             # JTH repositories.
@@ -399,8 +400,12 @@ class Website:
         files = defaultdict(dict)
         targz = defaultdict(dict)
 
+        tables_dirpath = os.path.join(self.path, "tables")
+        if not os.path.isdir(tables_dirpath):
+            os.mkdir(tables_dirpath)
+
         for repo in self.repos:
-            repo.setup(self.path, self.kernel_name, from_scratch)
+            repo.setup(tables_dirpath, self.kernel_name, from_scratch)
             if repo.type in files and repo.xc_name in files[repo.type]:
                 raise ValueError(f"repo.type: {repo.type}, repo.xc_name: {repo.xc_name} is already in {files.keys()}")
 
@@ -448,10 +453,14 @@ class Website:
                         files[repo.type][repo.xc_name][table_name][elm][fmt] = rpath
 
         print("\nWriting files.json and targz.json")
-        with open(os.path.join(self.path, "files.json"), "w") as fh:
+        workdir = os.path.join(self.path, "json")
+        if not os.path.isdir(workdir):
+            os.mkdir(workdir)
+
+        with open(os.path.join(workdir, "files.json"), "w") as fh:
             json.dump(files, fh, indent=2, sort_keys=True)
 
-        with open(os.path.join(self.path, "targz.json"), "w") as fh:
+        with open(os.path.join(workdir, "targz.json"), "w") as fh:
             json.dump(targz, fh, indent=2, sort_keys=True)
 
         #make_papers()

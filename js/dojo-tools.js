@@ -155,8 +155,8 @@ function set_info(info) {
 function dojo_start() {
     // Main entry point.
     // Load dictionaries from json files, set the global variables FILES and TARGZ and build the user interface.
-    var a = $.getJSON("files.json");
-    var b = $.getJSON("targz.json");
+    var a = $.getJSON("json/files.json");
+    var b = $.getJSON("json/targz.json");
 
     $.when(a, b).done(function(v1, v2){
        // when all requests are successful
