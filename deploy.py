@@ -96,7 +96,7 @@ class PseudosRepo(abc.ABC):
     def formats(self):
         """List of file formats provided by the repository."""
 
-    def setup(self, workdir, from_scratch: bool) -> None:
+    def setup(self, workdir: str, from_scratch: bool) -> None:
         """
         Perform the initialization step:
 
@@ -135,26 +135,16 @@ class PseudosRepo(abc.ABC):
 
             def make_html(p):
                 raise NotImplementedError("")
-                #from pseudo_dojo.util.notebook import write_notebook_html, write_notebook
                 #pseudo_path = os.path.join(self.path, p + ".psp8")
                 #html_path = os.path.join(self.path, p + ".html")
                 #if not from_scratch and os.path.exists(html_path): return
                 ##print(pseudo_path)
-                #retcode = write_notebook_html(pseudo_path, tmpfile=False)
-                #errmsg = ""
-                #if retcode != 0:
-                #    errmsg = f"Cannot generate HTML file for {pseudo_path}"
-                #    raise RuntimeError(errmsg)
-                #return dict(retcode=retcode, errmsg=errmsg)
 
             # This section executes nbconvert to generate the HTML page with the validation tests.
             # For the time being it's disabled as it requires pseudodojo and a properly configured
             # env to execute jupyter notebooks and nbcovert.
             #for p in unique_paths:
-            #    if False: make_html(p)
-            #    # See https://groups.google.com/g/jupyter/c/RYoVU314oyM
-            #    #nb_path = write_notebook(pseudo_path, tmpfile=False)
-            #    #with_validation=False, with_eos=True, hide_code=True,
+            #    make_html(p)
 
             #from multiprocessing import Pool
             #from multiprocessing.dummy import Pool
@@ -240,7 +230,7 @@ class OncvpspRepo(PseudosRepo):
             raise ValueError(f"Invalid relativity_type {self.relativity_type}")
 
     @property
-    def formats(self):
+    def formats(self) -> list[str]:
         """List of file formats provided by the repository."""
         return ["psp8", "upf", "psml", "html", "djrepo"]
 
@@ -300,7 +290,7 @@ class JthRepo(PseudosRepo):
             raise ValueError(f"Invalid relativity_type {self.relativity_type}")
 
     @property
-    def formats(self):
+    def formats(self) -> list[str]:
         """List of file formats provided by the repository."""
         return ["xml", "upf"]
 
@@ -425,9 +415,6 @@ class Website:
         with open(os.path.join(workdir, "targz.json"), "w") as fh:
             json.dump(targz, fh, indent=2, sort_keys=True)
 
-
-    #def update(self) -> None:
-    #def update_papers(self) -> None:
     #def check(self) -> None:
 
 
@@ -450,22 +437,14 @@ def update(options) -> int:
     return 0
 
 
-def papers(options) -> int:
-    """
-    Update the list of papers using PseudoDojo pseudos.
-    Generate new papers.html
-    """
-    return 0
-
-
 
 def get_epilog() -> str:
     usage = """\
 
 Usage example:
 
-  deploy.py new           =>  Upload git repos and deploy website from SCRATCH.
-  deploy.py update        =>  Update git repos.
+  deploy.py new     =>  Upload git repos and deploy website from scratch.
+  deploy.py update  =>  Update git repos and a pre-existent website.
 """
     return usage
 
@@ -476,7 +455,6 @@ def get_parser(with_epilog=False):
     copts_parser = argparse.ArgumentParser(add_help=False)
     copts_parser.add_argument('-v', '--verbose', default=0, action='count', # -vv --> verbose=2
         help='verbose, can be supplied multiple times to increase verbosity.')
-    #copts_parser.add_argument('-k', '--kernel-name', default="pseudodojo_website", help='Kernel name')
     #copts_parser.add_argument('--loglevel', default="ERROR", type=str,
     #    help="Set the loglevel. Possible values: CRITICAL, ERROR (default), WARNING, INFO, DEBUG.")
 
@@ -489,15 +467,12 @@ def get_parser(with_epilog=False):
     subparsers = parser.add_subparsers(dest='command', help='sub-command help', description="Valid subcommands")
 
     # Subparser for new command.
-    p_new = subparsers.add_parser('new', parents=[copts_parser], help="Deploy website from scratch.")
+    p_new = subparsers.add_parser('new', parents=[copts_parser],
+                                  help="Upload git repos and deploy website from scratch.")
 
     # Subparser for update command.
-    p_update = subparsers.add_parser('update', parents=[copts_parser], help="Update tables.")
-
-    ## Subparser for scheduler command.
-    #p_scheduler = subparsers.add_parser('scheduler', parents=[copts_parser],
-    #    help="Run all tasks with a Python scheduler. Requires scheduler.yml either in $PWD or ~/.abinit/abipy.")
-    #p_scheduler.add_argument('-w', '--weeks', default=0, type=int, help="Number of weeks to wait.")
+    p_update = subparsers.add_parser('update', parents=[copts_parser],
+                                     help="Update git repos and a pre-existent website.")
 
     return parser
 

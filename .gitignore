@@ -1,24 +1,14 @@
-# abipy files
-abinit_vars.pickle
-Profile.prof
-abipy/examples/flows/flow_*
-abipy/examples/flows/develop/flow_*
-_debug
-#__abinb_workdir__
-#abinb_*.ipynb
+tables/*
+#json/*
+
 $*.pickle
-
-# cython generated code
-abipy/extensions/*.c
-abipy/extensions/*.html
-
 
 # python object files.
 *.py[cod]
 
 # Temporary files or directories
-tmp_*
-tags
+#tmp_*
+#tags
 
 # C extensions
 *.so
@@ -39,12 +29,12 @@ lib
 lib64
 
 # Installer logs
-pip-log.txt
+#pip-log.txt
 
 # Sphinx autodoc
-docs/_build
-docs/gallery
-docs/flow_gallery
+#docs/_build
+#docs/gallery
+#docs/flow_gallery
 
 # MacOSX stuff
 .DS_Store
@@ -61,25 +51,25 @@ docs/flow_gallery
 *.swn
 
 # Unit test / coverage reports
-.coverage
-coverage_html
-.tox
-.cache
-nosetests.xml
-_integration_tests_
-.pytest_cache
+#.coverage
+#coverage_html
+#.tox
+#.cache
+#nosetests.xml
+#_integration_tests_
+#.pytest_cache
 
 # ipython notebooks
-.ipynb*
-Untitled.ipynb
+#.ipynb*
+#Untitled.ipynb
 
 # Translations
-*.mo
+#*.mo
 
 # Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-gallery/
-modules/
-style.log
+#.mr.developer.cfg
+#.project
+#.pydevproject
+#gallery/
+#modules/
+#style.log
