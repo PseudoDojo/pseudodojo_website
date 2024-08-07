@@ -35,58 +35,23 @@ ALL_ELEMENTS = set([
 ])
 
 
-def execute_nb(nbpath):
-    import nbformat
-    from nbconvert import preprocessors
-
-    # python -m ipykernel install --name <envname>
-    # python -m ipykernel install --name env3.9 --user
-    meta = {
-        'metadata': {
-            'path': '.',
-        }
-
-    }
-    with open(nbpath, 'r') as nbf:
-        nbook = nbformat.read(nbf, as_version=4)
-
-    runner = preprocessors.ExecutePreprocessor(kernel_name='env3.9')
-    runner.preprocess(nbook, meta)
-
-    with open(nbpath, 'w') as nbf:
-        nbformat.write(nbook, nbf)
-
-
-def convertNotebook(notebookPath, modulePath):
-  import nbformat
-  from nbconvert import PythonExporter, HTMLExporter
-
-  with open(notebookPath) as fh:
-    nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
-
-  exporter = HTMLExporter()
-  source, meta = exporter.from_notebook_node(nb)
-
-  with open(modulePath, 'w+') as fh:
-    fh.writelines(source)
-
 
 class PseudosRepo(abc.ABC):
     """
-    Base abstract class for a github repository containing pseudopotentials generated with the same XC
-    and the same treatment of relativistic effects.
+    Base abstract class for a github repository containing pseudopotentials generated
+    with the same XC functional and the same treatment of relativistic effects.
     """
 
     def __init__(self, ps_generator: str, xc_name: str, relativity_type: str, project_name: str,
                  version: str, url: str):
         """
         Args:
-            ps_generator: Name of the pseudopotential generator
+            ps_generator: Name of the pseudopotential generator.
             xc_name: XC functional.
             relativity_type: SR for scalar-relativistic or FR for fully relativistic.
             project_name: Name of the project associated to this repository.
             version: Version string.
-            url: URL from which the targz will be taken.
+            url: URL from which the targz will be fetched.
         """
         if relativity_type not in {"SR", "FR"}:
             raise ValueError(f"Invalid relativity_type: {relativity_type}")
@@ -131,7 +96,7 @@ class PseudosRepo(abc.ABC):
     def formats(self):
         """List of file formats provided by the repository."""
 
-    def setup(self, workdir, kernel_name, from_scratch: bool) -> None:
+    def setup(self, workdir, from_scratch: bool) -> None:
         """
         Perform the initialization step:
 
@@ -148,8 +113,9 @@ class PseudosRepo(abc.ABC):
             print("Downloading:", self.url, "to:", self.path)
             download_repo_from_url(self.url, self.path)
         else:
-            print("Skipping dowload step as", self.path, "directory already exists")
+            print("Skipping download step as", self.path, "directory already exists")
 
+        # Find the .txt files defining the tables provided by this repo.
         table_paths = [f for f in os.listdir(self.path) if f.endswith(".txt")]
         table_paths = [os.path.join(self.path, t) for t in table_paths]
         if not table_paths:
@@ -164,32 +130,31 @@ class PseudosRepo(abc.ABC):
                 relpaths_table[table_name] = [os.path.splitext(p)[0] for p in rps]
 
         if self.ps_generator == "ONCVPSP":
-            # Generate HTML files from the djrepo file.
+            # TODO: Generate HTML files from the djrepo file.
             unique_paths = sorted(set(p for l in relpaths_table.values() for p in l))
 
             def make_html(p):
-                from pseudo_dojo.util.notebook import write_notebook_html, write_notebook
-                pseudo_path = os.path.join(self.path, p + ".psp8")
-                html_path = os.path.join(self.path, p + ".html")
-                if not from_scratch and os.path.exists(html_path): return
-                #print(pseudo_path)
-                retcode = write_notebook_html(pseudo_path, tmpfile=False, kernel_name=kernel_name)
-                errmsg = ""
-                if retcode != 0:
-                    errmsg = f"Cannot generate HTML file for {pseudo_path}"
-                    raise RuntimeError(errmsg)
+                raise NotImplementedError("")
+                #from pseudo_dojo.util.notebook import write_notebook_html, write_notebook
+                #pseudo_path = os.path.join(self.path, p + ".psp8")
+                #html_path = os.path.join(self.path, p + ".html")
+                #if not from_scratch and os.path.exists(html_path): return
+                ##print(pseudo_path)
+                #retcode = write_notebook_html(pseudo_path, tmpfile=False)
+                #errmsg = ""
+                #if retcode != 0:
+                #    errmsg = f"Cannot generate HTML file for {pseudo_path}"
+                #    raise RuntimeError(errmsg)
                 #return dict(retcode=retcode, errmsg=errmsg)
 
             # This section executes nbconvert to generate the HTML page with the validation tests.
             # For the time being it's disabled as it requires pseudodojo and a properly configured
             # env to execute jupyter notebooks and nbcovert.
-            for p in unique_paths:
-                if False: make_html(p)
-                # See https://groups.google.com/g/jupyter/c/RYoVU314oyM
-                #nb_path = write_notebook(pseudo_path, tmpfile=False)
-                #with_validation=False, with_eos=True, hide_code=True,
-                #execute_nb(nb_path)
-                #convertNotebook(nb_path, os.path.join(self.path, p + ".html"))
+            #for p in unique_paths:
+            #    if False: make_html(p)
+            #    # See https://groups.google.com/g/jupyter/c/RYoVU314oyM
+            #    #nb_path = write_notebook(pseudo_path, tmpfile=False)
+            #    #with_validation=False, with_eos=True, hide_code=True,
 
             #from multiprocessing import Pool
             #from multiprocessing.dummy import Pool
@@ -279,7 +244,6 @@ class OncvpspRepo(PseudosRepo):
         """List of file formats provided by the repository."""
         return ["psp8", "upf", "psml", "html", "djrepo"]
 
-
     def get_meta_from_djrepo(self, path: str) -> dict:
         dirname = os.path.dirname(path)
         with open(path, "r") as fh:
@@ -340,7 +304,6 @@ class JthRepo(PseudosRepo):
         """List of file formats provided by the repository."""
         return ["xml", "upf"]
 
-
     def get_meta_from_pawxml(self, path: str) -> dict:
         pseudo = PawXmlSetup(path)
         meta = {
@@ -368,11 +331,10 @@ class Website:
     targz[typ][xc_name][table_name][fmt]
     """
 
-    def __init__(self, path: str, kernel_name: str, verbose: int) -> None:
+    def __init__(self, path: str, verbose: int) -> None:
         #self.path = os.path.abspath(path)
         self.path = path
         self.verbose = verbose
-        self.kernel_name = str(kernel_name)
 
         # Create list of repositories.
         _mk_onc = OncvpspRepo.from_github
@@ -405,7 +367,7 @@ class Website:
             os.mkdir(tables_dirpath)
 
         for repo in self.repos:
-            repo.setup(tables_dirpath, self.kernel_name, from_scratch)
+            repo.setup(tables_dirpath, from_scratch)
             if repo.type in files and repo.xc_name in files[repo.type]:
                 raise ValueError(f"repo.type: {repo.type}, repo.xc_name: {repo.xc_name} is already in {files.keys()}")
 
@@ -463,7 +425,6 @@ class Website:
         with open(os.path.join(workdir, "targz.json"), "w") as fh:
             json.dump(targz, fh, indent=2, sort_keys=True)
 
-        #make_papers()
 
     #def update(self) -> None:
     #def update_papers(self) -> None:
@@ -475,7 +436,7 @@ def new(options) -> int:
     Deploy new website in the current working directory.
     1) download tables from github 2) generate new json files
     """
-    website = Website(".", options.kernel_name, options.verbose)
+    website = Website(".", options.verbose)
     website.build(from_scratch=True)
     return 0
 
@@ -484,9 +445,8 @@ def update(options) -> int:
     """
     Update a pre-existent installation.
     """
-    website = Website(".", options.kernel_name, options.verbose)
+    website = Website(".", options.verbose)
     website.build(from_scratch=False)
-    #make_papers()
     return 0
 
 
@@ -495,7 +455,6 @@ def papers(options) -> int:
     Update the list of papers using PseudoDojo pseudos.
     Generate new papers.html
     """
-    #make_papers()
     return 0
 
 
@@ -517,7 +476,7 @@ def get_parser(with_epilog=False):
     copts_parser = argparse.ArgumentParser(add_help=False)
     copts_parser.add_argument('-v', '--verbose', default=0, action='count', # -vv --> verbose=2
         help='verbose, can be supplied multiple times to increase verbosity.')
-    copts_parser.add_argument('-k', '--kernel-name', default="pseudodojo_website", help='Kernel name')
+    #copts_parser.add_argument('-k', '--kernel-name', default="pseudodojo_website", help='Kernel name')
     #copts_parser.add_argument('--loglevel', default="ERROR", type=str,
     #    help="Set the loglevel. Possible values: CRITICAL, ERROR (default), WARNING, INFO, DEBUG.")
 
