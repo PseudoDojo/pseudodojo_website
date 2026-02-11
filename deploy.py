@@ -6,18 +6,13 @@ import os
 import argparse
 import abc
 import json
-#import posixpath
-#import tempfile
-#import shutil
-#import hashlib
-#import requests
 
 from collections import defaultdict
-#from urllib.parse import urlsplit
 #from tqdm import tqdm
 from pymatgen.io.abinit.pseudos import Pseudo, PawXmlSetup
 from abipy.flowtk.psrepos import download_repo_from_url  # md5_for_filepath
 
+from html_tools import write_html_from_oncvpsp_outpath
 
 
 ALL_ELEMENTS = set([
@@ -33,7 +28,6 @@ ALL_ELEMENTS = set([
   "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og",
   "Uue", "Ubn",
 ])
-
 
 
 class PseudosRepo(abc.ABC):
@@ -133,22 +127,23 @@ class PseudosRepo(abc.ABC):
             # TODO: Generate HTML files from the djrepo file.
             unique_paths = sorted(set(p for l in relpaths_table.values() for p in l))
 
-            def make_html(p):
-                raise NotImplementedError("")
-                #pseudo_path = os.path.join(self.path, p + ".psp8")
-                #html_path = os.path.join(self.path, p + ".html")
-                #if not from_scratch and os.path.exists(html_path): return
-                ##print(pseudo_path)
+            # Here we generate the HTML page with the oncvps results and the validation results
+            # read from a json file placed in the same directory of the pseudo.
 
-            # This section executes nbconvert to generate the HTML page with the validation tests.
-            # For the time being it's disabled as it requires pseudodojo and a properly configured
-            # env to execute jupyter notebooks and nbcovert.
+            def make_html(p):
+                out_path = os.path.join(self.path, p + ".out")
+                html_path = os.path.join(self.path, p + ".html")
+                if not from_scratch and os.path.exists(html_path):
+                    print(f"Won't regenerate HTML file: {html_path=}")
+                    return
+                return write_html_from_oncvpsp_outpath(out_path)
+
             #for p in unique_paths:
             #    make_html(p)
 
+            # Using pool to speedup execution but the def might be problematic, especially on OSx.
             #from multiprocessing import Pool
-            #from multiprocessing.dummy import Pool
-            #with Pool(processes=self.num_procs) as pool:
+            #with Pool() as pool:
             #   pool.map(make_html, unique_paths)
 
         self.tables = defaultdict(dict)
