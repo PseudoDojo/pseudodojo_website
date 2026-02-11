@@ -59,8 +59,8 @@ def write_html_from_oncvpsp_outpath(out_path: str) -> str:
     kwargs = dict(show=False, plotly=True)
 
     # This won't work for Si, I have to fix it at the abipy level.
-    #oncv_texts.append("These are the radial wavefunctions")
-    #oncv_figures.append(plotter.plot_radial_wfs(**kwargs))
+    oncv_texts.append("These are the radial wavefunctions")
+    oncv_figures.append(plotter.plot_radial_wfs(**kwargs))
 
     oncv_texts.append("These are the famous ATAN LOGDERs signaling the presence of ghost states ...")
     oncv_figures.append(plotter.plot_atan_logders(**kwargs))
@@ -124,4 +124,8 @@ if __name__ == "__main__":
     # This module can be executed as a standalone script to facilitate debugging
     # Syntax: `python html_tools.py Si.out`
     import sys
-    write_html_from_oncvpsp_outpath(sys.argv[1])
+    import webbrowser
+    from pathlib import Path
+    html_path = write_html_from_oncvpsp_outpath(sys.argv[1])
+    print(f"Opening {html_path} in browser...")
+    webbrowser.open(Path(html_path).resolve().as_uri())
