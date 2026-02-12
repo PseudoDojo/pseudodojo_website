@@ -71,7 +71,7 @@ self.repos = [
 
 The url of the tarball file is automatically generated from the values of `xc_name`,
 `relativity_type` and `version` using a string pattern (see `from_github` class method for the implementation)
-hence it is very important to follow the the same convention when creating new pseudopotential repositories on github.
+hence it is very important to follow the same convention when creating new pseudopotential repositories on github.
 
 To add a new PD repo to the website, the following operations are required:
 
@@ -105,7 +105,7 @@ The results of these validation tests are stored in the djrepo file.
 It seemed like a good idea at the time but there are also several drawbacks that should be taken into account:
 
 1) The size of the djrepo files is not small and this increases the size of the repo.
-   Well, per se it's not a problem for the users of the website, but it becomes more problematic
+   Well, per se it is not a problem for the users of the website, but it becomes more problematic
    for users interested in HTC calculations especially if they decide to download
    several repositories for the different XC functionals.
 

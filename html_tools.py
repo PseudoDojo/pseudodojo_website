@@ -18,7 +18,10 @@ TEMPLATE = env.from_string("""
 <head>
   <meta charset="utf-8">
   <title>{{ title }}</title>
+  <!-- Include Plotly JS in the head -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
 
 <h1>{{ title }}</h1>
@@ -86,7 +89,9 @@ def write_html_from_oncvpsp_outpath(out_path: str) -> str:
         oncv_figures.append(plotter.plot_vtau(**kwargs))
 
     # Convert from plotly to html that will then be included in the HTML page using Jinja2 template.
-    oncv_figures = [pio.to_html(fig, include_plotlyjs=True, full_html=False) for fig in oncv_figures]
+    # Note: plotly.js is loaded in the template from CDN to reduce file size.
+    oncv_figures = [pio.to_html(fig, include_plotlyjs=False, full_html=False) for fig in oncv_figures]
+    #oncv_figures = [pio.to_html(fig, include_plotlyjs=True, full_html=False) for fig in oncv_figures]
 
     # Here we read the json file with the validation results and produce plotly plots.
     # Note that this step is optional as a pseudo migth not have validation results.

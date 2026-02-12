@@ -1,3 +1,5 @@
 requests
 tqdm
 abipy
+jinja2
+plotly
