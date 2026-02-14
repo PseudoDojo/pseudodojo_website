@@ -61,12 +61,11 @@ JTH_TEMPLATE = env.from_string("""
 <h1>{{ title }}</h1>
 
 <!-- Show input file -->
-<h2>atompaw input</h2>
+<h2>Atompaw input</h2>
 <pre><code> {{ input_str | e }} </code></pre>
 
-
 <!-- Show README file -->
-<h2>README</h2>
+<h2>README (from github repo)</h2>
 {{ readme_str }}
 
 </body>
@@ -199,7 +198,6 @@ def md_to_html(input_path: str) -> str:
     return markdown.markdown(text)
 
 
-#def write_html_from_jth_xml(xml_path: str, prefix: str) -> str:
 def write_html_from_jth_xml(xml_path: str) -> str:
     """
     "Use Jinja2 to produce an HTML page for a single oncvps pseudo and write it to disk.

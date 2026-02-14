@@ -135,7 +135,7 @@ def make_atompaw_html(dirpath, prefix, from_scratch):
     #print(f"{dirpath=}, {prefix=}")
     # dirpath='./tables/ATOMPAW-PBE-JTHv2.0', prefix='Ag/Ag.GGA_PBE-JTH'
 
-    xml_path = os.path.join(dirpath, prefix, ".xml")
+    xml_path = os.path.join(dirpath, prefix) + ".xml"
 
     elm, prefix = prefix.split("/") # -> Ag, Ag.GGA_PBE-JTH
     if elm not in ALL_ELEMENTS:
@@ -146,7 +146,7 @@ def make_atompaw_html(dirpath, prefix, from_scratch):
         print(f"Won't regenerate HTML file: {html_path=}")
         return
 
-    return write_html_from_oncvpsp_outpath(xml_path)
+    return write_html_from_jth_xml(xml_path)
 
 
 class PseudosRepo(abc.ABC):
@@ -388,16 +388,6 @@ class JthRepo(PseudosRepo):
     A repository of pseudos generated with atompaw.
     """
 
-    #@classmethod
-    #def from_abinit_website(cls, xc_name: str, relativity_type: str, version: str) -> JthRepo:
-    #    """This is deprecated. Now we are trying to use the git repo."""
-    #    ps_generator, project_name = "ATOMPAW", "JTH"
-    #    # https://www.abinit.org/ATOMICDATA/JTH-LDA-atomicdata.tar.gz
-    #    # ATOMPAW-LDA-JTHv0.4
-    #    # TODO: Should move ATOMPAW pseudos to github repo and add standard.txt file with pseudo list.
-    #    url = f"https://www.abinit.org/ATOMICDATA/JTH-{xc_name}-atomicdata.tar.gz"
-    #    return cls(ps_generator, xc_name, relativity_type, project_name, version, url)
-
     @classmethod
     def from_github(cls, xc_name: str, relativity_type: str, version: str) -> OncvpspRepo:
         """
@@ -488,12 +478,11 @@ class Website:
 
         # Create list of repositories.
         _mk_onc = OncvpspRepo.from_github
-        #_mk_jth = JthRepo.from_abinit_website
         _mk_jth = JthRepo.from_github
 
         self.repos = [
             # ONCVPSP repositories.
-            _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
+            #_mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
             #_mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),
             #_mk_onc(xc_name="PBE", relativity_type="SR", version="0.4"),
             #_mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),  FIXME: checksum fails
