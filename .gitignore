@@ -1,6 +1,9 @@
 tables/*
 #json/*
 
+web_server.stderr
+web_server.stdout
+
 $*.pickle
 
 # python object files.

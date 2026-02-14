@@ -84,7 +84,7 @@
     <div class="description">
       <p>
         Select the flavor and the <a href="./about.html">format</a>, then click on the "Download Table" button
-        to get the full table or choose a specific element. 
+        to get the full table or choose a specific element.
         <!--
         The "HTML" format gives access to the validation tests.
         -->
@@ -115,25 +115,23 @@
 <div class="styled-longselect" onchange="load_set_info();">
   <select id="TYP" onchange="dynamic_dropdown(this.options[this.selectedIndex].value);">
     <!--
-    This is where one adds a new table, also add the option to the dynamic_dropdown funtion in dojo-tools.js 
+    This is where one adds a new table, also add the option to the dynamic_dropdown function in dojo-tools.js
     -->
     <option value="nc-sr-v0.4" selected>NC SR (ONCVPSP v0.4)</option>
     <option value="nc-fr-v0.4" >NC FR (ONCVPSP v0.4)</option>
-    <option value="jth-sr-v1.1">PAW (JTH v1.1)</option>
-    <!--
-    <option value="nc-sr-04-3plus">NC SR 3+ (ONCVPSP v0.4)</option>
-    -->
+    <!-- <option value="nc-sr-04-3plus">NC SR 3+ (ONCVPSP v0.4)</option> -->
+    <option value="jth-sr-v2.0">PAW (JTH v2.0)</option>
   </select>
 </div>
 </td>
 <td>
-<div class="styled-select" 
+<div class="styled-select"
      onchange="localStorage.setItem('selectedXCF', document.getElementById('XCF').value); load_set_info();">
     <select id="XCF"></select>
 </div>
 </td>
 <td>
-<div class="styled-select" 
+<div class="styled-select"
      onchange="localStorage.setItem('selectedTABLE', document.getElementById('TABLE').value); load_set_info();">
     <select id="TABLE"></select>
 </div>
@@ -1659,7 +1657,7 @@
       <div class="name">Livermorium</div>
     </div>
   </div>
-  <div class="plugin bg_she 117_Ts"> <!-- onclick="make_light()" !--> 
+  <div class="plugin bg_she 117_Ts"> <!-- onclick="make_light()" !-->
     <div class="element">Ts</div>
     <div class="l_top hide" id="Ts_hl">hl</div>
     <div class="l_follow hide" id="Ts_hn">hn</div>
@@ -1672,7 +1670,7 @@
       <div class="name">Tennessine</div>
     </div>
   </div>
-  <div class="plugin bg_she 118_Og"> <!-- onclick="chaos()" !--> 
+  <div class="plugin bg_she 118_Og"> <!-- onclick="chaos()" !-->
     <div class="element">Og</div>
     <div class="l_top hide" id="Og_hl">hl</div>
     <div class="l_follow hide" id="Og_hn">hn</div>

@@ -77,6 +77,7 @@ To add a new PD repo to the website, the following operations are required:
 
 - Create a new PD repo following the conventions documented above.
 - Add the new PD repo to `self.repos`
+- Register the new table in index.html in the section `<select id="TYP" ... >`
 - Edit `js/dojo-tools.js` in particular the switch statement in `dynamic_dropdown` to register the new options.
 - Finally, execute
 

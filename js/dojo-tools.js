@@ -7,8 +7,8 @@ const ANIMATE = 1;
 const ALL_KEYS = ['hh', 'hl', 'hn', 'nv'];  // 'd', 'dp', 'gb'];
 
 const ALL_ELEMENTS = [
-  'H', 'He', 
-  'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne','Na', 'Mg', "Al", "Si", 'P', 'S', 'Cl', 'Ar', 
+  'H', 'He',
+  'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne','Na', 'Mg', "Al", "Si", 'P', 'S', 'Cl', 'Ar',
   'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr',
   'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
   'Cs', 'Ba',
@@ -68,7 +68,7 @@ function set_warning(txt) {
 
 function make_light() {
     document.getElementById('FMT').value = 'psp8'
-    const hide_classes = ["hide", "name", 'intro', "styled-longselect", 
+    const hide_classes = ["hide", "name", 'intro', "styled-longselect",
                           "selection_bar", "help_button", "description", "menubar"];
     for (cls of hide_class) {
         for (tohide of document.getElementsByClassName(hide_class)) {
@@ -268,7 +268,7 @@ function dojoTour_guidedtour() {
         },
         {
           element: '#TYP',
-          intro: "Here you select the type of pseudopotential. " + 
+          intro: "Here you select the type of pseudopotential. " +
                  "SR stands for scalar relativistic, FR for fully relativistic (including SOC). " +
                  'The options for XC, table and format are adjusted based on your choice.'
         },
@@ -297,7 +297,7 @@ function dojoTour_guidedtour() {
         },
         {
           element: "#X_hl",
-          intro:  "This is the low cutoff energy hint (Ha). " + 
+          intro:  "This is the low cutoff energy hint (Ha). " +
                   "Good for a quick calculation or as a starting point for convergence studies."
         },
         {
@@ -315,7 +315,7 @@ function dojoTour_guidedtour() {
         },
         //{
         //  element: "#X_d",
-        //  intro:  "The results of the delta gauge test (meV). " + 
+        //  intro:  "The results of the delta gauge test (meV). " +
         //          "This is the integral between the equation of state calculated using the pseudo potential " +
         //          "and a reference all electron equation of state."
         //},
@@ -330,7 +330,7 @@ function dojoTour_guidedtour() {
         //},
         {
           element: "#silicon",
-          intro:  "Click all the elements in the table to download or view the selected file for a single element. " + 
+          intro:  "Click all the elements in the table to download or view the selected file for a single element. " +
                   "If the box turns green the file is available, if it turns red the file is not available."
         },
         {
@@ -378,16 +378,18 @@ function dynamic_dropdown(type){
   //set_warning(' this version is outdated')
 
   switch (type) {
-    case "jth-sr-v1.1" :
+    case "jth-sr-v2.0" :
       // List of tables
       table.options[0] = new Option("standard", "standard");
-      table.options[1] = new Option("stringent", "stringent");
+      //table.options[1] = new Option("stringent", "stringent");
       // List of XC functionals
       xcf.options[0] = new Option("PBE", "PBE");
       xcf.options[1] = new Option("LDA", "LDA");
       // List of file formats
       fmt.options[0] = new Option("xml", "xml");
-      //fmt.options[1] = new Option("upf", "upf");
+      fmt.options[1] = new Option("upf", "UPF");
+      fmt.options[2] = new Option("html", "html");
+      //fmt.options[3] = new Option("djrepo", "djrepo");
       break;
 
     case "nc-sr-v0.4" :
@@ -414,7 +416,7 @@ function dynamic_dropdown(type){
       // List of XC functionals
       xcf.options[0] = new Option("PBE", "PBE");
       xcf.options[1] = new Option("PBEsol", "PBEsol");
-      //xcf.options[2] = new Option("PBEsol", "PBEsol");
+      //xcf.options[2] = new Option("LDA", "LDA");
       // List of file formats
       fmt.options[0] = new Option("psp8", "psp8");
       fmt.options[1] = new Option("upf", "upf");
@@ -443,7 +445,8 @@ function dynamic_dropdown(type){
     //  document.getElementById("FMT").options[2] = new Option("FC","fc");
     //  break;
     default:
-      throw 'Invalid type: ' + type;
+      //throw 'Invalid type: ' + type;
+      throw new Error(`Invalid type: ${type}`);
   }
 }
 
@@ -507,10 +510,10 @@ function _get_pseudo_selection(dom_object){
   var xcf = $("#XCF").val();
   var table = $("#TABLE").val();
   var fmt = $("#FMT").val();
-  
+
   try {
     var url = FILES[type][xcf][table][elm][fmt];
-  } 
+  }
   catch (error) {
     var url = null;
     if (DEBUG) {
@@ -537,7 +540,7 @@ function _get_targz_selection(){
 
   try {
     var url = TARGZ[type][xcf][table][fmt];
-  } 
+  }
   catch (error) {
     console.log("Error in _get_targz_selection:", error);
     var url = null;
@@ -583,7 +586,7 @@ function build_ui(){
     $(".plugin:nth-of-type(5), .plugin:nth-of-type(13)").addClass('nth-of-type-margin');
     $(".plugin:nth-of-type(1), .plugin:nth-of-type(3), .plugin:nth-of-type(11), .plugin:nth-of-type(19), .plugin:nth-of-type(37), .plugin:nth-of-type(55)").addClass('nth-of-type-clear');
 
-    // Here we hide the numbers on the right side. 
+    // Here we hide the numbers on the right side.
     // We keep it in the HTML so that we can easily reuse it if needed.
     const hide_classes = ["r_top", "r_follow"];
     for (var cls of hide_classes) {
@@ -597,10 +600,10 @@ function build_ui(){
       function(){
         var mythis = $(this);
         var sel = _get_pseudo_selection(mythis);
-        
+
         // update the X_n box.
         set_X(sel.elm, sel.color, sel.n);
-        
+
         if (sel.url) {
             mythis.css("background-color", "#44AA44");
             mythis.css("color", "#FFFFFF");
@@ -667,7 +670,7 @@ function build_ui(){
             mythis.css("background-color", "#CC4444");
             mythis.css("color", "#FFFFFF");
         }
-      }, 
+      },
       function(){
         var mythis = $(this);
         mythis.css("background-color", "#4D4D4D");
@@ -708,19 +711,19 @@ function build_ui(){
             alert('Your device does not support files downloading. Please try again in desktop browser.');
             return false;
         }
-    
+
         //If in Chrome or Safari - download via virtual link click
         if (window.downloadFile.isChrome || window.downloadFile.isSafari) {
             //Creating new link node.
             var link = document.createElement('a');
             link.href = sUrl;
-    
+
             if (link.download !== undefined) {
                 // Set HTML5 download attribute. This will prevent file from opening if supported.
                 var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
                 link.download = fileName;
             }
-    
+
             // Dispatching click event.
             if (document.createEvent) {
                 var e = document.createEvent('MouseEvents');
@@ -729,13 +732,13 @@ function build_ui(){
                 return true;
             }
         }
-    
+
         // Force file download (whether supported by server).
         var query = '?download';
-    
+
         window.open(sUrl + query, '_self');
     }
-    
+
     window.downloadFile.isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
     window.downloadFile.isSafari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
 
@@ -758,7 +761,7 @@ function set_options(){
 
   dynamic_dropdown(typ);
 
-  // if XCF TABLE and FMT have been changed previously set them back to those selections 
+  // if XCF TABLE and FMT have been changed previously set them back to those selections
   if (localStorage.getItem('selectedXCF')) {
     var options = document.getElementById('XCF').options
     for (var i in options){

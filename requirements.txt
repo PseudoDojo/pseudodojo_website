@@ -3,3 +3,4 @@ tqdm
 abipy
 jinja2
 plotly
+markdown
