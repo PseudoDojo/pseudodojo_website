@@ -10,98 +10,102 @@
 <!--<![endif]-->
 
 <head>
-  <title>Pseudo Dojo</title>
+  <title>PseudoDojo</title>
 
   <!-- Meta characteristics -->
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=1360">
-  <meta name="description" content="This site provides tested pseudopotentials, which are sorted by type, accuracy, and efficiency. It shows information on the convergence, quality, and transferability of the pseudos, which are downloadable in a variety of formats." />
+  <meta name="description" content="This site provides tested pseudopotentials, which are sorted by type, accuracy, and efficiency. It shows information on the convergence, quality, and transferability of the pseudos, which are downloadable in formats compatible with QuantumESPRESSO, Abinit, and more." />
   <meta name="keywords" content="pseudopotential, pseudo, DFT, ionic, valence, frozen core, PAW atomic dataset, periodic table, elements, ab initio, norm conserving, plane wave, PAW, Vanderbilt, JTH, NC, fully relativistic, scalar relativistic" />
   <meta name="robots" content="index, follow" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:title" content="The Periodic Table of tested pseudopotentials" />
-  <meta property="og:url" content="http://pseudodojo.org" />
-  <meta property="og:description" content="This site provides tested pseudopotentials, which are sorted by type, accuracy, and efficiency. It shows information on the convergence, quality, and transferability of the pseudos, which are downloadable in a variety of formats." />
+  <meta property="og:url" content="http://pseudo-dojo.org" />
+  <meta property="og:description" content="This site provides tested pseudopotentials, which are sorted by type, accuracy, and efficiency. It shows information on the convergence, quality, and transferability of the pseudos, which are downloadable in formats compatible with QuantumESPRESSO, Abinit, and more." />
 
   <!-- Links to stylesheets, scripts, and images -->
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+  <script src="js/dojo-tools.js"></script>
 
   <!-- Toastify -->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <!-- Guided Tour -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.7.0/intro.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.7.0/introjs.min.css" />
-  <script src="js/dojo-tools.js"></script>
+  <link rel="stylesheet" href="/css/shepherd.css">
+  <script src="/js/shepherd.min.js"></script>
 
 </head>
 
 <body> <!-- Includes background image (light grey logo and white lines) styled in CSS -->
 
   <!-- Main menu, top right -->
-  <div class="menubar">
+  <nav class="menubar" aria-label="Main menu">
     <div class="menutext">
-        <span class="menuitem"><a href="about.html">About</a></span>
-        <span class="menuitem"><a href="faq.html">F.A.Q.</a></span>
-        <span class="menuitem"><a href="contribute.html">Contribute</a></span>
+        <button tabindex=3 class="menuitem" onclick="window.location = 'about.html'" aria-label="Go to About page">About</button>
+        <button tabindex=4 class="menuitem" onclick="window.location = 'faq.html'" aria-label="Go to F.A.Q. page">F.A.Q.</button>
+        <button tabindex=5 class="menuitem" onclick="window.location = 'contribute.html'" aria-label="Go to Contribute page">Contribute</button>
     </div>
-  </div>
+  </nav>
 
   <!-- Warning box -->
-  <div id="warning_box"></div>
+  <div id="warning_box" aria-label="Warning box"></div>
 
   <!-- Intro Stuff (Logo, selectors, etc.) -->
   <div class="intro">
     <!-- Pseudo Dojo Logo -->
-    <a href="https://youtu.be/j9z4AJIx40M" target="_blank" title="The Pseudo Dojo"><img src="../img/logo.svg" class="logo hide"></a>
+    <a role="button" tabindex=1 aria-label="PseudoDojo logo and link to YouTube song. PseudoDojo is written in blocky font with horizontal lines over each o." href="https://youtu.be/j9z4AJIx40M" target="_blank" title="The Pseudo Dojo">
+      <img src="../img/logo.svg" class="logo hide" alt="PseudoDojo logo text, where PseudoDojo is written in blocky font with horizontal lines over each o.">
+    </a>
 
     <!-- Large Arrow -->
-    <div class="arrow" id="MainArrow">
-      <img src="../img/arrow.svg" class="arrow">
+    <div class="arrow" id="MainArrow" aria-label="Big arrow pointing to periodic table">
+      <img src="../img/arrow.svg" class="arrow" alt="">
     </div>
 
     <!-- Quick Tutorial button -->
-    <button class="help_button" onclick="dojoTour_guidedtour()" id="guided-tour-button" title="Guided Tour" >
+    <button tabindex=2 class="help_button" onclick="dojoTour_guidedtour()" id="guided-tour-button" title="Guided Tour" aria-label="Guided tour">
       Quick Tutorial
     </button>
 
     <!-- Toggle for Download Mode or Testing Mode -->
-    <div class="mode-wrapper" id="DojoMode">
-      <span class="toggle-label">Click on an element to:</span>
-      <div class="mode-toggle">
-        <span class="mode-label left" style="text-align: right;">Download pseudo</span>
-        <label class="switch">
-          <input type="checkbox" id="modeToggle"  aria-label="Toggle between pseudo download mode and validation testing mode">
-          <span class="slider"></span>
+    <div tabindex=0 class="mode-wrapper" id="DojoMode">
+      <span id="modeLegend" class="toggle-label">
+        Click on an element to:
+      </span>
+
+      <fieldset class="mode-group" aria-labelledby="modeLegend">
+        <label class="mode-option">
+          <input type="radio" name="dojoMode" id="downloadMode" value="Download pseudo mode" checked>
+            Download pseudos
         </label>
-        <span class="mode-label right">See test results</span>
-      </div>
+
+        <label class="mode-option">
+          <input type="radio" name="dojoMode" id="validationMode" value="See test result mode">
+          See test results
+        </label>
+      </fieldset>
+
     </div>
 
     <!-- Pseudo selection bar -->
-    <div class="selection_bar">
+    <div id="selectorStatus" class="sr-only" aria-live="polite"></div>
+    <div class="selection_bar" aria-label="Options for pseudopotential characteristics bar">
 
       <!-- Selection of TYPE -->
       <div class="selector">
         <label for="TYPE">Type:</label>
-        <select id="TYPE" onchange="load_set_info();">
-          <option value="nc">Norm-Conserving</option>
-          <option value="paw">PAW</option>
-        </select>
+        <select id="TYPE"></select>
       </div>
 
       <!-- Selection of RELATIVISTIC -->
       <div class="selector">
         <label for="REL">Relativistic:</label>
-        <select id="REL" style="width: 75px;">
-          <option value="sr">Scalar</option>
-          <option value="fr">Fully</option>
-        </select>
+        <select id="REL" style="width: 75px;"></select>
       </div>
 
       <!-- Selection of VERSION -->
@@ -113,95 +117,55 @@
       <!-- Selection of XC functional -->
       <div class="selector">
         <label for="XC">XC:</label>
-        <select id="XC" style="width: 80px;" onchange="localStorage.setItem('selectedXCF', document.getElementById('XCF').value); load_set_info();"></select>
+        <select id="XC" style="width: 80px;"></select>
       </div>
 
       <!-- Selection of ACCURACY -->
       <div class="selector">
         <label for="ACC">Accuracy:</label>
         <select id="ACC" style="width: 100px;">
-          <option value="standard">Standard</option>
-          <option value="stringent">Stringent</option>
         </select>
       </div>
 
       <!-- Selection of FORMAT -->
       <div class="selector">
         <label for="FMT">Format:</label>
-        <select id="FMT" style="width: 75px;" onchange="localStorage.setItem('selectedFMT', document.getElementById('FMT').value);"></select>
+        <select id="FMT" style="width: 75px;"></select>
       </div>
 
     </div>
 
+    <!-- Citation box -->
+    <div id="citebox" class="citation_box" role="button" tabindex="0" aria-label="Copy Chicago citations to clipboard"></div>
+
   </div>
 
-  <!-- Citation box -->
-  <div id="citebox" class="citation_box"></div>
-
-<!--  <div class="selection_bar">
-    <table style="color:#FFFFFF;margin-top:0px; font-size: 16px;">
-      <tr>
-        <td>
-          <div class="styled-longselect" onchange="load_set_info();">
-            <select id="TYP" onchange="dynamic_dropdown(this.options[this.selectedIndex].value);">
-              This is where one adds a new table. Remember to add the option to the dynamic_dropdown 
-              funtion in dojo-tools.js
-              <option value="nc-sr-v0.4" selected>NC SR (ONCVPSP v0.4)</option>
-              <option value="nc-fr-v0.4" >NC FR (ONCVPSP v0.4)</option>
-              <option value="jth-sr-v1.1">PAW (JTH v1.1)</option>
-            </select>
-          </div>
-        </td>
-
-        <td>
-          <div class="styled-select" onchange="localStorage.setItem('selectedXCF', document.getElementById('XCF').value); load_set_info();">
-            <select id="XCF"></select>
-          </div>
-        </td>
-
-        <td>
-          <div class="styled-select" onchange="localStorage.setItem('selectedTABLE', document.getElementById('TABLE').value); load_set_info();">
-            <select id="TABLE"></select>
-          </div>
-        </td>
-
-        <td>
-          <div class="styled-select">
-            <select id="FMT" onchange="localStorage.setItem('selectedFMT', document.getElementById('FMT').value);" >
-            </select>
-          </div>
-        </td>
-      </tr>
-    </table>
+  <!-- Citation copied to clipboard flag -->
+  <div id="citation-toast" class="citation-toast">
+    <span class="toast-check">✓</span>
+    Chicago-style citations copied to clipboard
   </div>
-</div> -->
 
-<!-- <div class="detail detail_av" id="av" >
-    <div class="zee" id="atomic_zee"><em>Z</em></div>
-    <div class="element_l" id="av_el">X</div>
-    <div class="l_follow_l" id="av_hl" title="low cutoff energy hint">l</div>
-    <div class="l_follow_l" id="av_hn" title="normal cutoff energy hint">n</div>
-    <div class="l_follow_l" id="av_hh" title="high cutoff energy hint">h</div>
-    <div class="valence_l" id="av_nv" title="number of valence electrons">n</div>
-  </div> -->
-
+  <!-- Wrapper for primary functionality of website -->
   <div class="wrapper">
     <div class="table">
-  
-      <div id="periodic-table"></div>
 
-      <div class="detail-wrap">
+      <!-- Periodic table rendering -->
+      <div id="periodic-table" aria-label="Periodic table"></div>
+
+      <!-- Detail box at bottom left of screen -->
+      <div class="detail-wrap" aria-label="Details on each element when hovered or focused">
         <div class="detail" id="X_n">
-          <div class="zee" id="X_z">Z</div>
-          <div class="valence" id="X_nv">#</div>
+          <div class="zee" id="X_z" aria-label="atomic number">Z</div>
+          <div class="valence" id="X_nv" aria-label="number of valence electrons">#</div>
           <div class="levels" id="LEVS">
-            <div id="X_hl">low</div>
-            <div id="X_hn">middle</div>
-            <div id="X_hh">high</div>
+            <div id="X_hl" aria-label="low energy cutoff suggestion">low</div>
+            <div id="X_hn" aria-label="middle energy cutoff suggestion">middle</div>
+            <div id="X_hh" aria-label="high energy cutoff suggestion">high</div>
           </div>
 
-          <div class="element" id="X_el">X</div>
-          <div class="name" id="X_name">element name</div>
+          <div class="element" id="X_el" aria-label="element symbol">X</div>
+          <div class="name" id="X_name" aria-label="element name">element name</div>
         </div>
 
         <!-- Labels -->
@@ -210,24 +174,31 @@
         <div class="label label-ecut">e<sub>cut</sub> hints</div>
 
         <!-- Squiggles -->
-        <img class="squiggles atnum" src="../img/z_squiggle.svg"></img>
-        <img class="squiggles bracket" src="../img/bracket.svg"></img>
-        <img class="squiggles vale" src="../img/nv_squiggle.svg"></img>
+        <img class="squiggles atnum" src="../img/z_squiggle.svg" alt=""></img>
+        <img class="squiggles bracket" src="../img/bracket.svg" alt=""></img>
+        <img class="squiggles vale" src="../img/nv_squiggle.svg" alt=""></img>
       </div>
 
-      <div id="download_button" class="download_button">Download Table</div>
+      <!-- Preset button: currently highlighting new table with lanthanide pseudos -->
+      <button id="preset-btn" class="preset-button" aria-label="Selector presets for the new lanthanides">
+        New Lanthanides
+        <img class="eclat" src="./img/eclat.svg" alt="New"></img>
+      </button>
+
+      <!-- Download Table button -->
+      <div id="download_button" class="download_button" role="button" tabindex="0" aria-label="download the entire table">Download Table</div>
 
     </div>
 
   </div>
 
-
   <script>
       document.addEventListener("DOMContentLoaded", function() {
-      // this function runs when the DOM is ready, i.e. when the document has been parsed
+      // this function runs when the DOM is ready, i.e., when the document has been parsed
       dojo_start();
   });
   </script>
 
 </body>
+
 </html>
