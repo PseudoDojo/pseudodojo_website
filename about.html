@@ -18,146 +18,341 @@
 
 <body>
 
-  <!-- Main menu, top right -->
+  <!-- Main navigation menu, top right -->
   <nav class="menubar" style="width:545px;" aria-label="Main menu">
     <div class="menutext">
-        <button class="menuitem" onclick="window.location = 'index.html'" aria-label="Go to Home page">Home</button>
-        <button class="menuitem" onclick="window.location = 'about.html'" aria-label="Go to About page">About</button>
-        <button class="menuitem" onclick="window.location = 'faq.html'" aria-label="Go to F.A.Q. page">F.A.Q.</button>
-        <button class="menuitem" onclick="window.location = 'contribute.html'" aria-label="Go to Contribute page">Contribute</button>
+      <button 
+        class="menuitem" 
+        onclick="window.location = 'index.html'" 
+        aria-label="Go to Home page">
+        Home
+      </button>
+      <button 
+        class="menuitem" 
+        onclick="window.location = 'about.html'" 
+        aria-label="Go to About page">
+        About
+      </button>
+      <button 
+        class="menuitem" 
+        onclick="window.location = 'faq.html'" 
+        aria-label="Go to F.A.Q. page">
+      F.A.Q.
+      </button>
+      <button 
+        class="menuitem" 
+        onclick="window.location = 'contribute.html'" 
+        aria-label="Go to Contribute page">
+        Contribute
+      </button>
     </div>
   </nav>
 
-  <div class="intro" style="height: 200px !important;">
-    <!-- Pseudo Dojo Logo -->
-    <a onclick="window.location = 'index.html'" aria-label="Go to home page web application" title="The Pseudo Dojo">
-      <img src="../img/logo.svg" class="logo" alt="PseudoDojo logo text, where PseudoDojo is written in blocky font with horizontal lines over each o.">
-    </a>
-    <!-- Large Arrow -->
-    <div class="arrow_page" aria-hidden="true">
-      <img src="../img/arrow_page.svg" alt="">
-    </div>
-  </div>
-
-  <div class="page-wrapper">
-    <div tabindex=0 class="headsup">
-      <div class="page_title" aria-label="Page title, About PseudoDojo">
-        <h1>About PseudoDojo</h1>
+  <!-- Page header -->
+  <header>
+    <div class="intro" style="height: 200px !important;">
+      <!-- Pseudo Dojo Logo -->
+      <a onclick="window.location = 'index.html'" 
+         class="logoa" 
+         aria-label="Go to Home page" 
+         title="PseudoDojo home">
+         <img 
+           src="../img/logo.svg" 
+           class="logo" 
+           alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
+           with horizontal lines over each o.">
+      </a>
+      <!-- Large Arrow -->
+      <div class="arrow_page" aria-hidden="true">
+        <img src="../img/arrow_page.svg" alt="">
       </div>
-      <h2 class="headline">Welcome to the PseudoDojo website, a digital hub for 
-        pseudopotentials generated through the <a href="https://perso.uclouvain.be/gian-marco.rignanese/publications/A083.pdf" 
-        target="_blank" rel="noopener" aria-label="Link to original PseudoDojo publiation describing project">PseudoDojo Project</a>.
-      </h2>
     </div>
+  </header>
 
-    <div id="tree" class="tree">
-
-      <div class="tree-trunk" aria-hidden="true">
-
-        <svg id="tree-svg" preserveAspectRatio="none">
-          <path id="tree-path" fill="none"/>
-        </svg>
-        <div class="tree-arrow" aria-hidden="true"></div>
-        <div class="tree-end-node" aria-hidden="true"></div>
-      </div>
-      <div class="tree-effects" aria-hidden="true"></div>
-      <section tabindex=0 class="tree-node">
-        <h3>The PseudoDojo Project</h3>
-
-        <p>The PseudoDojo is an open-source <a href="https://www.python.org/" 
-          target="_blank" rel="noopener" aria-label="Link to Python coding language website">
-          Python</a> framework for generating, validating, and storage of high-quality sets of 
-          pseudopotentials (or "pseudos" for short). The framework is built off the 
-          <a href="https://www.python.org/" target="_blank" rel="noopener" 
-          aria-label="Link to AbiPy python package">AbiPy</a> package and supports the following 
-          seven testing workflows executed within <a href="https://www.abinit.org/" 
-          target="_blank" rel="noopener" aria-label="Link to Abinit electronic structure theory suite website">Abinit</a>:
-        </p>
-
-        <ul>
-          <li>delta-gauge;
-          <li>revised delta gauge by Jollet et al.;
-          <li>GBRV tests for FCC structures;
-          <li>GBRV test for BCC structures;
-          <li>GBRV tests for compounds;
-          <li>phonons at the Gamma point;
-          <li>tests for the presence of ghost-states below and above the Fermi level.
-        </ul>
-
-        <p>The pseudopotential repository, including previous versions of pseudopotentials, 
-          can be found on our <a href="https://github.com/abinit/pseudo_dojo" target="_blank" 
-          rel="noopener" aria-label="Link to the PseudoDojo GitHub">GitHub</a>.
-        </p>
-
-      </section>
-
-      <section tabindex=0 class="tree-node">
-        <h3>File structure</h3>
-        <p> The web interface provides information through many file types:</p>
-        <ul>
-          <li><b>.psp8</b>: a <a href="https://www.tcm.phy.cam.ac.uk/castep/documentation/WebHelp/content/modules/castep/thcastepnormpseudo.htm" target="_blank" rel="noopener" aria-label="Link to castep documentation about norm-conserving pseudos">norm-conserving</a> (NC) pseudopotential in <a href="https://docs.abinit.org/developers/psp8_info/" target="_blank" rel="noopener" aria-label="Link to Abinit page on psp8 format">psp8 format</a> (for use in <a href="https://www.abinit.org/" target="_blank" rel="noopener" aria-label="Link to Abinit website">Abinit</a>)</li>
-          <li><b>.upf</b>: a NC pseudo in <a href="https://pseudopotentials.quantum-espresso.org/home/unified-pseudopotential-format" target="_blank" rel="noopener" aria-label="Link to Quantum Espresso documentation on upf format">upf format</a> (for use in <a href="https://www.quantum-espresso.org/" target="_blank" rel="noopener" aria-label="Link to Quantum Espresso electronic structure theory suite website">Quantum ESPRESSO</a>)</li>
-          <li><b>.psml</b>: a NC pseudo in <a href="https://esl.cecam.org/en/data/psml/" target="_blank" rel="noopener" aria-label="Link to description of psml format">psml format</a> (for use in <a href="https://siesta-project.org/siesta/About/overview.html" target="_blank" rel="noopener" aria-label="Link to SIESTA electronic structure theory suite website">SIESTA</a>)</li>
-          <li><b>.xml</b>: (PAW) the paw dataset in <a href="https://esl.cecam.org/en/data/paw-xml/" target="_blank" rel="noopener" aria-label="Link to description of xml format">xml format</a> (for use in <a href="https://www.abinit.org/" target="_blank" rel="noopener" aria-label="Link to Abinit electronic structure theory suite">Abinit</a> or <a href="https://gpaw.readthedocs.io/" target="_blank" rel="noopener" aria-label="Link to GPAW electronic structure theory suite website">GPAW</a>)</li>
-          <li><b>.in</b>: Input file used the generate the pseudopotential. For norm-conserving pseudos, this is likely an <a href="http://www.mat-simresearch.com/" rel="noopener" aria-label="Link to ONCVPSP code">ONCVPSP</a> input file. For JTH (PAW) pseudos, this is an <a href="https://users.wfu.edu/natalie/papers/pwpaw/man.html" target="_blank" rel="noopener" aria-label="">atompaw</a> input file.</li>
-          <li><b>.djrepo</b>: a <a href="https://www.json.org/json-en.html" target="_blank" rel="noopener" aria-label="Link to JSON format description">JSON</a> document with the consolidated test report of the NC pseudo. TODO: include catalogue of all information, or at least the relevant information, included in this file.</li>
-        </ul>
-
-      </section>
-
-      <section tabindex=0 class="tree-node">
-        <div role="Pullquote" class="pullquote">
-          A digital space for users of all belt ranks to train on and interact with pseudopotentials.
+  <!-- Salient page content -->
+  <main>
+    <div class="page-wrapper">
+      <!-- Page title and headline -->
+      <aside tabindex=0 class="headsup">
+        <div class="page_title" aria-label="Page title, About PseudoDojo">
+          <h1>About PseudoDojo</h1>
         </div>
-      </section>
+        <h2 class="headline">
+          Welcome to the PseudoDojo website, a digital hub for pseudopotentials 
+          generated through the 
+          <a href="https://perso.uclouvain.be/gian-marco.rignanese/publications/A083.pdf" 
+             target="_blank" 
+             rel="noopener" 
+             aria-label="Link to original PseudoDojo publiation describing project">
+             PseudoDojo Project
+          </a>.
+        </h2>
+      </aside>
 
-      <section tabindex=0 class="tree-node">
-        <h3>The Dojo Ethos</h3>
+      <!-- Begin content tree structure -->
+      <div id="tree" class="tree">
+        <div class="tree-trunk" aria-hidden="true">
+
+          <!-- Draw the tree -->
+          <svg id="tree-svg" preserveAspectRatio="none">
+            <path id="tree-path" fill="none"/>
+          </svg>
+          <!-- Animate the tree arrow -->
+          <div class="tree-arrow" aria-hidden="true"></div>
+          <!-- Draw tree end node -->
+          <div class="tree-end-node" aria-hidden="true"></div>
+
+        </div>
+
+        <!-- Animate the ripples at each tree node -->
+        <div class="tree-effects" aria-hidden="true"></div>
+
+        <!-- First tree node: explanation of PseudoDojo project -->
+        <section tabindex=0 class="tree-node">
+          <h3>The PseudoDojo Project</h3>
+
+          <p>The PseudoDojo is an open-source 
+            <a href="https://www.python.org/" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to Python coding language website">
+               Python
+            </a> 
+            framework for generating, validating, and storage of high-quality 
+            sets of pseudopotentials (or "pseudos" for short). The framework is 
+            built off the 
+            <a href="https://pypi.org/project/abipy/" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to AbiPy python package">
+               AbiPy
+            </a> 
+            package and supports the following seven testing workflows executed 
+            within 
+            <a href="https://www.abinit.org/" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to Abinit electronic structure theory suite website">
+               Abinit
+            </a>:
+          </p>
+
+          <ul>
+            <li>delta-gauge;
+            <li>revised delta gauge by Jollet et al.;
+            <li>GBRV tests for FCC structures;
+            <li>GBRV test for BCC structures;
+            <li>GBRV tests for compounds;
+            <li>phonons at the Gamma point;
+            <li>tests for the presence of ghost-states below and above the Fermi level.
+          </ul>
+
+          <p>The pseudopotential repository, including previous versions of 
+             pseudopotentials, can be found on our 
+             <a href="https://github.com/abinit/pseudo_dojo" 
+                target="_blank" 
+                rel="noopener" 
+                aria-label="Go to PseudoDojo GitHub repository">
+                GitHub
+             </a>.
+          </p>
+
+        </section>
+
+        <!-- Explanation of files provided -->
+        <section tabindex=0 class="tree-node">
+          <h3>Files provided</h3>
+          <p> The web interface provides information through many file types:</p>
+          <ul>
+            <li><b>.psp8</b>: a 
+              <a href="https://www.tcm.phy.cam.ac.uk/castep/documentation/WebHelp/content/modules/castep/thcastepnormpseudo.htm" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to castep documentation about norm-conserving pseudos">
+                 norm-conserving
+              </a> 
+              (NC) pseudopotential in 
+              <a href="https://docs.abinit.org/developers/psp8_info/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to Abinit page on psp8 format">
+                 psp8 format
+              </a> 
+              (for use in 
+              <a href="https://www.abinit.org/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to Abinit website">
+                 Abinit
+              </a>)
+            </li>
+            <li><b>.upf</b>: a NC pseudo in 
+              <a href="https://pseudopotentials.quantum-espresso.org/home/unified-pseudopotential-format" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to Quantum Espresso documentation on upf format">
+                 upf format
+              </a> 
+              (for use in 
+              <a href="https://www.quantum-espresso.org/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to Quantum Espresso electronic structure theory suite website">
+                 Quantum ESPRESSO
+              </a>)
+            </li>
+            <li><b>.psml</b>: a NC pseudo in 
+              <a href="https://esl.cecam.org/en/data/psml/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to description of psml format">
+                 psml format
+              </a> 
+                (for use in 
+              <a href="https://siesta-project.org/siesta/About/overview.html" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to SIESTA electronic structure theory suite website">
+                 SIESTA
+              </a>)
+            </li>
+            <li><b>.xml</b>: (PAW) the paw dataset in 
+              <a href="https://esl.cecam.org/en/data/paw-xml/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to description of xml format">
+                 xml format
+              </a> 
+              (for use in 
+              <a href="https://www.abinit.org/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to Abinit electronic structure theory suite">
+                 Abinit
+               </a> 
+              or 
+              <a href="https://gpaw.readthedocs.io/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to GPAW electronic structure theory suite website">
+                 GPAW
+              </a>)
+            </li>
+            <li><b>.in</b>: Input file used the generate the pseudopotential. 
+              For norm-conserving pseudos, this is likely an 
+              <a href="http://www.mat-simresearch.com/" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to ONCVPSP code">
+                 ONCVPSP
+              </a> 
+              input file. For JTH (PAW) pseudos, this is an 
+              <a href="https://users.wfu.edu/natalie/papers/pwpaw/man.html" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="">
+                 atompaw
+              </a> 
+              input file.
+            </li>
+            <li><b>.djrepo</b>: a 
+              <a href="https://www.json.org/json-en.html" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to JSON format description">
+                 JSON
+              </a> 
+              <!-- TODO: include catalogue of all information, or at least the 
+              relevant information, included in this file.-->
+              document with the consolidated test report of the NC pseudo.
+            </li>
+          </ul>
+
+        </section>
+
+        <!-- Cool pull-quote -->
+        <section tabindex=0 class="tree-node">
+          <div role="Pullquote" class="pullquote">
+            A digital space for users of all belt ranks to train on and interact 
+            with pseudopotentials.
+          </div>
+        </section>
+
+        <!-- Description of the Dojo ethos -->
+        <section tabindex=0 class="tree-node">
+          <h3>The Dojo Ethos</h3>
     
-        <p>PseudoDojo is inspired by the traditional Japanese and originally Buddhist dōjō (道場), 
-          literally translated to <strong>"the place of the Way."</strong> Dojos are spaces 
-          dedicated to disciplined practice, continuous improvement, and the pursuit of mastery. 
-          <br><br>In a metaphorical capacity, we define "the way" as the PseudoDojo framework for 
-          the careful development, testing, and refinement of pseudopotentials. Inspired by this 
-          philosophy and the playful similarity of the words "pseudo" and "judo," the PseudoDojo 
-          project aims to provide a curated, rigorously validated collection of pseudopotentials 
-          together with the tools and benchmarks needed to help the electronic structure theory 
-          community achieve reliable, reproducible first-principles simulations. With our web 
-          interface, we enrich the aptitude of the dojo ethos in this context by emphasizing 
-          PseudoDojo's social function as <strong>a digital space for users of all belt ranks to 
-          train on and interact with pseudopotentials.</strong>
-        </p>
+          <p>PseudoDojo is inspired by the traditional Japanese and originally 
+          Buddhist dōjō (道場), literally translated to <strong>"the place of 
+          the Way."</strong> Dojos are spaces dedicated to disciplined practice, 
+          continuous improvement, and the pursuit of mastery. <br><br>In a 
+          metaphorical capacity, we define "the way" as the PseudoDojo framework 
+          for the careful development, testing, and refinement of pseudopotentials. 
+          Inspired by this philosophy and the playful similarity of the words 
+          "pseudo" and "judo," the PseudoDojo project aims to provide a curated, 
+          rigorously validated collection of pseudopotentials together with the 
+          tools and benchmarks needed to help the electronic structure theory 
+          community achieve reliable, reproducible first-principles simulations. 
+          With our web interface, we enrich the aptitude of the dojo ethos in 
+          this context by emphasizing PseudoDojo's social function as <strong>
+          a digital space for users of all belt ranks to train on and interact 
+          with pseudopotentials.</strong>
+          </p>
 
-      </section>
+        </section>
 
-      <section tabindex=0 class="tree-node">
-        <h3>PseudoDojo Contributors</h3>
-        <p>Below is a table itemizing everyone who has contributed to PseudoDojo over the years. Click on 
-          the icons next to their names to see their Orcid and/or institutional research profiles.</p>
-        <div id="contributors-table"></div>
-      </section>
+        <!-- Table of PseudoDojo contributors -->
+        <section tabindex=0 class="tree-node">
+          <h3>PseudoDojo Contributors</h3>
 
+          <p>Below is a table itemizing everyone who has contributed to PseudoDojo 
+          over the years. Click on the icons next to their names to see their 
+          Orcid and/or institutional research profiles.
+          </p>
+
+          <div id="contributors-table"></div>
+
+        </section>
+
+      </div> <!-- End of tree div -->
+    </div> <!-- End of page-wrapper div -->
+  </main>
+
+  <!-- Footer -->
+  <footer class="dojo-footer">
+
+    <!-- Footer navigation links-->
+    <nav class="footer-links" aria-label="Footer navigation">
+      <span class="copyright">© PseudoDojo <span id="footerYear"></span></span>
+      <a href="index.html" aria-label="Go to Home page">Home</a>
+      <a href="about.html" aria-label="Go to About page">About</a>
+      <a href="faq.html" aria-label="Go to F.A.Q. page">F.A.Q.</a>
+      <a href="contribute.html" aria-label="Go to Contribute page">Contribute</a>
+      <a href="legal.html" aria-label="Go to Legal and Privacy page">Legal</a>
+      <a href="https://github.com/abinit/pseudo_dojo" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Go to PseudoDojo GitHub repository">
+         GitHub
+      </a>
+      <a href="mailto:matteo.giantomassi@uclouvain.be" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Contact PseudoDojo">
+         Contact Us
+      </a>
+    </nav>
+
+    <!-- Mini PseudoDojo logo in bottom right corner-->
+    <div>
+      <img src="../img/logo.svg" 
+           style="width:200px;margin-top:-70px;right:0;float:right;" 
+           alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
+           with horizontal lines over each o.">
     </div>
-  </div>
+
+  </footer>
+
 </body>
-
-<footer class="dojo-footer">
-
-  <nav class="footer-links" aria-label="Footer navigation">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="faq.html">F.A.Q.</a>
-    <a href="contribute.html">Contribute</a>
-    <a href="legal.html">Legal</a>
-    <a href="https://github.com/abinit/pseudo_dojo" target="_blank" rel="noopener">GitHub</a>
-    <a href="mailto:matteo.giantomassi@uclouvain.be" target="_blank" rel="noopener">Contact Us</a>
-    <span class="copyright">© <span id="footerYear"></span></span>
-  </nav>
-
-  <div>
-    <img src="../img/logo.svg" style="width:200px;margin-top:-70px;right:0;float:right;" alt="PseudoDojo logo text, where PseudoDojo is written in blocky font with horizontal lines over each o.">
-  </div>
-
-</footer>
-
 </html>
+

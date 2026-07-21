@@ -291,7 +291,7 @@ function build_ui(){
     );
 
     //Sets what happens when element is clicked
-    $('.plugin').on('click', function() {
+    $('.plugin').on('click', function(event) {
       console.log("CLICK");    
       var mythis = $(this);
       var sel = _get_pseudo_selection(mythis);
@@ -300,7 +300,7 @@ function build_ui(){
       console.log("Selection:", sel); 
 
       if (!sel.url) {
-        show_toast("Sorry but this file is not available!");
+        not_available_toast(event);
         return;
       }
     
@@ -326,7 +326,7 @@ function build_ui(){
             window.location.href = sel.url;
           })
           .fail(function() {
-            show_toast("File not found.");
+            not_available_toast(event);
           });
     
       } else {
@@ -335,7 +335,7 @@ function build_ui(){
             window.downloadFile(sel.url);
           })
           .fail(function() {
-            show_toast("File not found.");
+            not_available_toast(event);
           });
       }
     
@@ -368,15 +368,15 @@ function build_ui(){
         },500);
     });
 
-    $('.download_button').on('click', function() {
-        downloadTable();
+    $('.download_button').on('click', function(event) {
+        downloadTable(event);
     });
 
     $('.download_button').on('keydown', function(e) {
 
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            downloadTable();
+            downloadTable(e);
         }
     });
 
@@ -434,23 +434,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const validationMode =
         document.getElementById("validationMode");
     if (!validationMode) return;
-    function getMode() {
-        return validationMode.checked
-            ? "validation"
-            : "download";
-    }
 
     // Optional: react immediately when the mode changes.
     downloadMode.addEventListener("change", onModeChanged);
     validationMode.addEventListener("change", onModeChanged);
 
     function onModeChanged() {
-        console.log("Mode:", getMode());
 
-        // If desired, update the UI here.
+      const mode = getMode();
+
+      Object.values(periodicButtons).forEach(button =>
+        updatePluginAria(button, mode)
+      );
+
+      // Other UI updates...
     }
 
 });
+
+function getMode() {
+  return validationMode.checked
+    ? "validation"
+    : "download";
+}
 
 //-------------------------------------------------------------- Citation Box
 function updateCitationBox() {
@@ -470,7 +476,7 @@ function updateCitationBox() {
             html += `and <a href="${c.link}" target="_blank" rel="noopener" aria-label="Link to paper ${c.short}">${c.short}</a>.</div>`;
         }
         else {
-            if (citations.length === 2) {html += `<a href="${c.link}" target="_blank" rel="noopener">${c.short}</a> `} 
+            if (citations.length === 2) {html += `<a href="${c.link}" target="_blank" rel="noopener" aria-label="Link to paper ${c.short}">${c.short}</a> `} 
             else {html += `<a href="${c.link}" target="_blank" rel="noopener" aria-label="Link to paper ${c.short}">${c.short}</a>, `};
         }
     });
@@ -605,6 +611,7 @@ function showCitationToast(event) {
         y = 75;
     }
 
+    announce("List of Chicago-style citations copied to clipboard.");
     toast.style.left = `${x}px`;
     toast.style.top  = `${y}px`;
     toast.classList.add("show");
@@ -632,29 +639,6 @@ async function copyCitationsToClipboard(event) {
     }
 }
 
-//-------------------------------------------------------------- Warning Box
-function set_warning(type,txt) {
-  // type can be "info", "warning", or "success".
-  // Set the text in the warning box
-  let heading;
-  if (type === "warning") {
-    heading = "WARNING!";
-  }
-  else if (type === "info") {
-    heading = "NOTE:";
-  }
-  else {
-    heading = "SUCCESS!";
-  };
-  var warningbox = document.getElementById('warning_box');
-  warningbox.innerHTML = `<div class="alert ${type}" aria-label="Warning"><span id="cbn" class="closebtn" aria-label="Close">&times;</span><div class="warning-text"><strong>${heading}</strong> ${txt}</div></div>`;
-  var close = document.getElementById("cbn");
-  close.onclick = function(){
-     var div = document.getElementById('warning_box');
-     setTimeout(function(){div.innerHTML = "";}, 100);
-  }
-}
-
 //-------------------------------------------------------------- Periodic Table
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -679,30 +663,93 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const html =
-`  <button class="plugin ${bg} ${id}" ${oc_add} aria-label="${mode} for ${name}">
-    <div class="zee hide">${z}</div>
-    <div class="l_top hide" id="${symbol}_hl">hl</div>
-    <div class="l_middle hide" id="${symbol}_hn">hn</div>
-    <div class="l_bottom hide" id="${symbol}_hh">hh</div>
-    <div class="element">${symbol}</div>
-    <div class="name-wrap hide">
-      <div class="name hide">${name}</div>
-    </div>
-    <div class="valence hide" id="${symbol}_nv">nv</div>
-  </button>`;
+    `<button
+      class="plugin ${bg} ${id}"
+      ${oc_add}
+      data-z="${z}"
+      data-symbol="${symbol}"
+      data-name="${name}"
+      data-valence="${elcon}">
+       <div class="zee hide">${z}</div>
+       <div class="l_top hide" id="${symbol}_hl">hl</div>
+       <div class="l_middle hide" id="${symbol}_hn">hn</div>
+       <div class="l_bottom hide" id="${symbol}_hh">hh</div>
+       <div class="element">${symbol}</div>
+       <div class="name-wrap hide">
+         <div class="name hide">${name}</div>
+       </div>
+       <div class="valence hide" id="${symbol}_nv">nv</div>
+     </button>`;
 
     container.insertAdjacentHTML("beforeend", html);
     periodicButtons[symbol] = container.lastElementChild;
+    updatePluginAria(periodicButtons[symbol]);
 
   });
 
 });
+
+function updatePluginAria(button, mode = getMode()) {
+
+    const z      = button.dataset.z;
+    const symbol = button.dataset.symbol;
+    const name   = button.dataset.name;
+
+    const sel = _get_pseudo_selection($(button));
+    const available = !!sel.url;
+
+    let aria =
+        `Element ${name}. `+
+        `Atomic number ${z}. ` +
+        `Atomic symbol ${symbol}. `;
+
+    if (available) {
+
+        const nv = document.getElementById(symbol + "_nv")?.textContent ?? "--";
+        const hl = document.getElementById(symbol + "_hl")?.textContent ?? "--";
+        const hn = document.getElementById(symbol + "_hn")?.textContent ?? "--";
+        const hh = document.getElementById(symbol + "_hh")?.textContent ?? "--";
+
+        aria +=
+            `Pseudopotential available. ` +
+            `Number of valence orbitals: ${nv}. ` +
+            `Suggested low energy cutoff: ${hl} Hartree. ` +
+            `Suggested medium energy cutoff: ${hn} Hartree. ` +
+            `Suggested high energy cutoff: ${hh} Hartree. ` +
+            (mode === "validation"
+                ? "Press Enter to view the validation report."
+                : "Press Enter to download the pseudopotential.");
+
+    } else {
+
+        aria += "Pseudopotential unavailable.";
+
+    }
+
+    button.setAttribute("aria-label", aria);
+}
 
 //----------------
 //What happens when the cursor starts hovering over the object.
 function onEnter(){
   var mythis = $(this);
   var sel = _get_pseudo_selection(mythis);
+
+  const zee = mythis.find(".zee")[0];
+  if (zee) {
+    // Remember the original atomic number
+    if (!zee.dataset.number)
+        zee.dataset.number = zee.textContent;
+    if (sel.url) {
+      zee.textContent = "✓";
+      zee.classList.add("ok");
+      zee.classList.remove("bad");
+    } else {
+      zee.textContent = "✕";
+      zee.classList.add("bad");
+      zee.classList.remove("ok");
+    }
+  }
 
   // update the color and properties of the  X_n box.
   set_X(sel.elm, sel.color, sel.zeen);
@@ -720,8 +767,14 @@ function onEnter(){
 //----------------
 // What happens when the cursor stops hovering over the object
 function onLeave(){
+  var mythis = $(this);
+  const zee = mythis.find(".zee")[0];
+  if (zee) {
+    zee.textContent = zee.dataset.number;
+    zee.classList.remove("ok","bad");
+  }
   reset_X();
-  $(this).removeAttr("style");
+  mythis.removeAttr("style");
   document.getElementById('X_n').style.color = "#4B4B4D";
 }
 
@@ -819,6 +872,8 @@ function set_info(info) {
         //set_average(averages);
         reset_X();
     }
+
+    Object.values(periodicButtons).forEach(updatePluginAria);
 }
 
 //-------------------------------------------------------------- Detail box bottom left of screen
@@ -995,6 +1050,7 @@ function updateFMT() {
 function updateDisplay() {
     updatePeriodicTable();
     updateMetaInfo();
+    Object.values(periodicButtons).forEach(updatePluginAria);
     updateCitationBox();
     saveSelections();
 }
@@ -1150,13 +1206,13 @@ function _get_pseudo_selection(dom_object){
 }
 
 //-------------------------------------------------------------- Download Table button
-function downloadTable() {
+function downloadTable(event) {
 
     // Download the targz file with the full table.
     var sel = _get_targz_selection();
 
     if (!sel.url) {
-        show_toast("Sorry but this targz is not available!");
+        not_available_toast(event);
         return;
     }
 
@@ -1260,7 +1316,7 @@ function dojoTour_guidedtour() {
     id: "XC",
     attachTo: {element: "#XC",on: "bottom"},
     text: tourText("Then, you can pick one of the available <strong>exchange-correlation (XC) functionals</strong>. " +
-          `Have a look at the <a href="faq">F.A.Q.</a> if your fuctional of choice is not available.`),
+          `Have a look at the <a href="faq" aria-label="Go to F.A.Q. page">F.A.Q.</a> if your fuctional of choice is not available.`),
     buttons: [
       {text: "Back",action: tour.back},
       {text: "Next",action: tour.next}
@@ -1272,7 +1328,7 @@ function dojoTour_guidedtour() {
     attachTo: {element: "#ACC",on: "bottom"},
     text: tourText("We offer pseudopotential tables in two degrees of <strong>accuracy</strong>—standard or stringent. " +
           "Generally, the standard table features pseudopotentials that we consider to be a good compromise " +
-          `between computational expense and chemical accuracy. Have a look at the <a href="faq">F.A.Q.</a> ` +
+          `between computational expense and chemical accuracy. Have a look at the <a href="faq" aria-label="Go to F.A.Q. page">F.A.Q.</a> ` +
           "for a detailed description on the difference between them."),
     buttons: [
       {text: "Back",action: tour.back},
@@ -1301,8 +1357,8 @@ function dojoTour_guidedtour() {
     text: tourText("In <strong>download mode</strong>, click on an element to download its pseudopotential. " +
           "In <strong>test result mode</strong>, clicking on an element will open up the testing suite in a separate tab. " +
           "In either case, we've put in place accesible mechanisms to inform you if the content is available." +
-          "If the element's box turns <strong style=\"color: #44AA44\">green</strong> on hover, the file " +
-          "content is available. If it turns <strong style=\"color: #CC4444\">red</strong> on hover or the " +
+          "If the element's box turns <strong style=\"color: #44AA44\">green</strong> on hover or a <span style='color:#053605'>✓</span> appears, the file " +
+          "content is available. If a <span style='color:#610000'>✕</span> appears and the box turns <strong style=\"color: #CC4444\">red</strong> on hover or the " +
           " <strong style=\"color: #A3A3A3\">background color-to-text</strong> contrast is low, it's not available."),
     buttons: [
       {text: "Back",action: tour.back},
@@ -1425,52 +1481,48 @@ function removeOutsideClickHandler() {
 }
 
 //-------------------------------------------------------------- Small warning banners
-function show_toast(text){
-  Toastify({
-    text: text,
-    duration: 3000,
-    newWindow: true,
-    close: true,
-    gravity: "bottom", // `top` or `bottom`
-    position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    style: {
-      background: "linear-gradient(to right, #00b09b, #96c93d)",
-    },
-  }).showToast();
-}
+function not_available_toast(event) {
 
-//-------------------------------------------------------------- Make layout less stimulating
-// When user clicks on Tennessine
-function make_light() {
-    document.getElementById('FMT').value = 'psp8'
-    const hide_classes = ["hide", "name", 'intro', "styled-longselect",
-                          "selection_bar", "help_button", "description", "menubar"];
-    for (cls of hide_class) {
-        for (tohide of document.getElementsByClassName(hide_class)) {
-            tohide.style.visibility = "hidden";
-        }
+    const toast = document.getElementById("not-available-toast");
+    let x, y;
+
+    if (event instanceof MouseEvent) {
+
+        // User clicked
+        x = event.pageX;
+        y = event.pageY - 10;
+
+    } else {
+
+        const rect = event.currentTarget.getBoundingClientRect();
+        x = rect.left + rect.width / 2 + window.scrollX - 150;
+        y = rect.top + window.scrollY - 80;
     }
 
-    document.getElementById('X_n').setAttribute("style","left:326px; top:91px; height:170px; width:140px;");
-    document.getElementById('N').setAttribute("style","left:326px; top:91px; height:170px; width:140px; font-size=20px");
-    document.getElementById("download_button").setAttribute("style","left:70px; top:151px; width:200px; height:55px; padding:15px");
-    elements = document.getElementsByClassName('element')
-    for (var i; i < elements.length; i++){
-       elements[i].setAttribute('style', 'font-size:24px; margin-top:12px; line-height:1; text-align:center;');
-    }
-    document.getElementById("X_el").setAttribute('style', 'margin-top:20px;');
-    document.getElementById("X_hl").setAttribute('style', 'font-size:20px; padding:2px');
-    document.getElementById("X_hn").setAttribute('style', 'font-size:20px; padding:2px');
-    document.getElementById("X_hh").setAttribute('style', 'font-size:20px; padding:2px');
-    document.getElementById("X_nv").setAttribute('style', 'font-size:20px; margin-top:-158px; padding:2px');
-    document.getElementById("det_test").setAttribute('style', 'font-size:20px; padding:2px');
-    document.getElementById("det_hints").setAttribute('style', 'font-size:20px; margin-top:5px; padding:2px');
-    document.getElementById("X_d").setAttribute('style', 'font-size:20px; padding:2px');
-    document.getElementById("X_dp").setAttribute('style', 'font-size:20px; padding:2px');
-    document.getElementById("X_gb").setAttribute('style', 'font-size:20px; padding:2px');
+    announce("Sorry. This content is not available.");
+    toast.style.left = `${x}px`;
+    toast.style.top  = `${y}px`;
+    toast.classList.add("show");
+
+    setTimeout(() => {toast.classList.remove("show");}, 2000);
 }
 
+function announce(message, urgent = false) {
+
+    const live = document.getElementById("toast-announcer");
+    if (!live) return;
+
+    live.setAttribute("role", urgent ? "alert" : "status");
+    live.setAttribute("aria-live", urgent ? "assertive" : "polite");
+
+    // Clear previous announcement
+    live.textContent = "";
+
+    // Delay slightly so VoiceOver notices the change
+    setTimeout(() => {
+        live.textContent = message;
+    }, 50);
+}
 
 //-------------------------------------------------------------- Easter egg
 // When the user clicks on Oganesson

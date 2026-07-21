@@ -9,31 +9,57 @@
 <html lang="en-US">
 <!--<![endif]-->
 
+<!-- This is the HTML code for the PseudoDojo web application
+and landing page. It is interfaced with CSS in css/style.css
+and JavaScript in js/dojo-tools.js. We use Shepherd for the
+Quick Tutorial/Guided Tour and Toastify to show small messages. -->
+
 <head>
   <title>PseudoDojo</title>
 
   <!-- Meta characteristics -->
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=1360">
-  <meta name="description" content="This site provides tested pseudopotentials, which are sorted by type, accuracy, and efficiency. It shows information on the convergence, quality, and transferability of the pseudos, which are downloadable in formats compatible with QuantumESPRESSO, Abinit, and more." />
-  <meta name="keywords" content="pseudopotential, pseudo, DFT, ionic, valence, frozen core, PAW atomic dataset, periodic table, elements, ab initio, norm conserving, plane wave, PAW, Vanderbilt, JTH, NC, fully relativistic, scalar relativistic" />
+  <meta 
+    name="description" 
+    content="This site provides tested pseudopotentials, which are sorted by 
+      type, accuracy, and efficiency. It shows information on the convergence, 
+      quality, and transferability of the pseudos, which are downloadable in 
+      formats compatible with QuantumESPRESSO, Abinit, and more." 
+  />
+  <meta 
+    name="keywords" 
+    content="pseudopotential, pseudo, DFT, ionic, valence, frozen core, PAW 
+      atomic dataset, periodic table, elements, ab initio, norm conserving, 
+      plane wave, PAW, Vanderbilt, JTH, NC, fully relativistic, scalar 
+      relativistic" 
+  />
   <meta name="robots" content="index, follow" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_US" />
-  <meta property="og:title" content="The Periodic Table of tested pseudopotentials" />
+  <meta 
+    property="og:title" 
+    content="The Periodic Table of tested pseudopotentials" 
+  />
   <meta property="og:url" content="http://pseudo-dojo.org" />
-  <meta property="og:description" content="This site provides tested pseudopotentials, which are sorted by type, accuracy, and efficiency. It shows information on the convergence, quality, and transferability of the pseudos, which are downloadable in formats compatible with QuantumESPRESSO, Abinit, and more." />
+  <meta 
+    property="og:description"
+    content="This site provides tested pseudopotentials, which are sorted by 
+      type, accuracy, and efficiency. It shows information on the convergence, 
+      quality, and transferability of the pseudos, which are downloadable in 
+      formats compatible with QuantumESPRESSO, Abinit, and more." 
+  />
 
   <!-- Links to stylesheets, scripts, and images -->
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <script 
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  </script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.png">
   <script src="js/dojo-tools.js"></script>
-
-  <!-- Toastify -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <!-- Guided Tour -->
   <link rel="stylesheet" href="/css/shepherd.css">
@@ -41,134 +67,245 @@
 
 </head>
 
-<body> <!-- Includes background image (light grey logo and white lines) styled in CSS -->
+<body> <!-- Renders background image (light grey logo and white lines) styled in CSS -->
 
   <!-- Main menu, top right -->
   <nav class="menubar" aria-label="Main menu">
     <div class="menutext">
-        <button tabindex=3 class="menuitem" onclick="window.location = 'about.html'" aria-label="Go to About page">About</button>
-        <button tabindex=4 class="menuitem" onclick="window.location = 'faq.html'" aria-label="Go to F.A.Q. page">F.A.Q.</button>
-        <button tabindex=5 class="menuitem" onclick="window.location = 'contribute.html'" aria-label="Go to Contribute page">Contribute</button>
+      <button 
+        tabindex=3 
+        class="menuitem" 
+        onclick="window.location = 'about.html'" 
+        aria-label="Go to About page">
+        About
+      </button>
+      <button 
+        tabindex=4 
+        class="menuitem" 
+        onclick="window.location = 'faq.html'" 
+        aria-label="Go to F.A.Q. page">
+        F.A.Q.
+      </button>
+      <button 
+        tabindex=5 
+        class="menuitem" 
+        onclick="window.location = 'contribute.html'" 
+        aria-label="Go to Contribute page">
+        Contribute
+      </button>
     </div>
   </nav>
 
-  <!-- Warning box -->
-  <div id="warning_box" aria-label="Warning box"></div>
+  <main aria-describedby="dojoInstructions">
+    <!-- WCAG Invisible instructions for site navigation -->
+    <p id="dojoInstructions" class="sr-only">
+      This application lets you browse available pseudopotentials by element. 
+      First choose the desired pseudopotential characteristics. Then navigate 
+      the periodic table. File availability is announced. Press Enter on an 
+      available element to download the pseudopotential or view its validation 
+      report, depending on the selected mode.
+    </p>
 
-  <!-- Intro Stuff (Logo, selectors, etc.) -->
-  <div class="intro">
-    <!-- Pseudo Dojo Logo -->
-    <a role="button" tabindex=1 aria-label="PseudoDojo logo and link to YouTube song. PseudoDojo is written in blocky font with horizontal lines over each o." href="https://youtu.be/j9z4AJIx40M" target="_blank" title="The Pseudo Dojo">
-      <img src="../img/logo.svg" class="logo hide" alt="PseudoDojo logo text, where PseudoDojo is written in blocky font with horizontal lines over each o.">
-    </a>
+    <!-- Top selection content -->
+    <div class="intro">
+      <!-- Pseudo Dojo Logo and link to song -->
+      <a 
+        role="button" 
+        tabindex=1 class="logoa" 
+        aria-label="PseudoDojo logo and link to YouTube song. PseudoDojo is 
+          written in blocky font with horizontal lines over each o." 
+        href="https://youtu.be/j9z4AJIx40M" 
+        target="_blank" 
+        title="The PseudoDojo">
+        <img 
+          src="../img/logo.svg" 
+          class="logo hide" 
+          alt="PseudoDojo logo text, where PseudoDojo is written in blocky 
+            font with horizontal lines over each o.">
+      </a>
 
-    <!-- Large Arrow -->
-    <div class="arrow" id="MainArrow" aria-label="Big arrow pointing to periodic table">
-      <img src="../img/arrow.svg" class="arrow" alt="">
-    </div>
-
-    <!-- Quick Tutorial button -->
-    <button tabindex=2 class="help_button" onclick="dojoTour_guidedtour()" id="guided-tour-button" title="Guided Tour" aria-label="Guided tour">
-      Quick Tutorial
-    </button>
-
-    <!-- Toggle for Download Mode or Testing Mode -->
-    <div tabindex=0 class="mode-wrapper" id="DojoMode">
-      <span id="modeLegend" class="toggle-label">
-        Click on an element to:
-      </span>
-
-      <fieldset class="mode-group" aria-labelledby="modeLegend">
-        <label class="mode-option">
-          <input type="radio" name="dojoMode" id="downloadMode" value="Download pseudo mode" checked>
-            Download pseudos
-        </label>
-
-        <label class="mode-option">
-          <input type="radio" name="dojoMode" id="validationMode" value="See test result mode">
-          See test results
-        </label>
-      </fieldset>
-
-    </div>
-
-    <!-- Pseudo selection bar -->
-    <div id="selectorStatus" class="sr-only" aria-live="polite"></div>
-    <div class="selection_bar" aria-label="Options for pseudopotential characteristics bar">
-
-      <!-- Selection of TYPE -->
-      <div class="selector">
-        <label for="TYPE">Type:</label>
-        <select id="TYPE"></select>
+      <!-- Large Arrow -->
+      <div class="arrow" id="MainArrow">
+        <img src="../img/arrow.svg" class="arrow" alt="">
       </div>
 
-      <!-- Selection of RELATIVISTIC -->
-      <div class="selector">
-        <label for="REL">Relativistic:</label>
-        <select id="REL" style="width: 75px;"></select>
+      <!-- Quick Tutorial/Guided Tour button -->
+      <aside
+        <button 
+          tabindex=2 
+          class="help_button" 
+          onclick="dojoTour_guidedtour()" 
+          id="guided-tour-button" 
+          title="Quick interface tutorial" 
+          aria-label="Quick interface tutorial">
+          Quick Tutorial
+        </button>
+      </aside>
+
+      <!-- Radio button for Download Mode or Testing Mode -->
+      <div tabindex=0 class="mode-wrapper" id="DojoMode">
+        <aside id="modeLegend" class="toggle-label">
+          Click on an element to:
+        </aside>
+
+        <fieldset 
+          class="mode-group" 
+          aria-labelledby="modeLegend">
+          <label class="mode-option">
+            <input 
+              type="radio" 
+              name="dojoMode" 
+              id="downloadMode" 
+              value="Download pseudo mode" 
+              checked>
+              Download pseudos
+          </label>
+
+          <label class="mode-option">
+            <input 
+              type="radio" 
+              name="dojoMode" 
+              id="validationMode" 
+              value="See test result mode">
+              See test results
+          </label>
+        </fieldset>
+
       </div>
 
-      <!-- Selection of VERSION -->
-      <div class="selector">
-        <label for="VER">Version:</label>
-        <select id="VER" style="width: 60px;"></select>
-      </div>
+      <!-- Pseudo selection bar -->
+      <div id="selectorStatus" class="sr-only" aria-live="polite"></div>
+      <section 
+        class="selection_bar" 
+        aria-labelledby="selectionHeading" 
+        aria-describedby="selectionInstructions">
+        <h2 id="selectionHeading" class="sr-only">
+          Pseudopotential characteristics
+        </h2>
 
-      <!-- Selection of XC functional -->
-      <div class="selector">
-        <label for="XC">XC:</label>
-        <select id="XC" style="width: 80px;"></select>
-      </div>
+        <p id="selectionInstructions" class="sr-only">
+          Choose the pseudopotential characteristics first. The periodic table 
+          below updates automatically to show which pseudopotentials are available.
+        </p>
 
-      <!-- Selection of ACCURACY -->
-      <div class="selector">
-        <label for="ACC">Accuracy:</label>
-        <select id="ACC" style="width: 100px;">
-        </select>
-      </div>
-
-      <!-- Selection of FORMAT -->
-      <div class="selector">
-        <label for="FMT">Format:</label>
-        <select id="FMT" style="width: 75px;"></select>
-      </div>
-
-    </div>
-
-    <!-- Citation box -->
-    <div id="citebox" class="citation_box" role="button" tabindex="0" aria-label="Copy Chicago citations to clipboard"></div>
-
-  </div>
-
-  <!-- Citation copied to clipboard flag -->
-  <div id="citation-toast" class="citation-toast">
-    <span class="toast-check">✓</span>
-    Chicago-style citations copied to clipboard
-  </div>
-
-  <!-- Wrapper for primary functionality of website -->
-  <div class="wrapper">
-    <div class="table">
-
-      <!-- Periodic table rendering -->
-      <div id="periodic-table" aria-label="Periodic table"></div>
-
-      <!-- Detail box at bottom left of screen -->
-      <div class="detail-wrap" aria-label="Details on each element when hovered or focused">
-        <div class="detail" id="X_n">
-          <div class="zee" id="X_z" aria-label="atomic number">Z</div>
-          <div class="valence" id="X_nv" aria-label="number of valence electrons">#</div>
-          <div class="levels" id="LEVS">
-            <div id="X_hl" aria-label="low energy cutoff suggestion">low</div>
-            <div id="X_hn" aria-label="middle energy cutoff suggestion">middle</div>
-            <div id="X_hh" aria-label="high energy cutoff suggestion">high</div>
-          </div>
-
-          <div class="element" id="X_el" aria-label="element symbol">X</div>
-          <div class="name" id="X_name" aria-label="element name">element name</div>
+        <!-- Selection of TYPE -->
+        <div class="selector">
+          <label for="TYPE">Type:</label>
+          <select id="TYPE"></select>
         </div>
 
-        <!-- Labels -->
+        <!-- Selection of RELATIVISTIC -->
+        <div class="selector">
+          <label for="REL">Relativistic:</label>
+          <select id="REL" style="width: 75px;"></select>
+        </div>
+
+        <!-- Selection of VERSION -->
+        <div class="selector">
+          <label for="VER">Version:</label>
+          <select id="VER" style="width: 60px;"></select>
+        </div>
+
+        <!-- Selection of XC functional -->
+        <div class="selector">
+          <label for="XC">XC:</label>
+          <select id="XC" style="width: 80px;"></select>
+        </div>
+
+        <!-- Selection of ACCURACY -->
+        <div class="selector">
+          <label for="ACC">Accuracy:</label>
+          <select id="ACC" style="width: 100px;">
+          </select>
+        </div>
+
+        <!-- Selection of FORMAT -->
+        <div class="selector">
+          <label for="FMT">Format:</label>
+          <select id="FMT" style="width: 75px;"></select>
+        </div>
+
+      </section> <!-- End selection bar section -->
+
+      <!-- Citation box -->
+      <aside 
+        id="citebox" 
+        class="citation_box" 
+        role="button" 
+        tabindex="0" 
+        aria-labelledby="citationHeading">
+      </aside>
+      <p id="citationHeading" class="sr-only">
+        This citation box updates dynamically with a list of relevant citations 
+        according to your pseudopotential selection criteria. Click on the box 
+        to copy the list in Chicago style, or press the BibTeX button to download
+        the list in BibTeX format.
+      </p>
+
+    </div> <!-- End intro div -->
+
+    <!-- Citation copied to clipboard flag -->
+    <aside id="citation-toast" class="citation-toast">
+      <span class="toast-check">✓</span>
+      Chicago-style citations copied to clipboard
+    </aside>
+
+    <!-- Wrapper for periodic table -->
+    <div class="wrapper">
+
+      <!-- Periodic table rendering -->
+      <section aria-labelledby="tableHeading">
+        <h2 id="tableHeading" class="sr-only">
+          Periodic table of available pseudopotentials
+        </h2>
+
+        <div id="periodic-table" aria-describedby="tableDescription"></div>
+
+        <p id="tableDescription" class="sr-only">
+          Select an element to download a pseudopotential or view its validation 
+          report, depending on the selected mode.
+        </p>
+
+        <!-- File not available toast -->
+        <div id="not-available-toast" class="not-available-toast">
+          <strong>Sorry!</strong> This content is not available. 
+        </div>
+
+      </section>
+
+      <!-- Defaults for detail box at bottom left of screen. Behavior handled
+      by set_X() and reset_X() functions in dojo-tools.js -->
+      <aside 
+        class="detail-wrap" 
+        aria-label="Details on each element when hovered or focused">
+        <div class="detail" id="X_n">
+          <div class="zee" id="X_z" aria-label="atomic number">
+            Z
+          </div>
+          <div class="valence" id="X_nv" aria-label="number of valence orbitals">
+            #
+          </div>
+          <div class="levels" id="LEVS">
+            <div id="X_hl" aria-label="low energy cutoff suggestion">
+              low
+            </div>
+            <div id="X_hn" aria-label="middle energy cutoff suggestion">
+              middle
+            </div>
+            <div id="X_hh" aria-label="high energy cutoff suggestion">
+              high
+            </div>
+          </div>
+
+          <div class="element" id="X_el" aria-label="element symbol">
+            X
+          </div>
+          <div class="name" id="X_name" aria-label="element name">
+            element name
+          </div>
+        </div> <!-- End div detail -->
+
+        <!-- Quantity Labels -->
         <div class="label label-z">atomic number</div>
         <div class="label label-nv">number of valence orbitals</div>
         <div class="label label-ecut">e<sub>cut</sub> hints</div>
@@ -177,27 +314,77 @@
         <img class="squiggles atnum" src="../img/z_squiggle.svg" alt=""></img>
         <img class="squiggles bracket" src="../img/bracket.svg" alt=""></img>
         <img class="squiggles vale" src="../img/nv_squiggle.svg" alt=""></img>
-      </div>
 
-      <!-- Preset button: currently highlighting new table with lanthanide pseudos -->
-      <button id="preset-btn" class="preset-button" aria-label="Selector presets for the new lanthanides">
-        New Lanthanides
-        <img class="eclat" src="./img/eclat.svg" alt="New"></img>
-      </button>
+      </aside> <!-- End aside detail-wrap -->
+
+      <!-- Preset button: currently highlighting table with new lanthanides -->
+      <aside>
+        <button 
+          id="preset-btn" 
+          class="preset-button" 
+          aria-label="Selector presets for the new lanthanides">
+          New Lanthanides
+          <img class="eclat" src="./img/eclat.svg" alt="New"></img>
+        </button>
+      </aside>
 
       <!-- Download Table button -->
-      <div id="download_button" class="download_button" role="button" tabindex="0" aria-label="download the entire table">Download Table</div>
+      <div 
+        id="download_button" 
+        class="download_button" 
+        role="button" 
+        tabindex="0" 
+        aria-label="download the entire table">
+        Download Table
+      </div>
 
-    </div>
+    </div> <!-- End of periodic table wrapper div -->
+  </main>
 
-  </div>
-
+  <!-- Script for rendering dynamic elements of web application,
+  which runs when the DOM is ready (the document is parsed).  -->
   <script>
-      document.addEventListener("DOMContentLoaded", function() {
-      // this function runs when the DOM is ready, i.e., when the document has been parsed
+    document.addEventListener("DOMContentLoaded", function() {
       dojo_start();
-  });
+    });
   </script>
+
+  <!-- Footer -->
+  <footer 
+    class="dojo-footer" 
+    style="padding-top: 20px; padding-left: 7vw;height:75px;">
+
+    <!-- Footer navigation menu -->
+    <nav class="footer-links" aria-label="Footer navigation">
+      <span class="copyright">© PseudoDojo <span id="footerYear"></span></span>
+      <a href="index.html" aria-label="Go to Home page">Home</a>
+      <a href="about.html" aria-label="Go to About page">About</a>
+      <a href="faq.html" aria-label="Go to F.A.Q. page">F.A.Q.</a>
+      <a href="contribute.html" aria-label="Go to Contribute page">Contribute</a>
+      <a href="legal.html" aria-label="Go to Legal and Privacy page">Legal</a>
+      <a href="https://github.com/abinit/pseudo_dojo" 
+         target="_blank" rel="noopener" 
+         aria-label="Go to PseudoDojo GitHub repository">
+         GitHub
+      </a>
+      <a href="mailto:matteo.giantomassi@uclouvain.be" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Contact PseudoDojo">
+         Contact Us
+      </a>
+    </nav>
+
+  </footer>
+
+  <!-- Screen reader announcements of Toastify flags -->
+  <div
+    id="toast-announcer"
+    class="sr-only"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true">
+  </div>
 
 </body>
 
