@@ -349,21 +349,21 @@ function build_ui(){
         var sel = _get_targz_selection();
 
         if (sel.url) {
-            mythis.css("background-color", "#44AA44");
+            mythis.css("background-color", "#5BC75B");
             mythis.css("color", "#FFFFFF");
         }
         else {
             // tgz not available.
             mythis.css("background-color", "#CC4444");
-            mythis.css("color", "#FFFFFF");
+            mythis.css("color", "#610000");
         }
       },
       function(){
         var mythis = $(this);
-        mythis.css("background-color", "#4D4D4D");
+        mythis.css("background-color", "#4B4B4D");
         mythis.css("color", "#FFFFFF");
         setTimeout(function(){
-          mythis.css("background-color", "#4D4D4D");
+          mythis.css("background-color", "#4B4B4D");
           mythis.css("color", "#FFFFFF");
         },500);
     });
@@ -465,11 +465,11 @@ function updateCitationBox() {
     const box =document.getElementById("citebox");
 
     if (citations.length === 0) {
-        box.innerHTML = "<div class='pleasecite'><strong>No citation available.</strong></div>";
+        box.innerHTML = "<div class='pleasecite center'><strong>No citation available.</strong></div>";
         return;
     }
 
-    let html = "<div class='pleasecite'><strong>PLEASE CITE</strong></div><div class='citation'>";
+    let html = "<div class='pleasecite center'><strong>PLEASE CITE</strong></div><div class='citation'>";
 
     citations.forEach(c => {
         if (c === citations[citations.length - 1]) {
@@ -484,7 +484,7 @@ function updateCitationBox() {
     html += `
     <button
       id="downloadBibtex"
-      class="bibtex_download" aria-label="Download relevant citations in BibTeX format">
+      class="bibtex_download center" aria-label="Download relevant citations in BibTeX format">
       BibTeX
     </button>`;
 
@@ -756,11 +756,11 @@ function onEnter(){
 
   // If the file exists, then background-color of element is green, otherwise red.
   if (sel.url) {
-      mythis.css("background-color", "#44AA44");
+      mythis.css("background-color", "#5BC75B");
       mythis.css("color", "#FFFFFF");
   } else { 
       mythis.css("background-color", "#CC4444");
-      mythis.css("color", "#FFFFFF");
+      mythis.css("color", "#610000");
   }
 }
 
@@ -1357,7 +1357,7 @@ function dojoTour_guidedtour() {
     text: tourText("In <strong>download mode</strong>, click on an element to download its pseudopotential. " +
           "In <strong>test result mode</strong>, clicking on an element will open up the testing suite in a separate tab. " +
           "In either case, we've put in place accesible mechanisms to inform you if the content is available." +
-          "If the element's box turns <strong style=\"color: #44AA44\">green</strong> on hover or a <span style='color:#053605'>✓</span> appears, the file " +
+          "If the element's box turns <strong style=\"color: #5BC75B\">green</strong> on hover or a <span style='color:#053605'>✓</span> appears, the file " +
           "content is available. If a <span style='color:#610000'>✕</span> appears and the box turns <strong style=\"color: #CC4444\">red</strong> on hover or the " +
           " <strong style=\"color: #A3A3A3\">background color-to-text</strong> contrast is low, it's not available."),
     buttons: [
@@ -1598,7 +1598,7 @@ function makeIconLink(url, label, svg, cssClass) {
     if (!url) return "";
 
     return `
-        <a class="icon-link ${cssClass}"
+        <a class="icon-link center ${cssClass}"
            href="${url}"
            target="_blank"
            rel="noopener noreferrer"
@@ -1614,7 +1614,7 @@ function buildContributorTable(containerId) {
     const rows = contributors.map(person => `
         <tr>
           <th scope="row" class="c1">
-            <div class="person">
+            <div class="person center">
               <span class="person-name">${person.name} </span>
 
               <span class="person-links">

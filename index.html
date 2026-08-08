@@ -11,8 +11,9 @@
 
 <!-- This is the HTML code for the PseudoDojo web application
 and landing page. It is interfaced with CSS in css/style.css
-and JavaScript in js/dojo-tools.js. We use Shepherd for the
-Quick Tutorial/Guided Tour and Toastify to show small messages. -->
+and JavaScript in js/dojo-tools.js. We use the Shepherd 
+package for the Quick Tutorial/Guided Tour. 
+Updated July 2026 by Lórien MacEnulty       -->
 
 <head>
   <title>PseudoDojo</title>
@@ -69,26 +70,30 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
 
 <body> <!-- Renders background image (light grey logo and white lines) styled in CSS -->
 
+  <a href="#DojoMode" class="skip-link center" tabindex=1>
+    Skip to main content
+  </a>
+
   <!-- Main menu, top right -->
   <nav class="menubar" aria-label="Main menu">
     <div class="menutext">
       <button 
-        tabindex=3 
-        class="menuitem" 
+        tabindex=4
+        class="menuitem center" 
         onclick="window.location = 'about.html'" 
         aria-label="Go to About page">
         About
       </button>
       <button 
-        tabindex=4 
-        class="menuitem" 
+        tabindex=5 
+        class="menuitem center" 
         onclick="window.location = 'faq.html'" 
         aria-label="Go to F.A.Q. page">
         F.A.Q.
       </button>
       <button 
-        tabindex=5 
-        class="menuitem" 
+        tabindex=6 
+        class="menuitem center" 
         onclick="window.location = 'contribute.html'" 
         aria-label="Go to Contribute page">
         Contribute
@@ -111,7 +116,8 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
       <!-- Pseudo Dojo Logo and link to song -->
       <a 
         role="button" 
-        tabindex=1 class="logoa" 
+        tabindex=2 
+        class="logoa" 
         aria-label="PseudoDojo logo and link to YouTube song. PseudoDojo is 
           written in blocky font with horizontal lines over each o." 
         href="https://youtu.be/j9z4AJIx40M" 
@@ -132,8 +138,8 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
       <!-- Quick Tutorial/Guided Tour button -->
       <aside
         <button 
-          tabindex=2 
-          class="help_button" 
+          tabindex=3 
+          class="help_button center" 
           onclick="dojoTour_guidedtour()" 
           id="guided-tour-button" 
           title="Quick interface tutorial" 
@@ -144,14 +150,14 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
 
       <!-- Radio button for Download Mode or Testing Mode -->
       <div tabindex=0 class="mode-wrapper" id="DojoMode">
-        <aside id="modeLegend" class="toggle-label">
+        <aside id="modeLegend" class="toggle-label center">
           Click on an element to:
         </aside>
 
-        <fieldset 
-          class="mode-group" 
+        <fieldset
+          class="mode-group center" 
           aria-labelledby="modeLegend">
-          <label class="mode-option">
+          <label class="mode-option center">
             <input 
               type="radio" 
               name="dojoMode" 
@@ -161,7 +167,7 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
               Download pseudos
           </label>
 
-          <label class="mode-option">
+          <label class="mode-option center">
             <input 
               type="radio" 
               name="dojoMode" 
@@ -189,38 +195,38 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
         </p>
 
         <!-- Selection of TYPE -->
-        <div class="selector">
+        <div class="selector center">
           <label for="TYPE">Type:</label>
           <select id="TYPE"></select>
         </div>
 
         <!-- Selection of RELATIVISTIC -->
-        <div class="selector">
+        <div class="selector center">
           <label for="REL">Relativistic:</label>
           <select id="REL" style="width: 75px;"></select>
         </div>
 
         <!-- Selection of VERSION -->
-        <div class="selector">
+        <div class="selector center">
           <label for="VER">Version:</label>
           <select id="VER" style="width: 60px;"></select>
         </div>
 
         <!-- Selection of XC functional -->
-        <div class="selector">
+        <div class="selector center">
           <label for="XC">XC:</label>
           <select id="XC" style="width: 80px;"></select>
         </div>
 
         <!-- Selection of ACCURACY -->
-        <div class="selector">
+        <div class="selector center">
           <label for="ACC">Accuracy:</label>
           <select id="ACC" style="width: 100px;">
           </select>
         </div>
 
         <!-- Selection of FORMAT -->
-        <div class="selector">
+        <div class="selector center">
           <label for="FMT">Format:</label>
           <select id="FMT" style="width: 75px;"></select>
         </div>
@@ -245,8 +251,8 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
     </div> <!-- End intro div -->
 
     <!-- Citation copied to clipboard flag -->
-    <aside id="citation-toast" class="citation-toast">
-      <span class="toast-check">✓</span>
+    <aside id="citation-toast" class="citation-toast center">
+      <span class="toast-check center">✓</span>
       Chicago-style citations copied to clipboard
     </aside>
 
@@ -267,7 +273,7 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
         </p>
 
         <!-- File not available toast -->
-        <div id="not-available-toast" class="not-available-toast">
+        <div id="not-available-toast" class="not-available-toast center">
           <strong>Sorry!</strong> This content is not available. 
         </div>
 
@@ -321,7 +327,7 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
       <aside>
         <button 
           id="preset-btn" 
-          class="preset-button" 
+          class="preset-button center" 
           aria-label="Selector presets for the new lanthanides">
           New Lanthanides
           <img class="eclat" src="./img/eclat.svg" alt="New"></img>
@@ -331,7 +337,7 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
       <!-- Download Table button -->
       <div 
         id="download_button" 
-        class="download_button" 
+        class="download_button center" 
         role="button" 
         tabindex="0" 
         aria-label="download the entire table">
@@ -351,12 +357,12 @@ Quick Tutorial/Guided Tour and Toastify to show small messages. -->
 
   <!-- Footer -->
   <footer 
-    class="dojo-footer" 
-    style="padding-top: 20px; padding-left: 7vw;height:75px;">
+    class="dojo-footer"
+    style="padding-top: 20px; padding-bottom: 40px;">
 
     <!-- Footer navigation menu -->
-    <nav class="footer-links" aria-label="Footer navigation">
-      <span class="copyright">© PseudoDojo <span id="footerYear"></span></span>
+    <nav class="footer-links center" aria-label="Footer navigation">
+      <span class="copyright center">© PseudoDojo <span id="footerYear"></span></span>
       <a href="index.html" aria-label="Go to Home page">Home</a>
       <a href="about.html" aria-label="Go to About page">About</a>
       <a href="faq.html" aria-label="Go to F.A.Q. page">F.A.Q.</a>

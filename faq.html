@@ -8,8 +8,16 @@
 <!--[if !(IE 7) | !(IE 8)  ]><!-->
 <html lang="en-US">
 <!--<![endif]-->
+
+<!-- This is the HTML code for the PseudoDojo F.A.Q. static
+page. It answers frequently asked questions as well as
+anticipated ones related to PseudoDojo or to pseudopotentials
+in general. The page is interfaced with CSS in css/style.css 
+and JavaScript in js/dojo-tools.js.
+Updated July 2026 by Lórien MacEnulty   -->
+
 <head>
-  <title>PseudoDojo</title>
+  <title>F.A.Q. - PseudoDojo</title>
   <meta charset="utf-8"/>
   <link rel="stylesheet" href="css/style.css" />
   <script src="js/dojo-tools.js"></script>
@@ -18,29 +26,33 @@
 
 <body>
 
+  <a href="#main-content" class="skip-link" tabindex=1>
+    Skip to main content
+  </a>
+
   <!-- Main navigation menu, top right -->
   <nav class="menubar" style="width:545px;" aria-label="Main menu">
     <div class="menutext">
       <button 
-        class="menuitem" 
+        class="menuitem center" 
         onclick="window.location = 'index.html'" 
         aria-label="Go to Home page">
         Home
       </button>
       <button 
-        class="menuitem" 
+        class="menuitem center" 
         onclick="window.location = 'about.html'" 
         aria-label="Go to About page">
         About
       </button>
       <button 
-        class="menuitem" 
+        class="menuitem center" 
         onclick="window.location = 'faq.html'" 
         aria-label="Go to F.A.Q. page">
       F.A.Q.
       </button>
       <button 
-        class="menuitem" 
+        class="menuitem center" 
         onclick="window.location = 'contribute.html'" 
         aria-label="Go to Contribute page">
         Contribute
@@ -70,14 +82,14 @@
   </header>
 
   <!-- Salient page content -->
-  <main>
+  <main id="main-content">
     <div class="page-wrapper">
       <!-- Page title and headline -->
-      <aside tabindex=0 class="headsup">
-        <div class="page_title" aria-label="Page title FAQ">
+      <aside tabindex=0 class="headsup center">
+        <div class="page_title center" aria-label="Page title FAQ">
           <h1>F.A.Q.</h1>
         </div>
-        <h2 class="headline">
+        <h2 class="headline center">
           Below are some of the most frequently asked questions we get here at 
           PseudoDojo. Have a question not answered here? 
           <a href="mailto:matteo.giantomassi@uclouvain.be" 
@@ -205,7 +217,7 @@
           <h3>What are all these numbers?</h3>
 
           <!-- Static rendition of detail box --> 
-          <div class="detail-container">
+          <div class="detail-container center" style="margin-top: 40px;">
             <div 
               class="detail-wrap-onpage" 
               aria-label="Details on each element when hovered or focused">
@@ -242,7 +254,7 @@
               <div class="label label-ecut">e<sub>cut</sub> hints</div>
   
               <!-- Squiggles -->
-              <img class="squiggles atnum rotated" src="../img/z_squiggle.svg" alt=""></img>
+              <img class="squiggles atnum" src="../img/z_squiggle.svg" alt=""></img>
               <img class="squiggles bracket" src="../img/bracket.svg" alt=""></img>
               <img class="squiggles vale" src="../img/nv_squiggle.svg" alt=""></img>
 
@@ -464,125 +476,239 @@
         <section tabindex=0 class="tree-node">
           <h3>How do I cite the PseudoDojo?</h3>
 
-          <p>The web interface has a built-in citation function. The citation box, 
-          which looks something like
+          <p>The web interface has a built-in citation function. The citation 
+          box, which looks something like
+          </p>
+
+          <!-- Dormant citation box as example -->
+          <div 
+            class="citation_box_faq" 
+            role="button" 
+            tabindex="0" 
+            style="position:relative;" 
+            aria-label="Copy Chicago citations to clipboard">
+            <div 
+              class="pleasecite center" 
+              role="button">
+              <strong>PLEASE CITE</strong>
+            </div>
+            <div class="citation">
+              <a href="https://doi.org/10.1016/j.cpc.2018.01.012" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to paper van Setten 2018">
+                 van Setten <em>et al.</em> (2018)
+              </a> 
+              and
+              <a href="https://link.aps.org/doi/10.1103/PhysRevB.88.085117" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to paper Hamann 2013">
+                 Hamann (2013)
+              </a> 
+              and
+              <a href="https://www.doi.org/..." 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to paper Jing et al 2026">
+                 Jing <em>et al.</em> (2026)
+              </a> 
+              and
+              <a href="https://doi.org/10.1103/PhysRevLett.77.3865" 
+                 target="_blank" 
+                 rel="noopener" 
+                 aria-label="Link to paper Perdew et al 1996">
+                 Perdew <em>et al.</em> (1996)
+              </a>.
+            </div>
+            <button 
+              id="downloadBibtex" 
+              class="bibtex_download center" 
+              aria-label="Download relevant citations in BibTeX format">
+              BibTeX
+            </button>
+  
+          </div>
+
+          <p>gives you a list of citations that updates dynamically with your 
+          pseudopotential selection criteria. Click anywhere on the box itself 
+          for the citation list in Chicago style to be copied automatically to 
+          your clipboard. Alternatively, click on the BibTeX button to download 
+          the list of citations in BibTeX format.
           </p>
   
-           <div class="citation_box_faq" role="button" tabindex="0" 
-             style="position:relative;" aria-label="Copy Chicago citations to clipboard">
-             <div class="pleasecite" role="button">
-               <strong>PLEASE CITE</strong>
-             </div>
-             <div class="citation">
-               <a href="https://doi.org/10.1016/j.cpc.2018.01.012" target="_blank" 
-               rel="noopener" aria-label="Link to paper van Setten 2018">van Setten <em>et al.</em> (2018)</a> and
-               <a href="https://link.aps.org/doi/10.1103/PhysRevB.88.085117" target="_blank" 
-               rel="noopener" aria-label="Link to paper Hamann 2013">Hamann (2013)</a> and
-               <a href="https://www.doi.org/..." target="_blank" 
-               rel="noopener" aria-label="Link to paper Jing et al 2026">Jing <em>et al.</em> (2026)</a> and
-               <a href="https://doi.org/10.1103/PhysRevLett.77.3865" target="_blank" 
-               rel="noopener" aria-label="Link to paper Perdew et al 1996">Perdew <em>et al.</em> (1996)</a>.
-             </div>
-             <button id="downloadBibtex" class="bibtex_download" aria-label="Download relevant citations in BibTeX format">BibTeX</button>
-  
-           </div>
-  
-           <p>gives you a list of citations that updates dynamically with your pseudopotential selection 
-              criteria. Click anywhere on the box itself for the citation list in Chicago style to be 
-              copied automatically to your clipboard. Alternatively, click on the BibTeX button to
-              download the list of citations in BibTeX format.</p>
-  
         </section>
-  
+
+        <!-- Modifying pseudos -->  
         <section tabindex=0 class="tree-node">
-          <h3>Is there a way to make slight modifications to these pseudos for my own purposes?</h3>
-          <p>In general, the pseudos you find here are ready to use. If you have specifications you'd 
-             like to change, you are also free to use the inputs we provide as a starting point to 
-             generate your own pseudopotentials. For ONCVPSP pseudos, you'll need to download
-             <a href="http://www.mat-simresearch.com/" rel="noopener" aria-label="Link to ONCVPSP code">
-             ONCVPSP</a>. For JTH PAW datasets, download <a href="https://users.wfu.edu/natalie/papers/pwpaw/man.html" 
-             target="_blank" rel="noopener" aria-label="Link to atompaw software website">atompaw</a></p>
+          <h3>Is there a way to make slight modifications to these pseudos for 
+              my own purposes?
+          </h3>
+
+          <p>In general, the pseudos you find here are ready to use. If you have 
+          specifications you'd like to change, you are also free to use the 
+          inputs we provide as a starting point to generate your own 
+          pseudopotentials. For ONCVPSP pseudos, you'll need to download
+            <a href="http://www.mat-simresearch.com/" 
+               rel="noopener" 
+               aria-label="Link to ONCVPSP code">
+               ONCVPSP
+            </a>. 
+            For JTH PAW datasets, download 
+            <a href="https://users.wfu.edu/natalie/papers/pwpaw/man.html" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to atompaw software website">
+               atompaw
+            </a>
+          </p>
         </section>
-  
+
+        <!-- XC functional types -->
         <section tabindex=0 class="tree-node">
-          <h3>Can I use the logo in my presentations and grant applications?</h3>
-  
-          <p>Yes, please feel free to do so! You can download them in SVG format by 
-             clicking on the corresponding image below.</p>
-  
-          <a
-            class="download-image logoa"
-            href="img/logo.svg"
-            download="PseudoDojo-logo.svg"
-            aria-label="View and download the PseudoDojo text logo">
-  
-            <img src="img/logo.svg" alt="PseudoDojo logo text, where PseudoDojo is written 
-             in blocky font with horizontal lines over each o.">
-           </a>
-  
-          <a
-            class="download-image logoa"
-            href="img/new_logo.svg"
-            style="margin-left:5%; width:40%;"
-            download="PseudoDojo-new-logo.svg"
-            aria-label="View and download the new PseudoDojo logo">
-  
-            <img src="img/new_logo.svg" alt="The new PseudoDojo logo, an atom with three orbitals 
-             containing one electron each, cinched together by a fabric martial arts belt.">
-          </a>
-  
-          <a
-            class="download-image logoa"
-            href="img/logo_small.svg"
-            download="PseudoDojo-legacy-logo.svg"
-            style="float:right;margin-right:5%;"
-            aria-label="View and download the legacy PseudoDojo logo">
-  
-            <img style="width:100%;" src="img/logo_small.svg" alt="The legacy PseudoDojo logo, a ring broken by one 
-             sphere, around which is wrapped a rectangle broken in the center by a square.">
-          </a>
-          <p style="float:right;">This one is the legacy logo.</p>
+          <h3>
+            Do you also have the pseudo for my favorite GGA or LDA functional?
+          </h3>
+
+          <p>We provide PBE, PBEsol, and sometimes LDA pseudopotentials. To 
+            generate pseudopotentials with other exchange-correlation functionals, 
+            you can use our input files, obtained via the web interface. Using these, 
+            you can generate potentials for most LDA and GGA functionals using 
+            <a href="http://www.mat-simresearch.com/" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to ONCVPSP code">
+               ONCVPSP
+            </a> 
+            and 
+            <a href="http://octopus-code.org/wiki/Libxc_functionals" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to LibXC">
+               LibXC
+            </a>, 
+            which is linked to ONCVPSP and provides many popular and fringe 
+            exchange-correlation functionals.
+          </p>
+
         </section>
-  
-        <section tabindex=0 class="tree-node">
-          <h3>Do you also have the pseudo for my favorite GGA or LDA functional?</h3>
-          <p>We provide PBE, PBEsol, and sometimes LDA pseudopotentials. To generate pseudopotentials with 
-             other exchange-correlation functionals, you can use our input files, obtained via the web 
-             interface. Using these, you can generate potentials for most LDA and GGA functionals 
-             using <a href="http://www.mat-simresearch.com/" target="_blank" rel="noopener" 
-             aria-label="Link to ONCVPSP code">ONCVPSP</a> and <a href="http://octopus-code.org/wiki/Libxc_functionals" 
-             target="_blank" rel="noopener" aria-label="Link to LibXC">LibXC</a>, which is linked to ONCVPSP 
-             and provides many popular and fringe exchange-correlation functionals.</p>
-        </section>
-  
+
+        <!-- Hybrids and meta functionals -->  
         <section tabindex=0 class="tree-node">
           <h3>What about hybrids and meta functionals?</h3>
-             <p>These are currently under development, and you're welcome to help us expedite their release.
-             Visit the <a href="contribute.html" aria-label="Go to Contribute page">Contribute page</a> to 
-             find out how you can help us make pseudos.</p>
+
+          <p>These are currently under development, and you're welcome to help us 
+            expedite their release. Visit the 
+            <a href="contribute.html" 
+               aria-label="Go to Contribute page">
+               Contribute page
+            </a> 
+          to find out how you can help us make pseudos.</p>
+
         </section>
-  
+
+        <!-- Input files NLCC -->   
         <section tabindex=0 class="tree-node">
-          <h3>How do I use the input files to generate ONCVPSP potentials without non-linear core correction?</h3>
-          <p>We usually observe better convergence with NLCC, so indeed, all pseudos we provide are generated with it.
-             If you really need one without NLCC, take the input file from the web interface, install 
-             <a href="http://www.mat-simresearch.com/" rel="noopener" aria-label="Link to ONCVPSP code">
-             ONCVPSP</a>, and before running set the variable icmod to 0 in the input and generate the pseudo.</p>
+          <h3>How do I use the input files to generate ONCVPSP potentials 
+              without non-linear core correction?
+          </h3>
+          <p>We usually observe better convergence with NLCC, so indeed, all 
+            pseudos we provide are generated with it. If you really need one 
+            without NLCC, take the input file from the web interface, install 
+            <a href="http://www.mat-simresearch.com/" 
+               rel="noopener" 
+               aria-label="Link to ONCVPSP code">
+               ONCVPSP
+            </a>, 
+            and before running set the variable icmod to 0 in the input and 
+            generate the pseudo.
+          </p>
         </section>
   
+        <!-- Pseudos for other elements --> 
         <section tabindex=0 class="tree-node">
-          <h3>Do you also have the other elements?</h3>
-            <p>We are currently working on the lanthanides. You're welcome to contribute to pseudopotential development
-            with us. Visit the <a href="contribute.html" aria-label="Go to Contribute page">Contribute page</a> 
-            to find out how you can help us make pseudos.</p>
+          <h3>Do you also have the pseudos other elements?</h3>
+
+          <p>We are currently working on the lanthanides. You're welcome to 
+            contribute to pseudopotential development with us. Visit the 
+            <a href="contribute.html" 
+               aria-label="Go to Contribute page">
+               Contribute page
+            </a> 
+            to find out how you can help us make pseudos.
+          </p>
+
         </section>
-  
+
+        <!-- How to generate in other formats --> 
         <section tabindex=0 class="tree-node">
           <h3>Is it possible to generate NC pseudos in other formats?</h3>
-          <p>ONCVPSP currently supports .psp8 and .upf. Using the <a href="https://launchpad.net/pspgenpatch" 
-             target="_blank" rel="noopener" aria-label="Link to PSML patch">psml patch</a> 
-             we also generated psml files for use with <a href="https://launchpad.net/siesta/psml-support" 
-             target="_blank" rel="noopener" aria-label="Link to SIESTA electronic structure suite">SIESTA</a>.</p>
+
+          <p>ONCVPSP currently supports .psp8 and .upf. Using the 
+            <a href="https://launchpad.net/pspgenpatch" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to PSML patch">
+               psml patch
+            </a>, 
+            we also generated psml files for use with 
+            <a href="https://launchpad.net/siesta/psml-support" 
+               target="_blank" 
+               rel="noopener" 
+               aria-label="Link to SIESTA electronic structure suite">
+               SIESTA
+            </a>.
+          </p>
+
+        </section>
+
+        <!-- Logos -->
+        <section tabindex=0 class="tree-node">
+          <h3>
+            Can I use the logo in my presentations and grant applications?
+          </h3>
+
+          <p>Yes, please feel free to do so! You can download them in SVG
+          format by clicking on the corresponding image below.
+          </p>
+
+          <a class="download-image logoa"
+             href="img/logo.svg"
+             download="PseudoDojo-logo.svg"
+             aria-label="View and download the PseudoDojo text logo">
+  
+             <img 
+               src="img/logo.svg" 
+               alt="PseudoDojo logo text, where PseudoDojo is written in blocky 
+                    font with horizontal lines over each o.">
+          </a>
+              
+          <a class="download-image logoa"
+             href="img/new_logo.svg"
+             style="margin-left:5%; width:40%;"
+             download="PseudoDojo-new-logo.svg"
+             aria-label="View and download the new PseudoDojo logo">
+              
+             <img 
+               src="img/new_logo.svg" 
+               alt="The new PseudoDojo logo, an atom with three orbitals 
+                    containing one electron each, cinched together by a fabric 
+                    martial arts belt.">
+          </a>
+              
+          <a class="download-image logoa"
+             href="img/logo_small.svg"
+             download="PseudoDojo-legacy-logo.svg"
+             style="float:right;margin-right:5%;"
+             aria-label="View and download the legacy PseudoDojo logo">
+              
+             <img style="width:100%;" 
+               src="img/logo_small.svg" 
+               alt="The legacy PseudoDojo logo, a ring broken by one sphere, 
+                    around which is wrapped a rectangle broken in the center 
+                    by a square.">
+          </a>
+          <p style="float:right;">This one is the legacy logo.</p>
         </section>
   
       </div> <!-- End of tree div -->
@@ -590,11 +716,14 @@
   </main>
 
   <!-- Footer -->
-  <footer class="dojo-footer">
+  <footer class="dojo-footer center">
 
     <!-- Footer navigation links-->
-    <nav class="footer-links" aria-label="Footer navigation">
-      <span class="copyright">© PseudoDojo <span id="footerYear"></span></span>
+    <nav class="footer-links center" aria-label="Footer navigation">
+      <span class="copyright center">
+        © PseudoDojo &nbsp;
+        <span id="footerYear"></span>
+      </span>
       <a href="index.html" aria-label="Go to Home page">Home</a>
       <a href="about.html" aria-label="Go to About page">About</a>
       <a href="faq.html" aria-label="Go to F.A.Q. page">F.A.Q.</a>
@@ -617,7 +746,7 @@
     <!-- Mini PseudoDojo logo in bottom right corner-->
     <div>
       <img src="../img/logo.svg" 
-           style="width:200px;margin-top:-70px;right:0;float:right;" 
+           style="width:200px;float:right;" 
            alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
            with horizontal lines over each o.">
     </div>

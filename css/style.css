@@ -1,43 +1,106 @@
 @charset "utf-8";
 
-/* ------------------------------------------------------ GENERAL */
+/*
+Table of Contents
+
+1.  GENERAL
+2.  ACCESSIBILITY
+3.  BACKGROUND LAYER
+4.  MAIN MENU
+5.  SKIP TO MAIN CONTENT BUTTO
+6.  INTRO STUFF
+      - logo (with link to song)
+      - large arrow
+      - quick tutorial/guided tour
+      - Download/testing mode radio button
+      - Pseudo characteristic selection bar
+      - citation box
+7.  WARNING FLAGS
+      - Click-copy Chicago citations flag
+      - Not available flag
+8.  SELECTOR PRESET BUTTON
+9.  DETAIL BOX
+10. PERIODIC TABLE
+      - Positioning
+      - Individual element boxes 
+11. DOWNLOAD TABLE BUTTON
+12. PAGES
+      - General
+      - Content trees
+      - About page
+          -- Pullquote
+          -- Contributors table
+      - FAQ page
+          -- Reading list citations
+          -- Dormant citation box
+          -- Download logo images
+13. FOOTER
+
+Note: Each numbered section above contains a 
+media responsive section for elements within
+that section.  */
+
+
+
+/* ==================================================== 1. GENERAL */
+
+/* Sets base for responsive text */
 html{font-size:100%;}
 
+/* Hide feature */
 .hidden{display:none;}
 
+/* Color scheme */
 :root {
-  --crisp: #00B89C;
-  --light-grey: #E3E3E3;
-  --medium-grey: #B5B5B5;
-  --dark-grey: #4B4B4D;
-  --rusty: #C55A11;
-  --dojo-red: #CC4444;
-  --dojo-green: #44AA44;
+  --crisp: #00B89C;         /* Light minty teal */
+  --light-grey: #E3E3E3;    /* Background grey */
+  --medium-grey: #B5B5B5;   /* Low contrast grey */
+  --dark-grey: #4B4B4D;     /* User input boxes and logo */
+  --rusty: #C55A11;         /* Earthy orange */
+  --dojo-red: #CC4444;      /* Not available bright red */
+  --dojo-green: #5BC75B;    /* Available/success bright green */
 }
 
-a {
-  text-decoration:none;
-}
+/* Link style across website */
+a {text-decoration:none;}
 a:hover,
 a:focus {
   text-decoration:none;
   background-color: var(--rusty);
   padding: 4px;
+  outline: none;
   margin: -4px;
   border-radius: 3px;
   color: white !important;
 }
 
+/* Default sizing of images */
 img {
   max-width:100%;
   height:auto;
 }
 
-:focus-visible {
+/* Outline for keyboard focus */
+*:focus, 
+*:focus-visible {
   outline: 2px solid var(--crisp);
   outline-offset: 2px;
 }
 
+/* Display vertically and horizontally centered in box */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ==================================================== 2. ACCESSIBILITY */
+/* We have striven for WCAG 2.2 compliance at level
+AA: ideal support across the entire website. These are
+some of the common accessibility feature classes.  */
+
+/* Invisible text to be announced by screen reader */
 .sr-only { 
   position: absolute; 
   width: 1px; 
@@ -51,7 +114,20 @@ img {
   border: 0; 
 }
 
-/* ------------------------------------------------------ BACKGROUND LAYER */
+/* Option for less stimulating animations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ==================================================== 3. BACKGROUND LAYER */
+/* The background layer is light grey with lighter grey
+lines drawn to frame the main content. It also includes
+the graphical PseudoDojo logo. */
+
+/* General */
 body {
   margin: 0;
   background: var(--light-grey);
@@ -62,54 +138,57 @@ body {
   align-items: center; 
 }
 
-/* body > * {
-  position: relative;
-  z-index: 1;
-} */
-
+/* Drawing on background: 
+Count from left, v = vertical line
+Count from top, h = horizontal line */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
   background-repeat: no-repeat;
   background-image:
-    url("../img/logo_light.svg"),
-    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px),
-    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px);
+    url("../img/logo_light.svg"),                                           /* Logo */
+    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),  /* v1 */
+    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),  /* v2 */
+    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),  /* v3 */
+    linear-gradient(to right, rgba(255,255,255,0.7) 4px, transparent 4px),  /* v4 */
+    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px), /* h1 */
+    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px), /* h2 */
+    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px), /* h3 */
+    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px), /* h4 */
+    linear-gradient(to bottom, rgba(255,255,255,0.7) 4px, transparent 4px); /* h5 */
   background-size:
-    280px 280px,
-    4px 100vh,
-    4px 100vh,
-    4px 100vh,
-    4px 14.5vh,
-    100vw 4px,
-    calc(50% - 610px) 4px,
-    100px 4px,
-    50px 4px,
-    50px 4px;
+    280px 280px,                              /* Logo */
+    4px 100vh,                                /* v1 */
+    4px 14.5vh,                               /* v2 */
+    4px 100vh,                                /* v3 */
+    4px 100vh,                                /* v4 */
+    calc(50% - 610px) 4px,                    /* h1 */
+    50px 4px,                                 /* h2 */
+    50px 4px,                                 /* h3 */
+    100px 4px,                                /* h4 */
+    100vw 4px;                                /* h5 */
   background-position:
-    calc(59vw - 140px) calc(18vh - 140px),
-    calc(50% - 645px) 0,
-    calc(50% + 670px) 0,
-    calc(50% + 620px) 0,
-    calc(50% - 610px) 0,
-    0 98vh,
-    0 14vh,
-    left calc(50% + 670px) top 90vh,
-    calc(50% + 645px) 35vh,
-    calc(50% + 645px) 85vh;
+    calc(59vw - 140px) calc(18vh - 140px),    /* Logo */
+    calc(50% - 645px) 0,                      /* v1 */
+    calc(50% - 610px) 0,                      /* v2 */
+    calc(50% + 620px) 0,                      /* v3 */
+    calc(50% + 670px) 0,                      /* v4 */
+    0 14vh,                                   /* h1 */
+    calc(50% + 645px) 35vh,                   /* h2 */
+    calc(50% + 645px) 85vh,                   /* h3 */
+    left calc(50% + 670px) top 90vh,          /* h4 */
+    0 98vh;                                   /* h5 */
 }
 
-/* ------------------------------------------------------ MAIN MENU */
+/* ==================================================== 4. MAIN MENU */
+/* Important pages menu bar at top right of page. 
+All static pages are listed here except for Legal & 
+Privacy. On static pages, a Home button is added that
+takes the user to index.html.  */
+
 .menubar {
   position:fixed;
   display: inline-block;
@@ -117,33 +196,29 @@ body::before {
   top:0px;
   z-index:100;
   width:415px;
-  height:30px;
-  -webkit-transition:all 0.5s ease-out;
-  -moz-transition:all 0.5s ease-out;
-  transition:all 0.5s ease-out;
-  -webkit-box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  -o-box-sizing:border-box;
-  box-sizing:border-box;
+  height:auto;
+}
+
+/* Aligns menu items horizontally */
+.menutext {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
 }
 
 .menuitem {
-  background: #444444;
+  background: var(--dark-grey);
   width: 120px;
   height: 40px;
   padding: 5px 5px 5px 5px;
   margin: 0px 5px 0px 5px;
   border: none;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px 0px 6px 6px;
   border-radius: 0px 0px 6px 6px;
   -webkit-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
   font-size:20px;
   text-decoration:none;
   font-weight:bold;
   color: white;
-  text-align: center;
-  vertical-align: middle;
   cursor: pointer;
 }
 
@@ -152,7 +227,47 @@ body::before {
   background: var(--crisp);
 }
 
-/* --------------------------------------------- INTRO STUFF (Logo, selectors, etc) */
+/* ==================================================== 5. SKIP TO MAIN CONTENT BUTTON */
+/* Allows keyboard user to skip over main navigation content 
+and go straight to main functionality of page. */
+
+.skip-link {
+  position: absolute;
+  border: none;
+  top: -60px;
+  left: 20px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: var(--rusty);
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 8px;
+  transition:
+    top 0.2s ease,
+    opacity 0.2s ease;
+  opacity: 0;
+}
+
+/* Appears when reached by keyboard */
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 18px;
+  opacity: 1;
+  outline: 2px solid var(--crisp);
+  outline-offset: 2px;
+}
+
+/* ==================================================== 6. INTRO STUFF */
+/* Top of index.html. Intro class wraps: 
+     - the logo (with link to song)
+     - large arrow
+     - quick tutorial/guided tour
+     - Download/testing mode radio button
+     - Pseudo characteristic selection bar
+     - citation box */
+
 .intro {
   position: relative;
   width: 700px;
@@ -162,30 +277,37 @@ body::before {
   display: flex;
   align-items: flex-start;
   gap: 0px;
-  z-index: 5 !important;
+  z-index: 5;
 }
 
+/* ---------------------- Logo and link to song */
 .intro .logo {
   margin-top:6px;
   height:150px;
 }
 
+/* Image link */
 .logoa:hover,
 .logoa:focus {
   background-color: transparent !important;
-}
-
-.arrow img {
-  height: 340px;
-  width: auto;
-  display: block;
+  padding: 4px;
+  outline: 2px solid var(--crisp);
+  outline-offset: 2px;
 }
 
 .logo {
   cursor: pointer;
 }
 
-/* ---------------------------- Quick Tutorial Button */
+/* ---------------------- Large arrow */
+.arrow img {
+  height: 340px;
+  width: auto;
+  display: block;
+}
+
+/* ---------------------- Quick Tutorial */
+/* Button under logo */
 .help_button { 
   position:absolute;
   z-index:30;
@@ -194,17 +316,13 @@ body::before {
   height: 26px;
   width:120px;
   color:#FFFFFF;
-  text-align:center;
   font-size:14px;
   font-weight:bold;
-  float:left;
   margin:8px 8px 7px 7px;
   padding:2px;
   background: var(--dark-grey);
   border:1px solid #A2A4A5;
   border-radius:5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
   animation: zoomIn 2s 1;
 }
 
@@ -214,18 +332,9 @@ body::before {
   background: var(--crisp);
 }
 
-.help_button_ref {
-  color:#FFFFFF;
-  font-weight:bold;
-  margin: 4px;
-  padding:4px;
-  background: var(--dark-grey);
-  border:1px solid #A2A4A5;
-  border-radius:5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-}
+/* --- Inside guided tour: Shepherd classes --- */
 
+/* Shifts box to avoid blocking highlighted element */
 .shepherd-element[data-popper-placement^="bottom"] {
   transform: translateY(10px);
 }
@@ -234,14 +343,16 @@ body::before {
   transform: translateY(-10px);
 }
 
+/* Buttons inside tour */
 .tour-button button {
   background: var(--crisp); 
 }
 
 .shepherd-cancel-icon {
-  background-color: white !important;
+  background-color: transparent !important;
 }
 
+/* Links inside tour */
 .shepherd-element a {
   color: var(--crisp);
 }
@@ -250,7 +361,11 @@ body::before {
   color: var(--rusty);
 }
 
-/* ---------------------------- Toggle for Testing Mode */
+/* ---------------------- Radio button for Download vs. Testing Mode */
+/* Called a radio button instead of toggle because the options
+are not just yes and no, but two specific choices. Fieldset used
+because disability friendly */
+
 .mode-wrapper {
   position: absolute;
   top:210px;
@@ -262,23 +377,21 @@ body::before {
   gap: 6px;
 }
 
+/* 'Click on an element to:' */
 .toggle-label {
   font-size: 16px;
   font-style: italic;
   color: var(--crisp);
-  text-align: center;
 }
 
+/* Track */
 .mode-group {
-  display: flex;
   width: 200px;
   margin: 0;
   padding: 0px 4px 0px 5px; 
   height: 39px;
   border: none;
   border-radius: 999px;
-  -moz-border-radius: 999px;
-  -webkit-border-radius: 999px;
   background: #BDBDBD;
 }
 
@@ -287,14 +400,12 @@ body::before {
   opacity: 0;
 }
 
+/* Label for each option */
 .mode-option {
   flex: 1;
   padding: 4px 8px;
   margin-top: 4px;
   border-radius: 999px;
-  -moz-border-radius: 999px;
-  -webkit-border-radius: 999px;
-  text-align: center;
   cursor: pointer;
   color: #444;
   font-size: 13px;
@@ -302,6 +413,7 @@ body::before {
   transition: background .25s, color .25s;
 }
 
+/* Thumb slider style */
 .mode-option:has(input:checked) {
   background: var(--crisp);
   color: white;
@@ -312,44 +424,41 @@ body::before {
 }
 
 .mode-option:has(input:focus-visible) {
-  outline: 3px solid #005fcc;
-  outline-offset: 3px;
+  outline: 2px solid var(--rusty);
+  outline-offset: 2px;
 }
 
-/* ---------------------------- Pseudo Selection Bars */
+/* ---------------------- Pseudo Selection Bar */
+
+/* Entire bar wrapper */
 .selection_bar {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
   margin: 10px 0px 0px -10px;
-  z-index: 5 !important;
+  z-index: 30 !important;
 }
 
 .selector {
-  display: flex;
   flex-direction: row;
   height: 25px;
-  background:  #444444;
+  background: var(--dark-grey);
   padding: 5px 5px;
   border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
 }
 
 .selector label {
   font-size: 15px;
-  margin-bottom: 4px;
   color: #ffffff;
   padding-left: 5px;
 }
 
+/* Dropdown menu: down arrow cannot be styled */
 .selector select {
   margin-left: 10px;
   padding: 4px 6px;
   border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
   border: none;
   font-size: 15px;
   background: rgba(255,255,255,0.9);
@@ -362,6 +471,11 @@ body::before {
 .selector select:focus {background: white;}
 
 /* ----------------------------- Citation Box */
+/* Click-copy citation box with Chicago and
+BibTeX formats. Lists relevant citations that
+dynamically update according to pseudo selection
+options. Add or edit citations in JSON dictionary
+in json/citations.json. */
 
 .citation_box {
   position: absolute;
@@ -375,16 +489,7 @@ body::before {
   cursor: pointer;
 }
 
-.citation_box_faq {
-  position: relative;
-  width: 440px;
-  height: 45px;
-  margin-left: 10px;
-  display: flex;
-  align-items: flex-start;
-  z-index: 10;
-}
-
+/* Please Cite label on left */
 .pleasecite {
   width: 60px;
   height: 35px;
@@ -393,38 +498,29 @@ body::before {
   padding: 5px;
   font-size: 16;
   text-align: right;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 6px 0px 0px 6px;
   border-radius: 6px 0px 0px 6px;
 }
 
+/* List of citations on right */
 .citation {
   background: var(--dark-grey);
   color: white;
   height: 35px;
   width: 330px;
   padding: 5px;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px 6px 6px 0px;
+  justify-content: left;
   border-radius: 0px 6px 6px 0px;
 }
 
-.citation:hover,
-.citation:focus {
-  cursor: pointer;
-  color: white !important;
-}
-
+/* Each citation is a link. */
 .citation a {
   color: var(--crisp);
   font-weight: 500;
   text-decoration: none;
 }
 
-.citation a:hover {
-  color: white !important;
-}
-
+/* BibTeX Download button: 
+size is not WCAG AAA compliant */
 .bibtex_download {
   margin-top: 30px;
   margin-left: -40px;
@@ -434,34 +530,36 @@ body::before {
   border: none;
   height: 25px;
   border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
   color: white;
 }
 
-.bibtex_download:hover {
+.bibtex_download:hover,
+.bibtex_download:focus,
+.bibtex_download:focus-visible {
   background-color: var(--rusty);  
 }
 
+/* ==================================================== 7. WARNING FLAGS */
+
+/* ---------------------- Click-copy citation */
+/* Flag raised when user clicks to copy Chicago 
+citations from citation box. NOTE: lies outside 
+of intro div. */
 .citation-toast {
+  z-index: 99;
   position: absolute;
   width: 300px !important;
-  display: flex;
-  align-items: center;
   gap: 8px;
   padding: 10px 14px;
   background: var(--dojo-green);
   color: white;
   border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
   font-size: 14px;
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, -100%);
   transition: opacity .25s ease,
               transform .25s ease;
-  z-index: 99;
 }
 
 .citation-toast.show {
@@ -469,83 +567,36 @@ body::before {
   transform: translate(-50%, -120%);
 }
 
+/* Check mark */
 .toast-check {
   width: 18px;
   height: 18px;
   display: flex;
-  align-items: center;
-  justify-content: center;
   border: 1px solid white;
   border-radius: 50%;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
   font-size: 12px;
   font-weight: bold;
 }
 
-.faq-citation {
-  font-weight: 300;
-  font-size: 12px;
-}
-
-.faq-citation-authors {
-  color: #A6A6A6;
-}
-
-/* ------------------------------- Alert/Warning Box */
-.alert {
-  position: absolute;
-  left: 0px;
-  top: 200px;
-  width: 7vw;
-  height: auto;
-  z-index: 10;
-  -webkit-border-radius: 0px 6px 6px 0px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  border-radius: 0px 6px 6px 0px;
-  text-align: left;
-  padding: 8px;
-  color: white;
-  font-size: 14px;
-}
-
-.success{background-color: #4CAF50;}
-.info{background-color: #2196F3;}
-.warning{background-color: #ed8c1c;}
-
-.closebtn {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.closebtn:hover,
-.closebtn:focus {color: black;}
+/* ------------------------------- Not available warning */
+/* Raised when user clicks on element without 
+available file content. */
 
 .not-available-toast {
   position: absolute;
+  z-index: 99;
   width: 270px;
-  display: flex;
   font-size: 1rem;
-  align-items: center;
   gap: 8px;
   padding: 10px 14px;
   background: var(--dojo-red);
   color: white;
   border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, -100%);
   transition: opacity .25s ease,
               transform .25s ease;
-  z-index: 99; 
 }
   
 .not-available-toast.show {
@@ -553,7 +604,12 @@ body::before {
   transform: translate(-50%, -120%);
 }
 
-/* ------------------------------------------------------ SELECTOR PRESET BUTTON */
+/* ==================================================== 8. SELECTOR PRESET BUTTON */
+/* Button that "advertizes" new pseudopotential tables or
+makes popular ones easy to find. Right now, it advertizes
+the new 4f lanthanides, so the button is down near the
+lanthanides. But could be changed to anything in future. */
+
 .preset-button {
   position: absolute;
   right: -110px;
@@ -564,35 +620,46 @@ body::before {
   margin-left: 0px;
   border: none;
   border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
   background-color: var(--crisp);
   color: white;
   cursor: pointer;
   font-size: 14px;
 }
 
-.preset-button:hover {
+.preset-button:hover,
+.preset-button:focus,
+.preset-button:focus-visible {
   background-color: var(--rusty);
 }
 
+/* Splash marks indicating newness */
 .eclat {
   position: absolute;
   top: -10px;
   right: -10px;
   width: 22px;
   height: 22px;
-  color: red;
-  animation: sparkle 1.5s ease-in-out ;
   pointer-events: none;
 }
 
-@keyframes sparkle {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50%      { transform: scale(1.15) rotate(8deg); }
-}
+/* ==================================================== 9. DETAIL BOX */
+/* When element is hovered or focused, this box magnifies
+the information included for that element, including: 
+  - atomic number Z
+  - atomic symbol
+  - element name
+  - number of valence orbitals 
+    (obtained through meta info in files.json)
+  - low, middle, high ecut suggestions
+    (obtained through meta info in files.json).
+The box adopts the color of the element, not the availability
+information (like green or red or the checkmark/x-mark. It
+is also not focusable or actionable itself. The box quantities
+are labeled using whimsical squiggles and text. Default 
+content is set in index.html and updated in js/dojo-tools.js
+through set_X() and rest(X). */
 
-/* ------------------------------------------------------ DETAIL BOX */
+/* Wraps detail box and squiggles/labels. */
 .detail-wrap {
   position: absolute;
   display: inline-block;
@@ -602,6 +669,7 @@ body::before {
   bottom: -22px;
 }
 
+/* Same as detail-wrap, but for F.A.Q. page. */
 .detail-wrap-onpage {
   width: 220px;
   height: 180px;
@@ -610,6 +678,8 @@ body::before {
   position: relative;
 }
 
+/* -------------------- Magnified element box */
+/* Container */
 .detail {
   position: absolute;
   width: 116px;
@@ -618,13 +688,12 @@ body::before {
   background: #fff;
   border: 1px solid #A2A4A5;
   border-radius: 4px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   box-sizing: border-box;
 }
 
-.zee {
+/* Atomic number */
+.detail .zee {
   position: absolute;
   top: 6px;
   line-height: 1;
@@ -638,20 +707,7 @@ body::before {
   transition:content .15s, transform .15s;
 }
 
-.zee.ok{
-  color:#053605 !important;
-  font-size:22px !important;
-  width: 22px;
-  height: 22px;
-}
-
-.zee.bad{
-  color:#610000 !important;
-  font-size:22px !important;
-  width: 22px;
-  height: 22px;
-}
-
+/* Number of valence orbitals (nv) */
 .valence {
   position: absolute;
   top: 6px;
@@ -660,6 +716,7 @@ body::before {
   font-size: 22px;
 }
 
+/* Cutoff energy (ecut) hints */
 .levels {
   position: absolute;
   right: 6px;
@@ -672,6 +729,7 @@ body::before {
   text-align: right;
 }
 
+/* Atomic symbol */
 .element {
   position: absolute;
   bottom: 22px;
@@ -680,6 +738,7 @@ body::before {
   font-size: 56px;
 }
 
+/* Element name */
 .name {
   position: absolute;
   bottom: 6px;
@@ -688,6 +747,7 @@ body::before {
   font-size: 16px;
 }
 
+/* ------------------------------- Quantity labels */
 .label {
   position: absolute;
   font-size: 16px;
@@ -697,11 +757,13 @@ body::before {
   width: 20px;
 }
 
+/* For atomic number */
 .label-z {
   top: -75px;
   left: -60px;
 }
 
+/* For number valence orbitals (nv) */
 .label-nv {
   top: -25px;
   right: 30px;
@@ -709,6 +771,7 @@ body::before {
   text-align: right;
 }
 
+/* Bracket for ecut suggestions */
 .label-ecut {
   left: 150px;
   top: 57px;
@@ -716,33 +779,31 @@ body::before {
 
 .label-ecut sub{font-style: normal;}
 
+/* ------------------------------- Whimsical squiggles */
+/* The squiggles are svg images in img directory */
+
 .squiggles {
   position: absolute;
   height: auto;
   pointer-events: none;
-  z-index: 20;
+  z-index: 10;
 }
 
+/* For atomic number */
 .atnum {
   top: -42px;
   left: -45px;
   width: 50px;
 }
 
-.squiggles .atnum .rotated {
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
+/* Bracket for ecut suggestions */
 .bracket {
   top: 38px;
   left: 120px;
   width: 24px;
 }
 
+/* For number valence orbitals (nv) */
 .vale {
   top: 3px;
   left: 112px;
@@ -750,7 +811,34 @@ body::before {
   transform: rotate(5deg);
 }
 
-/* --------------------------------------------- Periodic Table */
+/* ==================================================== 10. PERIODIC TABLE */
+/* The periodic table is the central part of the web
+interface. It updates dynamically with the selected
+options in the pseudopotential characteristics selection
+bar. It showcases all 118 elements with information about:
+    1. the physical element:
+        -- atomic number
+        -- atomic symbol
+        -- element name
+    2. the pseudopotential for it:
+        -- availability in selected file format
+        -- number of orbitals in the valence manifold
+        -- low energy cutoff suggestion
+        -- middle energy cutoff suggestion
+        -- high energy cutoff suggestion.
+On hover, the atomic number of the element box turns into
+a checkmark or an 'x' depending on file availability, and 
+the detail box magnifies the element box. 
+Physical element information is given in a JSON dictionary
+in js/dojo-tools.js. Pseudopotential information is read
+from the json dictionary json/files.json, which is created
+upon deployment of deploy.py and provides paths to the
+pseudopotential files themselves in the tables directory. 
+Colors for element types (transition metal, lanthanide, etc.) 
+are arbitrarily selected, although they roughly make a 
+rainbow across the screen. */
+
+/* ------------------------------- Positioning */
 .wrapper {
   width:1160px;
   position:relative;
@@ -758,173 +846,19 @@ body::before {
   min-height: 725px;
 }
 
-.plugin {
-  cursor:pointer;
-  position:relative;
-  width:55px;
-  height:65px;
-  float:left;
-  margin:0 0 10px 10px;
-  padding:2px;
-  border:1px solid #A2A4A5;
-  -webkit-border-top-right-radius:2px;
-  -webkit-border-bottom-right-radius:2px;
-  -webkit-border-bottom-left-radius:2px;
-  -webkit-border-top-left-radius:2px;
-  -moz-border-radius-topright:2px;
-  -moz-border-radius-bottomright:2px;
-  -moz-border-radius-bottomleft:2px;
-  -moz-border-radius-topleft:2px;
-  -ms-border-radius-topright:2px;
-  -ms-border-radius-bottomright:2px;
-  -ms-border-radius-bottomleft:2px;
-  -ms-border-radius-topleft:2px;
-  -o-border-radius-topright:2px;
-  -o-border-radius-bottomright:2px;
-  -o-border-radius-bottomleft:2px;
-  -o-border-radius-topleft:2px;
-  border-top-right-radius:2px;
-  border-bottom-right-radius:2px;
-  border-bottom-left-radius:2px;
-  border-top-left-radius:2px;
-  -moz-background-clip:padding;
-  -webkit-background-clip:padding-box;
-  background-clip:padding-box;
-  -webkit-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
-  -moz-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
-  -ms-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
-  -o-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
-  box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
-  -webkit-box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  -o-box-sizing:border-box;
-  box-sizing:border-box;
-  counter-increment:plugins;
-}
-
-/* ------ Element background colors */
-.plugin.bg_hydrogen{background:#C5CEFF;}
-.plugin.bg_alkali{background:#A3B2D7;}
-.plugin.bg_alkaline{background:#A7C0D2;}
-.plugin.bg_transition_metal{background:#BBECE2;}
-.plugin.bg_post_transition_metal{background:#C7E1C2;}
-.plugin.bg_metalloid{background:#E3DFBE;}
-.plugin.bg_nonmetal{background:#E5C9A9;}
-.plugin.bg_halogen{background:#D29292;}
-.plugin.bg_noble_gas{background:#D26969;}
-.plugin.bg_lanthanoid{background:#DFF4EA;}
-.plugin.bg_actinoid{background:#F4D6D6;}
-.plugin.bg_she{background:#82E0AA;}
-.plugin.bg_unknown {
-  background: var(--light-grey);
-  color: var(--medium-grey) !important;
-}
-
-.plugin.unavailable,
-.plugin.unavailable * {
-  color: var(--medium-grey);
-}
-
-.plugin.unavailable {
-  background: var(--light-grey);
-}
-
-.plugin.available,
-.plugin.available * {
-  color: #000000;
-}
-
-.bg_unknown .valence,
-.bg_unknown .l_top,
-.bg_unknown .l_middle,
-.bg_unknown .l_bottom {display: none !important;} 
-
-.plugin .zee {
-  position: absolute;
-  top:2px;
-  left:3px;
-  width:25px;
-  font-size:12px;
-  line-height:1;
-  text-align: left;
-}
-
-.plugin .valence {
-  position: absolute;
-  top:2px;
-  right:3px;
-  font-size:12px;
-  line-height:1;
-  text-align:right;
-  width:15px;
-}
-
-.plugin .element {
-  position: absolute;
-  bottom:14px;
-  left:3px;
-  font-size:20px;
-  line-height:1;
-  text-align:left;
-}
-
-.plugin .name-wrap .name {
-  position: absolute;
-  bottom:2px;
-  left:3px;
-  font-size:9px;
-  line-height:1.3;
-  text-align:left;
-  display:table-cell;
-  vertical-align:middle;
-}
-
-.plugin .l_top {
-  position: absolute;
-  top:18px;
-  right:2px;
-  font-size:10px;
-  line-height:1;
-  text-align:right;
-}
-
-.plugin .l_middle {
-  position: absolute;
-  top:28px;
-  right:2px;
-  font-size:10px;
-  line-height:1;
-  text-align:right;
-}
-
-.plugin .l_bottom {
-  position: absolute;
-  top:38px;
-  right:2px;
-  font-size:10px;
-  line-height:1;
-  text-align:right;
-}
-
-.plugin .empty {
-  margin-top:10px;
-}
-
-.plugin.detail_l {
-  z-index:5;
-  counter-increment:none;
-}
-
-/* ---- Positions of the elements in PT  */
+/* --- Positions of the elements ---  */
 .plugin.nth-of-type-float,
 .plugin:nth-of-type(2) {float:right;}
+
 .plugin.nth-of-type-margin,
 .plugin:nth-of-type(5),
 .plugin:nth-of-type(13) {margin-left:660px;}
+
 .plugin:nth-of-type(57) {
   margin-left:75px;
   margin-top:150px;
 }
+
 .plugin:nth-of-type(58),
 .plugin:nth-of-type(59),
 .plugin:nth-of-type(60),
@@ -939,6 +873,7 @@ body::before {
 .plugin:nth-of-type(69),
 .plugin:nth-of-type(70),
 .plugin:nth-of-type(71) {margin-top:150px;}
+
 .plugin:nth-of-type(72){margin-left:195px;margin-top:-225px;}
 .plugin:nth-of-type(73){margin-left:260px;margin-top:-225px;}
 .plugin:nth-of-type(74){margin-left:325px;margin-top:-225px;}
@@ -972,6 +907,7 @@ body::before {
 .plugin:nth-of-type(116){margin-left:975px;margin-top:-225px;}
 .plugin:nth-of-type(117){margin-left:1040px;margin-top:-225px;}
 .plugin:nth-of-type(118){margin-left:1105px;margin-top:-225px;}
+
 .plugin.nth-of-type-clear,
 .plugin:nth-of-type(1),
 .plugin:nth-of-type(3),
@@ -983,7 +919,169 @@ body::before {
   margin-left:0;
 }
 
-/* ------------------------------------------------------ DOWNLOAD TABLE BUTTON */
+/* ------------------------------- Individual element boxes */
+
+/* Box structures  */
+.plugin {
+  cursor:pointer;
+  position:relative;
+  width:55px;
+  height:65px;
+  float:left;
+  margin:0 0 10px 10px;
+  padding:2px;
+  border:1px solid #A2A4A5;
+  border-radius:2px;
+  -moz-background-clip:padding;
+  -webkit-background-clip:padding-box;
+  background-clip:padding-box;
+  -webkit-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
+  -moz-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
+  -ms-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
+  -o-box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
+  box-shadow:0 1px 3px 0 rgba(0, 0, 0, 0.25);
+  box-sizing:border-box;
+  counter-increment:plugins;
+}
+
+/* --- Element background/foreground colors --- */
+.plugin.bg_hydrogen{background:#C5CEFF;}
+.plugin.bg_alkali{background:#A3B2D7;}
+.plugin.bg_alkaline{background:#A7C0D2;}
+.plugin.bg_transition_metal{background:#BBECE2;}
+.plugin.bg_post_transition_metal{background:#C7E1C2;}
+.plugin.bg_metalloid{background:#E3DFBE;}
+.plugin.bg_nonmetal{background:#E5C9A9;}
+.plugin.bg_halogen{background:#D29292;}
+.plugin.bg_noble_gas{background:#D26969;}
+.plugin.bg_lanthanoid{background:#DFF4EA;}
+.plugin.bg_actinoid{background:#F4D6D6;}
+.plugin.bg_she{background:#82E0AA;}
+.plugin.bg_unknown {
+  background: var(--light-grey);
+  color: var(--medium-grey);
+}
+
+.plugin.bg_unknown:hover {
+  color: #610000 !important;
+}
+
+/* If element never has a pseudo */
+.plugin.unavailable {
+  background: var(--light-grey);
+  color: var(--medium-grey);
+}
+
+.plugin.available,
+.plugin.available * {
+  color: #000000;
+}
+
+/* --- Element information and quantities --- */
+.bg_unknown .valence,
+.bg_unknown .l_top,
+.bg_unknown .l_middle,
+.bg_unknown .l_bottom {display: none !important;} 
+
+/* Atomic number (zee) */
+.plugin .zee {
+  position: absolute;
+  top:2px;
+  left:3px;
+  width:25px;
+  font-size:12px;
+  line-height:1;
+  text-align: left;
+}
+
+/* If file available, 
+show checkmark instead of zee */
+.zee.ok{
+  color:#051f05 !important;
+  font-size:22px !important;
+  width: 22px;
+  height: 22px;
+}
+
+/* If file not available, 
+show 'x' instead of zee */
+.zee.bad{
+  color:#610000 !important;
+  font-size:22px !important;
+  width: 22px;
+  height: 22px;
+}
+
+/* Number of valence orbitals (nv) */
+.plugin .valence {
+  position: absolute;
+  top:2px;
+  right:3px;
+  font-size:12px;
+  line-height:1;
+  text-align:right;
+  width:15px;
+}
+
+/* Atomic symbol */
+.plugin .element {
+  position: absolute;
+  bottom:14px;
+  left:3px;
+  font-size:20px;
+  line-height:1;
+  text-align:left;
+}
+
+/* Element name */
+.plugin .name-wrap .name {
+  position: absolute;
+  bottom:2px;
+  left:3px;
+  font-size:9px;
+  line-height:1.3;
+  text-align:left;
+  display:table-cell;
+  vertical-align:middle;
+}
+
+/* low ecut suggestion */
+.plugin .l_top {
+  position: absolute;
+  top:18px;
+  right:2px;
+  font-size:10px;
+  line-height:1;
+  text-align:right;
+}
+
+/* middle ecut suggestion */
+.plugin .l_middle {
+  position: absolute;
+  top:28px;
+  right:2px;
+  font-size:10px;
+  line-height:1;
+  text-align:right;
+}
+
+/* high ecut suggestion */
+.plugin .l_bottom {
+  position: absolute;
+  top:38px;
+  right:2px;
+  font-size:10px;
+  line-height:1;
+  text-align:right;
+}
+
+/* ==================================================== 11. DOWNLOAD TABLE BUTTON */
+/* This button is in the lower right corner of the 
+interface and allows the user to download tarballs of 
+the entire periodic table according to selection criteria. 
+The file paths to these tarballs are in json/targz.json,
+which is created upon deployment of deploy.py.  */
+
 .download_button {
   position: absolute;
   z-index: 100;
@@ -992,7 +1090,6 @@ body::before {
   width:200px;
   height:35px;
   color:#FFFFFF;
-  text-align:center;
   font-size:18px;
   font-weight:bold;
   float:right;
@@ -1001,10 +1098,6 @@ body::before {
   background: var(--dark-grey);
   border:1px solid #A2A4A5;
   border-radius:5px;
-  -webkit-border-radius:5px;
-  -moz-border-radius:5px;
-  -ms-border-radius:5px;
-  -o-border-radius:5px;
   box-sizing:border-box;
   -webkit-box-sizing:border-box;
   -moz-box-sizing:border-box;
@@ -1017,141 +1110,56 @@ body::before {
   cursor:pointer;
 }
 
-/* ------------------------------------------------------ GUIDED TOUR */
-.tooltip {
-  position:absolute;
-  z-index:10;
-  right:60px;
-  top:-1px;
-  width:650px;
-  height:369px;
-  background:#fffeb8;
-  border:1px solid #9E9E9E;
-  color:#333;
-  cursor:auto;
-  -webkit-transition:all 0.5s ease-out;
-  -moz-transition:all 0.5s ease-out;
-  transition:all 0.5s ease-out;
-  -webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow:0 1px 3px rgba(0, 0, 0, 0.25);
-  -ms-box-shadow:0 1px 3px rgba(0, 0, 0, 0.25);
-  -o-box-shadow:0 1px 3px rgba(0, 0, 0, 0.25);
-  box-shadow:0 1px 3px rgba(0, 0, 0, 0.25);
-}
+/* ==================================================== 12. PAGES */
+/* There are four static pages across the site:
+     -- About              (about.html)
+     -- F.A.Q.             (faq.html)
+     -- Contribute         (contribute.html)
+     -- Legal & Privacy    (legal.html)
+The Legal & Privacy page is only accessible via the footer
+navigation. All other pages are in the main navigation bar
+at the top right of the page. All pages have the same structure:
+     -- Main navigation bar (with Home page button)
+     -- PseudoDojo text logo linked to home page
+     -- Smaller arrow pointing to content
+     -- Header content announcing page
+     -- Content tree
+     -- Footer (with PseudoDojo text logo)
+The content tree is a teal line (trunk) with an arrow travelling along
+it as the user scrolls down. Tree nodes are white boxes that hold
+content, and they alternate sides of the trunk. The nodes are connected 
+to the trunk via branches: teal lines with circles that intersect the 
+trunk. When the arrow passes a circle, the interface emits a subtle 
+orange ripple for funsies. */
 
-.tooltip.right {
-  left:60px;
-}
 
-.tooltip.bottomtop {
-  top:-286px;
-}
+/* --------------------------------------- GENERAL */
 
-.tooltip.bottomtop:after,.tooltip.bottomtop:before {
-  top:auto;
-  bottom:30px;
-}
-
-.tooltip:after,.tooltip:before {
-  left:100%;
-  border:solid transparent;
-  content:" ";
-  height:0;
-  width:0;
-  position:absolute;
-  pointer-events:none;
-}
-
-.tooltip.right:after,.tooltip.right:before {
-  left:auto;
-  right:100%;
-}
-
-.tooltip:after {
-  border-color:rgba(255, 255, 255, 0);
-  border-left-color:#fffeb8;border-width:11px;
-  top:30px;
-}
-
-.tooltip.right:after {
-  border-left-color:rgba(255, 255, 255, 0);
-  border-right-color:#fffeb8;
-}
-
-.tooltip:before {
-  border-color:rgba(204, 204, 204, 0);
-  border-left-color:#333;
-  border-width:11px;
-  top:30px;
-}
-
-.tooltip.right:before {
-  border-left-color:rgba(204, 204, 204, 0);
-  border-right-color:#333;
-}
-
-.tooltip .tooltip-inner {
-  position:relative;
-  width:100%;
-  height:100%;
-  color:#fff;
-}
-
-.tooltip .tooltip-inner a {
-  color:#fff;
-}
-
-.tooltip .tooltip-inner .upper-wrap {
-  position:absolute;
-  top:15px;
-  left:15px;
-}
-
-.tooltip .tooltip-inner .name {
-  font-size:24px;
-}
-
-.tooltip .tooltip-inner .author,.tooltip .tooltip-inner .version {
-  font-size:12px;font-style:italic;
-}
-
-.tooltip .tooltip-inner .description {
-  position:absolute;
-  bottom:100px;
-  left:15px;
-}
-
-.tooltip .tooltip-inner .downloaded {
-  position:absolute;
-  bottom:0;
-  left:15px;
-  font-family:Baskerville,"Baskerville Old Face","Open Baskerville 0.0.53","Hoefler Text",Garamond,Georgia,"Times New Roman",serif;
-  font-weight:normal;
-  font-style:normal;
-  font-size:70px;
-}
-
-/* ------------------------------------------------------ PAGES */
+/* --- Text highlights --- */
+/* Orange */
 .hili-or {
   font-weight: 600;
   color: var(--rusty);
 }
 
+/* Teal */
 .hili-bl {
   font-weight: 600;
   color: var(--crisp);
 }
 
+/* Large arrow */
+.arrow_page img {
+  width: 38.719px;
+  display: block;
+}
+
+/* --- Main content container --- */
 .page-wrapper {
   position: relative;
   width:1160px;
   margin: 10px 10vw 0px 10vw;
   z-index: 5 !important;
-}
-
-.arrow_page img {
-  width: 38.719px;
-  display: block;
 }
 
 .page-wrapper p,
@@ -1177,11 +1185,12 @@ body::before {
   text-decoration: none;
 }
 
-/* ------------------------ Page header */
+/* --- Page headers --- */
+
+/* Container */
 .headsup {
   position: relative;
   display: flex;
-  align-items: flex-start;
   gap: 20px;
   background-color: rgba(255,255,255,0.5);
   width: 95%;
@@ -1189,28 +1198,180 @@ body::before {
   padding: 20px;
 }
 
+/* Big page title */
 .page_title {
   background-color: var(--crisp);
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
   border-radius: 6px;
   color: white;
   font-size: 1.3rem;
-  text-align: center;
-  margin-top: 10px;
-  padding: 10px;
   width: 40%;
   height: 80%;
-  padding: 0px 10px 0px 10px;
+  padding: 0px 10px;
 }
 
+/* Brief explanation of page purpose */
 .headline {
   display: block;
   float: left;
   width: 55%;
+  height: auto;
+  text-align: left;
 }
 
-/* ------------------------ Pullquote */
+/* --------------------------------------- CONTENT TREES */
+
+/* Full tree + branches */
+.tree{
+  margin-top: -50px;
+  position:relative;
+  width:min(1100px,90vw);
+  display:flex;
+  flex-direction:column;
+}
+
+/* --- Tree trunk = Teal line --- */
+.tree-trunk,
+.tree-effects{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+#tree-svg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+#tree-path{
+  stroke: var(--crisp);
+  stroke-width:4;
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* Arrow that travels tree trunk */
+.tree-arrow{
+  position:absolute;
+  left:50%;
+  top:100px;
+  transform:translateX(-50%);
+  width:0;
+  height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-top:18px solid var(--crisp);
+  transition:transform .15s linear;
+}
+
+/* --- Orange ripple when arrow passes a node --- */
+.tree-ripple{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border:3px solid #F28C28;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(.3);
+  animation: ripple .8s ease-out forwards;
+  z-index: 100;
+}
+
+@keyframes ripple {
+  from{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(.3);
+  }
+  to{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(2.2);
+  }
+}
+
+/* --- Tree nodes --- */
+
+/* Content limbs, white boxes */
+.tree-node{
+  position:absolute;
+  width:42%;
+  padding:30px;
+  background:white;
+  border-radius:18px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+  margin-top: 0px;
+}
+
+/* Start on right */
+.tree-node:nth-child(odd){
+  right: 0;
+}
+
+/* Alternate sides */
+.tree-node:nth-child(even){
+  left: 0;
+}
+
+/* Branch stemming from trunk
+to node. */
+.tree-node::before{
+  content:"";
+  position:absolute;
+  top:40px;
+  width:30px;
+  height:4px;
+  background: var(--crisp);
+}
+
+/* Position of right branches */
+.tree-node:nth-child(even)::before{
+  right:-30px;
+}
+
+/* Position of left branches */
+.tree-node:nth-child(odd)::before{
+  left:-30px;
+}
+
+/* Circles intersecting tree trunk */
+.tree-node::after{
+  content:"";
+  position:absolute;
+  top:34px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background: var(--crisp);
+  display: block;
+  clear:both;
+}
+
+/* Position of right circles */
+.tree-node:nth-child(even)::after{
+  right:-35px;
+}
+
+/* Position of left circles */
+.tree-node:nth-child(odd)::after{
+  left:-35px;
+}
+
+/* End node at bottom of page */
+.tree-end-node{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background: var(--crisp);
+  transform:translate(-50%,-50%);
+}
+
+/* --------------------------------------- ABOUT PAGE */
+/* The About page has a pullquote and a 
+table that organizes contributors alongside
+their contributions to PseudoDojo. */
+
+/* Pullquote */
 .pullquote {
   background-image: url("../img/quotes_up.png"),
                     url("../img/quotes_dn.png");
@@ -1226,87 +1387,109 @@ body::before {
   text-align: center;
 }
 
-/* ------------------------ Contributor table */
+/* --- Contributor table --- */
+
+/* Full table class */
+.contributors {
+  width: 100%;
+}
+
+/* Name column */
 .c1 {
   border-radius: 6px;
   padding: 5px 10px;
-  text-align: right;
   background-color: #E0F7F2;
-  color: var(--crisp)C;
+  color: var(--crisp);
+  text-align: left;
 }
 
+/* Contribution column */
 .c2 {
   padding: 5px 10px;
 }
 
-.contributors {
-    width: 100%;
-}
-
+/* Column and row headers */
 .contributors th {
   font-size: 1rem;
 }
 
+/* Column headers only */
 .contributors .tabletop {
-    text-align: left;
-    font-size: 1rem;
-    color: var(--rusty) !important;
-    padding: 0.5rem;
-}
-
-.contributors td {
-    vertical-align: top;
-    border: 1px solid white;
-}
-
-.person {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-  flex-wrap: wrap;
   text-align: left;
+  font-size: 1rem;
+  color: var(--rusty) !important;
+  padding: 0.5rem;
 }
 
+/* Row headers only */
+.person {
+  justify-content: left;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Contribution content cell */
+.contributors td {
+  vertical-align: top;
+  border: 1px solid white;
+}
+
+/* Teal bold person name */
 .person-name {
   white-space: nowrap;
   color: var(--crisp);
 }
 
+/* Container for link icons */
 .person-links {
-    display: inline-flex;
-    gap: 0rem;
+  display: inline-flex;
+  gap: 0rem;
 }
 
+/* Style for all icon links */
 .icon-link {
-    width: 28px;
-    height: 28px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 4px;
-    text-decoration: none;
-    color: inherit;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
 }
 
-/* WCAG-visible keyboard focus */
-.icon-link:focus-visible {
-    outline: 2px solid var(--crisp);
-    outline-offset: 1px;
-}
-
-/* Mouse hover */
-.icon-link:hover {
-    background: var(--crisp);
-    color: white !important;
-}
-
-/* SVG sizing */
+/* SVG icons sizing */
 .icon-link svg {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
-/* ------------------------ Download images */
+/* --------------------------------------- FAQ PAGE */
+/* The F.A.Q. page has a suggested reading 
+list with papers cited in Chicago style. 
+It also provides the PseudoDojo logos as 
+downloadable SVG files. */
+
+/* --- Reading list citations --- */
+.faq-citation {
+  font-weight: 300;
+  font-size: 12px;
+}
+
+.faq-citation-authors {
+  color: var(--medium-grey);
+}
+
+/* --- Dormant citation box --- */
+.citation_box_faq {
+  position: relative;
+  width: 440px;
+  height: 45px;
+  margin-left: 10px;
+  display: flex;
+  align-items: flex-start;
+  z-index: 10;
+}
+
+/* --- Download logo images --- */
 .download-image{
   display:inline-block;
   cursor:pointer;
@@ -1338,205 +1521,75 @@ body::before {
   float:right;
 }
 
-/* ------------------------ Tree */
-.tree{
-  margin-top: -50px;
-  position:relative;
-  width:min(1100px,90vw);
-  display:flex;
-  flex-direction:column;
-}
-
-.tree-trunk,
-.tree-effects{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-}
-
-.tree-ripple{
-  position:absolute;
-  width:18px;
-  height:18px;
-  border:3px solid #F28C28;
-  border-radius:50%;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  transform:translate(-50%,-50%) scale(.3);
-  animation: ripple .8s ease-out forwards;
-  z-index: 100;
-}
-
-@keyframes ripple {
-  from{
-    opacity:1;
-    transform:translate(-50%,-50%) scale(.3);
-  }
-  to{
-    opacity:0;
-    transform:translate(-50%,-50%) scale(2.2);
-  }
-}
-
-#tree-svg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-}
-
-#tree-path{
-  stroke: var(--crisp);
-  stroke-width:4;
-  fill:none;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.tree-arrow{
-  position:absolute;
-  left:50%;
-  top:100px;
-  transform:translateX(-50%);
-  width:0;
-  height:0;
-  border-left:12px solid transparent;
-  border-right:12px solid transparent;
-  border-top:18px solid var(--crisp);
-  transition:transform .15s linear;
-}
-
-.tree-node{
-  position:absolute;
-  width:42%;
-  padding:30px;
-  background:white;
-  border-radius:18px;
-  -moz-border-radius: 18px;
-  -webkit-border-radius: 18px;
-  box-shadow:0 8px 30px rgba(0,0,0,.08);
-  margin-top: 0px;
-}
-
-.tree-node:nth-child(odd){
-  right: 0;
-}
-
-.tree-node:nth-child(even){
-  left: 0;
-}
-
-.tree-node::before{
-  content:"";
-  position:absolute;
-  top:40px;
-  width:30px;
-  height:4px;
-  background: var(--crisp);
-}
-
-.tree-node:nth-child(even)::before{
-  right:-30px;
-}
-
-.tree-node:nth-child(odd)::before{
-  left:-30px;
-}
-
-.tree-node::after{
-  content:"";
-  position:absolute;
-  top:34px;
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  background: var(--crisp);
-  display: block;
-  clear:both;
-}
-
-.tree-node:nth-child(even)::after{
-  right:-35px;
-}
-
-.tree-node:nth-child(odd)::after{
-  left:-35px;
-}
-
-.tree-end-node{
-  position:absolute;
-  width:18px;
-  height:18px;
-  border-radius:50%;
-  background: var(--crisp);
-  transform:translate(-50%,-50%);
-}
-
-/* ------------------------ Media responsive */
+/* --------------------------------------- Media Responsive */
 @media(max-width:850px){
 
-.tree-trunk{
-  left:25px;
-}
+  .tree-trunk{
+    left:25px;
+  }
 
-.tree-node{
-  width:calc(100% - 60px);
-  margin-left:60px;
-}
+  .tree-node{
+    width:calc(100% - 60px);
+    margin-left:60px;
+  }
 
-.tree-node::before{
+  .tree-node::before{
     left:var(--nodule-left);
-}
+  }
 
-.tree-node::after{
-  left:-43px !important;
-}
+  .tree-node::after{
+    left:-43px !important;
+  }
 
-.page-wrapper {
-  width: 1vw;
-}
+  .page-wrapper {
+    width: 1vw;
+  }
 
-.headsup {
-  flex-direction: column;
-  width: 95vw;
-  height: auto;
-}
+  .headsup {
+    flex-direction: column;
+    width: 95vw;
+    height: auto;
+  }
 
-.page_title {
-  margin-top: 10px;
-  padding: 10px;
-  width: 85%;
-  padding: 0px 10px 0px 10px;
-}
+  .page_title {
+    margin-top: 10px;
+    padding: 10px;
+    width: 85%;
+    padding: 0px 10px 0px 10px;
+  }
 
-.headline {
-  display: block;
-  text-align: center;
-  width: 85%;
-}
-
+  .headline {
+    display: block;
+    width: 85%;
+  }
 
 }
 
+/* ==================================================== 13. FOOTER */
+/* Footer includes a second, comprehensive navigation
+bar and, on the static pages, a smaller PseudoDojo text logo.
+The footer is otherwise identical across all pages.  */
 
-/* ------------------------------------------------------ FOOTER */
+/* Footer container */
 .dojo-footer{
-  margin-top: 10px;
   height: 100px;
-  padding:50px 10vw 0px 8vw;
+  padding: 0px 9vw 25px 7vw;
   border-top:1px solid #D9D9D9;
   font-size:14px;
   line-height:1.6;
-  color:#555;
-  width:1160px;
+  height: auto;
+  width:100vw;
+  z-index: 99;
+  box-sizing: border-box;
 }
 
+/* --- Navigation bar --- */
 .footer-links{
-  display:flex;
   flex-wrap:wrap;
   line-height: 1rem;
   gap:5px;
-  width: 75%;
+  justify-content: left;
+  width: calc(100% - 200px);
   font-size: 1.35rem;
 }
 
@@ -1547,38 +1600,29 @@ body::before {
 }
 
 .footer-links a:hover,
+.footer-links a:focus,
 .footer-links a:focus-visible{
   color:white;
   text-decoration:none;
   margin: 0px;
   background-color: var(--crisp);
   border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
 }
 
+/* Copyright box lower left */
 .copyright {
   padding:10px;
   color: white;
   font-size: 0.75rem;
   background-color: var(--medium-grey);
   border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
 }
 
-/* Visible keyboard focus */
-.footer-links a:focus-visible{
-    outline:2px solid var(--crisp);
-    outline-offset:3px;
-}
-
-/* Mobile */
-
+/* --------------------------------- Media Responsive */
 @media (max-width:700px){
-    .dojo-footer{
-        flex-direction:column;
-        align-items:flex-start;
-    }
+  .dojo-footer{
+    flex-direction:column;
+    align-items:flex-start;
+  }
 }
 
