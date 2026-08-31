@@ -21,7 +21,7 @@ from abipy.flowtk.psrepos import download_repo_from_url  # md5_for_filepath
 
 from html_tools import write_html_from_oncvpsp_outpath, write_html_from_jth_xml
 
-
+FILE_TYPES = set([".djrepo",".in",".psp8",".psml",".upf"])
 ALL_ELEMENTS = set([
   'H', 'He',
   'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne','Na', 'Mg', "Al", "Si", 'P', 'S', 'Cl', 'Ar',
@@ -234,7 +234,7 @@ class PseudosRepo(abc.ABC):
             ps_generator: Name of the pseudopotential generator.
             xc_name: XC functional.
             relativity_type: SR for scalar-relativistic or FR for fully relativistic.
-            project_name: Name of the project associated to this repository.
+            project_name: Name of the project associated with this repository.
             version: Version string.
             url: URL from which the targz will be fetched.
         """
@@ -285,13 +285,13 @@ class PseudosRepo(abc.ABC):
         """
         Perform the initialization step:
 
-            1) Download the tarball from the github url, unpack it and save it in the self.name directory.
+            1) If necessary, download the tarball from the github url, unpack it and save it in the self.name directory.
             2) Build list of tables by extracting the relative paths from the `table_name.txt` files.
                found in the top-level directory and build self.tables
-            3) Create targz files with all pseudos associated to a given table.
+            3) Create targz files with all pseudos associated with a given table.
         """
-        doit = from_scratch or (not from_scratch and not os.path.isdir(self.name))
         self.path = os.path.join(workdir, self.name)
+        doit = from_scratch or (not os.path.isdir(self.path))
         start = time.perf_counter()
 
         if doit:
@@ -328,6 +328,19 @@ class PseudosRepo(abc.ABC):
         elif self.ps_generator == "ATOMPAW":
             function = make_atompaw_html
 
+            # Here we generate the HTML page with the oncvps results and the validation results
+            # read from a json file placed in the same directory of the pseudo.
+
+            def make_html(p):
+                out_path = os.path.join(self.path, p + ".out")
+                html_path = os.path.join(self.path, p + ".html")
+                if not from_scratch and os.path.exists(html_path):
+                    print(f"Won't regenerate HTML file: {html_path=}")
+                    return
+                return write_html_from_oncvpsp_outpath(out_path)
+
+            #for p in unique_paths:
+            #    make_html(p)
         with_html = True
         if with_html:
             print(f"Building HTML pages with {nprocs=} ...")
@@ -344,19 +357,44 @@ class PseudosRepo(abc.ABC):
               with Pool(processes=nprocs) as pool:
                   pool.starmap(function, arg_tuples)
 
+            # Using pool to speedup execution but the def might be problematic, especially on OSx.
+            #from multiprocessing import Pool
+            #with Pool() as pool:
+            #   pool.map(make_html, unique_paths)
             print(f"html build. elapsed time: {time.perf_counter() - html_start:.6f} seconds\n")
 
+        self.tables = defaultdict(dict)
         # Build dictionary: tables[name][file_ext] -> files
         self.tables = defaultdict(dict)
         for table_name, relpaths in relpaths_table.items():
-            for ext in self.formats:
-                all_files = [os.path.join(self.path, f"{rpath}.{ext}") for rpath in relpaths]
-                files = list(filter(os.path.isfile, all_files))
-                if len(files) != len(all_files):
-                    print(f"{table_path} WARNING: cannot find files with ext: {ext}.",
-                          f"expected: {len(all_files)}, found: {len(files)}")
-                self.tables[table_name][ext] = files
-                #print("table:", table_name, "ext:", ext, "\n", self.tables[table_name][ext])
+            for rpath in relpaths:
+                abs_base = os.path.join(self.path, rpath)
+                directory = os.path.dirname(abs_base)
+                stem = os.path.basename(abs_base)
+
+                if not os.path.isdir(directory):
+                    print(f"WARNING: directory not found: {directory}")
+                    continue
+
+                for fname in os.listdir(directory):
+                    fpath = os.path.join(directory, fname)
+                    if not os.path.isfile(fpath):
+                        continue
+                    root, ext = os.path.splitext(fname)
+
+                    # Only files with certain extensions
+                    if ext not in FILE_TYPES:
+                        continue
+
+                    ext = ext.lstrip(".").lower()
+                    if not ext:
+                        continue
+                    tables_root = os.path.dirname(self.path)
+                    self.tables[table_name][ext].append(os.path.relpath(fpath, start=tables_root))
+
+        for table_name, table in self.tables.items():
+            for fmt in table:
+                table[fmt] = sorted(set(table[fmt]))
 
         # Build targz file with all pseudos belonging to table_name so that the user can download it via the web interface.
         # This part is slow but we do it only once.
@@ -365,24 +403,41 @@ class PseudosRepo(abc.ABC):
 
         for table_name, table in self.tables.items():
             for ext, rpaths in table.items():
-                if not rpaths: continue
-                tar_path = os.path.join(self.path, f"{self.type}_{self.xc_name}_{table_name}_{ext}.tgz")
-                doit = from_scratch or (not from_scratch and not os.path.isfile(tar_path))
+        
+                if not rpaths:
+                    continue
+        
+                tar_name = (
+                    f"{self.ps_type}_"
+                    f"{self.relativity_type}_"
+                    f"{self.version}_"
+                    f"{self.xc_name}_"
+                    f"{table_name}_"
+                    f"{ext}.tgz"
+                )
+       
+                tar_path = os.path.join(self.path, tar_name)
+
+                doit = from_scratch or not os.path.isfile(tar_path)
+        
                 if doit:
                     print("Creating tarball:", tar_path)
-                    targz = tarfile.open(tar_path, "w:gz")
-                    for rpath in rpaths:
-                        targz.add(rpath, arcname=os.path.basename(rpath))
-                    targz.close()
+                    with tarfile.open(tar_path, "w:gz") as targz:
+                        for rpath in rpaths:
+                            targz.add(
+                                os.path.join(tables_root, rpath),
+                                arcname=os.path.basename(rpath),
+                            )
+        
                 else:
                     print("Skipping tarball creation:", tar_path)
                     assert os.path.isfile(tar_path)
-
+        
                 self.targz[table_name][ext] = tar_path
+        
             print("")
 
         print(f"setup elapsed time: {time.perf_counter() - start:.6f} seconds\n")
-
 
 class OncvpspRepo(PseudosRepo):
     """
@@ -405,6 +460,13 @@ class OncvpspRepo(PseudosRepo):
             raise ValueError(f"Invalid {relativity_type=}")
 
         url = f"https://github.com/PseudoDojo/{sub_url}/archive/refs/heads/master.zip"
+        return cls(ps_generator, xc_name, relativity_type, project_name, version, url)
+
+    @classmethod
+    def already_downloaded(cls, xc_name: str, relativity_type: str, version: str, dirname: str) -> OncvpspRepo:
+        ps_generator, project_name = "ONCVPSP", "PD"
+            
+        url = f"./tables/{dirname}"
         return cls(ps_generator, xc_name, relativity_type, project_name, version, url)
 
     @property
@@ -431,6 +493,8 @@ class OncvpspRepo(PseudosRepo):
         """List of file formats provided by the repository."""
         return ["psp8", "upf", "psml", "html", "djrepo"]
 
+    def get_meta_from_djrepo(self, path: str) -> dict:
+        dirname = os.path.dirname(path)
     def download_to(self, path: str) -> None:
         """Get the targz from github and unpack it inside directory `path`."""
         print("Downloading onvpsp pseudos from:", self.url, "to:", self.path)
@@ -440,20 +504,23 @@ class OncvpspRepo(PseudosRepo):
         dirname = os.path.dirname(path)
         with open(path, "r") as fh:
             data = json.load(fh)
-            hints = data["hints"]
-            # parse the pseudo to geh the number of valence electrons.
-            pseudo_path = os.path.join(dirname, data["basename"])
-            pseudo = Pseudo.from_file(pseudo_path)
+    
+        hints = data["hints"]
+    
+        pseudo_path = os.path.join(dirname, data["basename"])
+        pseudo = Pseudo.from_file(pseudo_path)
 
-            meta = {
-                "nv": pseudo.Z_val,
-                "hl": hints["low"]["ecut"],
-                "hn": hints["normal"]["ecut"],
-                "hh": hints["high"]["ecut"]
-            }
-            #print(f"meta for path: {path}\n", meta)
-            return meta
-
+        if "nv" in data:
+            val = data["nv"]
+        else:
+            val = pseudo.Z_val
+    
+        return {
+            "nv": val,
+            "hl": hints["low"]["ecut"],
+            "hn": hints["normal"]["ecut"],
+            "hh": hints["high"]["ecut"],
+        }
 
 class JthRepo(PseudosRepo):
     """
@@ -550,31 +617,48 @@ class Website:
 
         # Create list of repositories.
         _mk_onc = OncvpspRepo.from_github
-        _mk_jth = JthRepo.from_github
+        _mk_onc_ad = OncvpspRepo.already_downloaded
+        _mk_jth = JthRepo.from_abinit_website
 
         self.repos = [
             # ONCVPSP repositories.
-            _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
-            #_mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),  # FIXME PLotting errors
-            #_mk_onc(xc_name="PBE", relativity_type="SR", version="0.4"),
-            #_mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),  FIXME: checksum fails
-            #_mk_onc(xc_name="LDA", relativity_type="SR", version="0.4"),
-            #_mk_onc(xc_name="LDA", relativity_type="FR", version="0.4"),  FIXME: checksum fails
-            #
+#            _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4"),
+#            _mk_onc(xc_name="PBE", relativity_type="SR", version="0.6"),
+#            _mk_onc(xc_name="PBE", relativity_type="SR", version="1.0"),
+#            _mk_onc(xc_name="PBE", relativity_type="SR", version="0.5"),
+#            _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.5"),
+#            _mk_onc(xc_name="LDA", relativity_type="SR", version="0.5"),
+#            _mk_onc(xc_name="PBE", relativity_type="SR", version="0.4.1"),
+#            _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.4.1"),
+#            _mk_onc(xc_name="LDA", relativity_type="SR", version="0.5"),
+#            _mk_onc(xc_name="PBE", relativity_type="FR", version="0.4"),
+#            _mk_onc(xc_name="PBEsol", relativity_type="FR", version="0.4"),
+#            _mk_onc(xc_name="LDA", relativity_type="FR", version="0.4"),
+#            _mk_onc(xc_name="LDA", relativity_type="SR", version="0.4"),
+#            _mk_onc(xc_name="PBE", relativity_type="SR", version="0.3"),
+#            _mk_onc(xc_name="PBEsol", relativity_type="SR", version="0.3"),
+#            _mk_onc(xc_name="LDA", relativity_type="SR", version="0.3"),
+             _mk_onc_ad(xc_name="PBE", relativity_type="SR", version="0.6",dirname="ONCVPSP-PBE-SR-PDv0.6"),
+             _mk_onc_ad(xc_name="PBE", relativity_type="SR", version="1.0",dirname="ONCVPSP-PBE-SR-PDv1.0")
             # JTH repositories.
-            #
-            _mk_jth(xc_name="PBE", relativity_type="SR", version="2.0"),
-            #_mk_jth(xc_name="LDA", relativity_type="SR", version="2.0"),
+            # FIXME: These repos do not provide .txt files with pseudo list e.g. standard.txt, stringent
+            # so we temporarily disable them.
+#            _mk_jth(xc_name="PBE", relativity_type="SR", version="1.1"),
+#            _mk_jth(xc_name="PBEsol", relativity_type="SR", version="1.1"),
+#            _mk_jth(xc_name="LDA", relativity_type="SR", version="1.1"),
+#            _mk_jth(xc_name="PBE", relativity_type="SR", version="1.0"),
+#            _mk_jth(xc_name="PBEsol", relativity_type="SR", version="1.0"),
+#            _mk_jth(xc_name="LDA", relativity_type="SR", version="1.0")
         ]
 
     def build(self, from_scratch: bool) -> None:
+        # files[ps_type][relativity_type][version][xcf][accuracy][element][fmt]
+        # targz[ps_type][relativity_type][version][xcf][accuracy][fmt]
         print(f"Building static website with {from_scratch=}")
 
-        # files[typ][xc_name][table_name][elm][fmt]
-        # targz[typ][xc_name][table_name][fmt]
         files = defaultdict(dict)
         targz = defaultdict(dict)
-
+    
         tables_dirpath = os.path.join(self.path, "tables")
 
         if from_scratch:
@@ -583,56 +667,86 @@ class Website:
 
         if not os.path.isdir(tables_dirpath):
             os.mkdir(tables_dirpath)
-
+    
         for repo in self.repos:
-            repo.setup(tables_dirpath, from_scratch)
-            if repo.type in files and repo.xc_name in files[repo.type]:
-                raise ValueError(f"repo.type: {repo.type}, repo.xc_name: {repo.xc_name} is already in {files.keys()}")
+            if repo.url.startswith("./tables"):
+                repo.setup(tables_dirpath, from_scratch=False)
+            else:
+                repo.setup(tables_dirpath, from_scratch)
+    
+            ptype = repo.ps_type                # "NC" or "PAW"
+            reltype = repo.relativity_type      # "SR" or "FR"
+            version = repo.version              # e.g. "0.4"
+            xcf = repo.xc_name                  # "PBE", "PBEsol", "LDA"
+   
+            if (ptype in files and
+                reltype in files[ptype] and
+                version in files[ptype][reltype] and
+                xcf in files[ptype][reltype][version]):
+                raise ValueError(f"Duplicate repository: " f"{ptype}/{reltype}/{version}/{xcf}")
+ 
+            # Build hierarchy.
+            files.setdefault(ptype, {})
+            files[ptype].setdefault(reltype, {})
+            files[ptype][reltype].setdefault(version, {})
+            files[ptype][reltype][version].setdefault(xcf, {})
+    
+            targz.setdefault(ptype, {})
+            targz[ptype].setdefault(reltype, {})
+            targz[ptype][reltype].setdefault(version, {})
+            targz[ptype][reltype][version].setdefault(xcf, {})
+    
+            files_xcf = files[ptype][reltype][version][xcf]
+            targz_xcf = targz[ptype][reltype][version][xcf]
+    
+            for accuracy, table in repo.tables.items():
+                # accuracy is the accuracy level:
+                # standard, stringent, precision, ...
 
-            files[repo.type][repo.xc_name] = defaultdict(dict)
-            targz[repo.type][repo.xc_name] = defaultdict(dict)
-
-            for table_name, table in repo.tables.items():
-                files[repo.type][repo.xc_name][table_name] = defaultdict(dict)
-                targz[repo.type][repo.xc_name][table_name] = defaultdict(dict)
-
+                files_xcf[accuracy] = defaultdict(dict)
+                targz_xcf[accuracy] = {}
+    
                 for fmt, rpaths in table.items():
-                    # Store the relative location of the targz file
-                    if fmt in repo.targz[table_name]:
-                        p = os.path.relpath(repo.targz[table_name][fmt], start=self.path)
-                        targz[repo.type][repo.xc_name][table_name][fmt] = p
-
+    
+                    # Store relative location of tarball.
+                    if fmt in repo.targz.get(accuracy, {}):
+                        p = os.path.relpath(
+                            repo.targz[accuracy][fmt],
+                            start=self.path,
+                        )
+                        targz_xcf[accuracy][fmt] = p
+    
                     for rpath in rpaths:
-
+    
                         if repo.ps_generator == "ONCVPSP":
-                            # Get the element symbol from the relative path.
-                            # e.g. ONCVPSP-PBE-SR-PDv0.4/Ag/Ag-sp.psp8
+                            # Example:
+                            # ONCVPSP-PBE-SR-PDv0.4/Ag/Ag-sp.psp8
                             elm = rpath.split(os.sep)[-2]
-
+    
                             if fmt == "djrepo":
-                                # Get hints from the djrepo file if NC pseudo.
                                 meta = repo.get_meta_from_djrepo(rpath)
-                                files[repo.type][repo.xc_name][table_name][elm]["meta"] = meta
-
+                                files_xcf[accuracy][elm]["meta"] = meta
+    
                         elif repo.ps_generator == "ATOMPAW":
-                            # Get the element symbol from the relative path.
-                            # e.g. ATOMICDATA/Ag.LDA_PW-JTH.xml
+                            # Example:
+                            # ATOMICDATA/Ag.LDA_PW-JTH.xml
                             elm = os.path.basename(rpath).split(".")[0]
-
+    
                             if fmt == "xml":
-                                # Extract hints from PAW xml
                                 meta = repo.get_meta_from_pawxml(rpath)
-                                files[repo.type][repo.xc_name][table_name][elm]["meta"] = meta
-
+                                files_xcf[accuracy][elm]["meta"] = meta
+    
                         else:
                             raise ValueError(f"Invalid value for repo.ps_generator: {repo.ps_generator}")
 
                         if elm not in ALL_ELEMENTS:
                             raise ValueError(f"Invalid element symbol: `{elm}`")
+    
+                        files_xcf[accuracy][elm][fmt] = os.path.join(tables_dirpath,rpath)
 
-                        files[repo.type][repo.xc_name][table_name][elm][fmt] = rpath
-
-        print(f"\nWriting files.json and targz.json in {self.path}")
+        self.files = files
+        self.targz = targz
+        print("\nWriting files.json and targz.json")
         workdir = os.path.join(self.path, "json")
         if not os.path.isdir(workdir):
             os.mkdir(workdir)

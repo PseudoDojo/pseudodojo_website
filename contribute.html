@@ -8,54 +8,204 @@
 <!--[if !(IE 7) | !(IE 8)  ]><!-->
 <html lang="en-US">
 <!--<![endif]-->
+
+<!-- This is the HTML code for the PseudoDojo Contribute
+static page. It gives details to users on how to contribute
+to the PseudoDojo project. It is interfaced with CSS in
+css/style.css and JavaScript in js/dojo-tools.js.
+Updated July 2026 by Lórien MacEnulty   -->
+
 <head>
-<title>Pseudo Dojo</title>
-<meta charset="utf-8"/>
-<link rel="stylesheet" href="css/style.css" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <title>Contribute - PseudoDojo</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/dojo-tools.js"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
 </head>
 
 <body>
-<div class="wrapper">
-<div class="table">
-  <aside class="infobox">
-    <div class="intro">
-      <h1 class="logo"><a href="index.html" title="The Pseudo Dojo">The Pseudo Dojo</a></h1>
+
+  <a href="#main-content" class="skip-link" tabindex=1>
+    Skip to main content
+  </a>
+
+  <!-- Main navigation menu, top right -->
+  <nav class="menubar" style="width:545px;" aria-label="Main menu">
+    <div class="menutext">
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'index.html'" 
+        aria-label="Go to Home page">
+        Home
+      </button>
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'about.html'" 
+        aria-label="Go to About page">
+        About
+      </button>
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'faq.html'" 
+        aria-label="Go to F.A.Q. page">
+      F.A.Q.
+      </button>
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'contribute.html'" 
+        aria-label="Go to Contribute page">
+        Contribute
+      </button>
     </div>
-    <div class="download_button">
-     Contributing
-    </div>
-    <div class="menubar">
-      <div class="menutext">
-        <p>
-          <a href="index.html"><span>Home</span></a>
-          <a href="faq.html"><span>F.A.Q.</span></a>
-          <a href="paperlist.html"><span>Papers</span></a>
-          <span style="padding-left: 7em">
-          <span><a href="about.html">About</a></span></span>
-        </p>
+  </nav>
+
+
+  <!-- Page header -->
+  <header>
+    <div class="intro" style="height: 200px !important;">
+      <!-- Pseudo Dojo Logo -->
+      <a onclick="window.location = 'index.html'" 
+         class="logoa" 
+         aria-label="Go to Home page" 
+         title="PseudoDojo home">
+         <img 
+           src="../img/logo.svg" 
+           class="logo" 
+           alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
+           with horizontal lines over each o.">
+      </a>
+      <!-- Large Arrow -->
+      <div class="arrow_page" aria-hidden="true">
+        <img src="../img/arrow_page.svg" alt="">
       </div>
     </div>
+  </header>
 
-<lu class="generaltext">
-      <h1>Contributing to the PseudoDojo project.</h1>
+  <!-- Salient page content -->
+  <main id="main-content">
+    <div class="page-wrapper">
+      <!-- Page title and headline -->
+      <aside tabindex=0 class="headsup center">
+        <div 
+          class="page_title center" 
+          aria-label="Page title, Contribute to PseudoDojo">
+          <h1>Contribute</h1>
+        </div>
+        <h2 class="headline center">
+          Have an idea for making better pseudos? We're always on the lookout 
+          for contributors to the PseudoDojo Project. Here's how to start.
+        </h2>
+      </aside>
 
-<p>If you would like to contribute to the PseudoDojo project please visit the <a href="https://github.com/gmatteo/pseudo_dojo">github repository</a>.<BR />
-Fork the project and commit your contributions.<BR />
-If you contribute new code, for instance for a new test, you also need to provide unittests for that code.<BR />
-We cannot accept code additions without unittests.</p>
+      <!-- Begin content tree structure -->
+      <div id="tree" class="tree">
+        <div class="tree-trunk" aria-hidden="true">
 
-<p>Also contributing new pseudos should done via the git repository.<BR />
-If possible try to perform the tests that are already present.<BR />
-Some tests, like the Delta gauge, require all electron reference data that are only available for specific functionals, others don't.
-</p>
+          <!-- Draw the tree -->
+          <svg id="tree-svg" preserveAspectRatio="none">
+            <path id="tree-path" fill="none"/>
+          </svg>
+          <!-- Animate the tree arrow -->
+          <div class="tree-arrow" aria-hidden="true"></div>
+          <!-- Draw tree end node -->
+          <div class="tree-end-node" aria-hidden="true"></div>
 
-</lu>
-</aside>
-</div>
-</div>
+        </div>
+
+        <!-- Animate the ripples at each tree node -->
+        <div class="tree-effects" aria-hidden="true"></div>
+
+        <!-- First tree node: add new pseudo tables or sets -->
+        <section tabindex=0 class="tree-node">
+          <h3>I'd like to add new pseudo tables or sets.</h3>
+
+          <p>If you want to generate new pseudos using the PseudoDojo framework,
+             please visit the 
+             <a href="https://github.com/abinit/pseudo_dojo" 
+                target="_blank" 
+                rel="noopener" 
+                aria-label="Go to PseudoDojo GitHub repository">
+                GitHub repository
+             </a>. 
+             Download the repository, and where relevant, perform the tests that 
+             are already present. Some tests, like the Delta gauge, require 
+             all-electron (AE) reference data that is only available for specific 
+             exchange-correlation functionals; others do not. More details can be 
+             found in the 
+             <a href="https://github.com/abinit/pseudo_dojo/blob/master/README.md"
+                target="_blank" 
+                rel="noopener" 
+                aria-label="Go to GitHub repository README file">
+                GitHub repository README file
+             </a>.
+          </p>
+
+        </section>
+
+        <!-- Contribute to PseudoDojo framework -->
+        <section tabindex=0 class="tree-node">
+          <h3>
+            I'd like to contribute to development of the PseudoDojo framework.
+          </h3>
+
+          <p>We're glad to have you on board! To start, please visit the 
+             <a href="https://github.com/abinit/pseudo_dojo" 
+                target="_blank" 
+                rel="noopener" 
+                aria-label="Go to PseudoDojo GitHub repository">
+                GitHub repository
+             </a>, 
+             fork the project, then commit your contributions accordingly.
+             <br>
+             <br>
+             <span class="hili-or">NOTE:</span> If you contribute new 
+             functionality (a new test, for example), please provide unit tests 
+             for your code. We cannot accept code additions without such tests.
+          </p>
+
+        </section>
+
+      </div> <!-- End of tree div -->
+    </div> <!-- End of page-wrapper div -->
+  </main>
+
+  <!-- Footer -->
+  <footer class="dojo-footer center">
+
+    <!-- Footer navigation links-->
+    <nav class="footer-links center" aria-label="Footer navigation">
+      <span class="copyright center">
+        © PseudoDojo &nbsp;
+        <span id="footerYear"></span>
+      </span>
+      <a href="index.html" aria-label="Go to Home page">Home</a>
+      <a href="about.html" aria-label="Go to About page">About</a>
+      <a href="faq.html" aria-label="Go to F.A.Q. page">F.A.Q.</a>
+      <a href="contribute.html" aria-label="Go to Contribute page">Contribute</a>
+      <a href="legal.html" aria-label="Go to Legal and Privacy page">Legal</a>
+      <a href="https://github.com/abinit/pseudo_dojo" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Go to PseudoDojo GitHub repository">
+         GitHub
+      </a>
+      <a href="mailto:gian-marco.rignanese@uclouvain.be" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Contact PseudoDojo">
+         Contact Us
+      </a>
+    </nav>
+
+    <!-- Mini PseudoDojo logo in bottom right corner-->
+    <div>
+      <img src="../img/logo.svg" 
+           style="width:200px;float:right;" 
+           alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
+           with horizontal lines over each o.">
+    </div>
+
+  </footer>
 
 </body>
 </html>

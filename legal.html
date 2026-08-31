@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8)  ]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+
+<!-- This is the HTML code for the PseudoDojo Legal and Privacy
+static page. It gives information to users in compliance with
+relevant Belgium and EU law regarding the use of user data and
+website hosting facilities. The page is interfaced with CSS in 
+css/style.css and JavaScript in js/dojo-tools.js.
+Updated July 2026 by Lórien MacEnulty   -->
+
+<head>
+  <title>Legal - PseudoDojo</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/dojo-tools.js"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+
+<body>
+
+  <a href="#main-content" class="skip-link" tabindex=1>
+    Skip to main content
+  </a>
+
+  <!-- Main navigation menu, top right -->
+  <nav class="menubar" style="width:545px;" aria-label="Main menu">
+    <div class="menutext">
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'index.html'" 
+        aria-label="Go to Home page">
+        Home
+      </button>
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'about.html'" 
+        aria-label="Go to About page">
+        About
+      </button>
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'faq.html'" 
+        aria-label="Go to F.A.Q. page">
+      F.A.Q.
+      </button>
+      <button 
+        class="menuitem center" 
+        onclick="window.location = 'contribute.html'" 
+        aria-label="Go to Contribute page">
+        Contribute
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header>
+    <div class="intro" style="height: 200px !important;">
+      <!-- Pseudo Dojo Logo -->
+      <a onclick="window.location = 'index.html'" 
+         class="logoa" 
+         aria-label="Go to Home page" 
+         title="PseudoDojo home">
+         <img 
+           src="../img/logo.svg" 
+           class="logo" 
+           alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
+           with horizontal lines over each o.">
+      </a>
+      <!-- Large Arrow -->
+      <div class="arrow_page" aria-hidden="true">
+        <img src="../img/arrow_page.svg" alt="">
+      </div>
+    </div>
+  </header>
+
+  <!-- Salient page content -->
+  <main id="main-content">
+    <div class="page-wrapper">
+      <!-- Page title and headline -->
+      <div tabindex=0 class="headsup center">
+        <div class="page_title center" aria-label="Page title, Legal and privacy">
+          <h1>Legal & Privacy</h1>
+        </div>
+        <h2 class="headline center">
+          Here is some information regarding the PseudoDojo project license, 
+          website hosting, and privacy.
+        </h2>
+      </div>
+
+      <!-- Begin content tree structure -->
+      <div id="tree" class="tree">
+        <div class="tree-trunk" aria-hidden="true">
+
+          <!-- Draw the tree -->
+          <svg id="tree-svg" preserveAspectRatio="none">
+            <path id="tree-path" fill="none"/>
+          </svg>
+          <!-- Animate the tree arrow -->
+          <div class="tree-arrow" aria-hidden="true"></div>
+          <!-- Draw tree end node -->
+          <div class="tree-end-node" aria-hidden="true"></div>
+
+        </div>
+
+        <!-- Animate the ripples at each tree node -->
+        <div class="tree-effects" aria-hidden="true"></div>
+
+        <!-- First tree node: Privacy Statement -->
+        <section tabindex=0 class="tree-node">
+          <h3>Privacy Statement</h3>
+
+          <p class="hili-bl">Personal data</p>
+
+          <p>The PseudoDojo website does not require users to create an account 
+             or provide personal information to access our open-source content. 
+             We do not collect, store, or process personal data through this 
+             website.
+          </p>
+
+          <p class="hili-bl">Cookies</p>
+
+          <p>PseudoDojo does not use cookies for analytics, advertising, or 
+             user tracking. The website stores a small number of interface 
+             preferences (such as the currently selected pseudo options) locally 
+             in your browser using local storage. These preferences remain on 
+             your device and are never transmitted to our servers. They may be 
+             cleared at any time through your browser settings.
+          </p>
+
+          <p class="hili-bl">Server logs</p>
+
+          <p>Like most websites, the web server hosting PseudoDojo may 
+             automatically generate standard server logs when pages are requested. 
+             These logs may include technical information such as IP address, 
+             date and time of access, requested resource, and browser and 
+             operating system information.These logs are maintained by the 
+             hosting infrastructure for operational, performance, and security 
+             purposes and are not used by the PseudoDojo project to identify 
+             individual users.
+          </p>
+
+          <p class="hili-bl">Contact</p>
+
+          <p>Questions regarding this privacy statement may be directed to the
+             Data Protection Officer (DPO) at the Université catholique de Louvain
+             at <a href="mailto:privacy@uclouvain.be">privacy@uclouvain.be</a>.
+          </p>
+
+          <strong>Last updated:</strong> July 2026
+
+        </section>
+
+        <!-- License information -->
+        <section tabindex=0 class="tree-node">
+          <h3>License</h3>
+
+          <p>The PseudoDojo project pseudopotential files as well as the input 
+             files are released under the CC BY 4.0 license This license lets you 
+             distribute, remix, tweak, and build upon our work, even commercially, 
+             as long as you credit the PseudoDojo project for the original 
+             creation.
+             <br>
+             <br>
+             The PseudoDojo code (the Python code used to generate/validate the 
+             pseudos) is released under the GPL License. The terms of the license 
+             are as follows:
+             <br>
+             <br>
+             The PseudoDojo is a free software: you can redistribute it and/or 
+             modify it under the terms of the GNU Lesser General Public License 
+             as published by the Free Software Foundation, either version 2.1 
+             of the License, or (optionally) any later version.
+             <br>
+             <br>
+             The PseudoDojo is distributed in the hope that it will be useful, 
+             but <span class="hili-or">WITHOUT ANY WARRANTY</span>; without even 
+             the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+             PURPOSE. See the GNU Lesser General Public License for more details.
+             <br>
+             <br>
+             You should have received a copy of the GNU Lesser General Public 
+             License along with the PseudoDojo. If not, see 
+             <a href="http://www.gnu.org/licenses/" 
+                target="_blank" 
+                rel="noopener" 
+                aria-label="Gnu Licenses website">
+                the GNU licenses website.
+             </a>
+          </p>
+
+        </section>
+
+        <!-- Website hosting information -->
+        <section tabindex=0 class="tree-node">
+          <h3>Website Hosting</h3>
+
+          <p><span class="hili-or">Responsible Institution:</span> 
+             Université catholique de Louvain
+             <br>
+             <span class="hili-or">Country:</span> Belgium
+             <br>
+             <span class="hili-or">Address:</span> 
+             1 Place de l’université, B-1348 Louvain-la-Neuve, BE
+             <br>
+             <span class="hili-or">Server managers:</span> Marc Torrent and Fabien Brieuc
+             <br>
+             <span class="hili-or">Contact:</span> 
+               <a href="mailto:marc.torrent@uclouvain.be">marc.torrent@uclouvain.be</a> or 
+               <a href="mailto:fabien.brieuc@uclouvain.be">fabien.brieuc@uclouvain.be</a> 
+             <br>
+             <span class="hili-or">Website editors:</span> Jean-Michel Beuken, 
+             Matteo Giantomassi, Lórien MacEnulty, Gian-Marco Rignanese, 
+             Michiel J. van Setten
+          </p>
+
+        </section>
+
+      </div> <!-- End of tree div -->
+    </div> <!-- End of page-wrapper div -->
+  </main>
+
+  <!-- Footer -->
+  <footer class="dojo-footer center">
+
+    <!-- Footer navigation links-->
+    <nav class="footer-links center" aria-label="Footer navigation">
+      <span class="copyright center">
+        © PseudoDojo &nbsp;
+        <span id="footerYear"></span>
+      </span>
+      <a href="index.html" aria-label="Go to Home page">Home</a>
+      <a href="about.html" aria-label="Go to About page">About</a>
+      <a href="faq.html" aria-label="Go to F.A.Q. page">F.A.Q.</a>
+      <a href="contribute.html" aria-label="Go to Contribute page">Contribute</a>
+      <a href="legal.html" aria-label="Go to Legal and Privacy page">Legal</a>
+      <a href="https://github.com/abinit/pseudo_dojo" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Go to PseudoDojo GitHub repository">
+         GitHub
+      </a>
+      <a href="mailto:gian-marco.rignanese@uclouvain.be" 
+         target="_blank" 
+         rel="noopener" 
+         aria-label="Contact PseudoDojo">
+         Contact Us
+      </a>
+    </nav>
+
+    <!-- Mini PseudoDojo logo in bottom right corner-->
+    <div>
+      <img src="../img/logo.svg" 
+           style="width:200px;float:right;" 
+           alt="PseudoDojo logo text, where PseudoDojo is written in blocky font 
+           with horizontal lines over each o.">
+    </div>
+
+  </footer>
+
+</body>
+</html>
+
+
+

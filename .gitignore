@@ -4,6 +4,10 @@ json/*
 web_server.stderr
 web_server.stdout
 
+#LMac
+deploy.py
+serve.sh
+
 $*.pickle
 
 # python object files.
