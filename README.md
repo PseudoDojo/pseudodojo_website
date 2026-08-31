@@ -71,12 +71,13 @@ self.repos = [
 
 The url of the tarball file is automatically generated from the values of `xc_name`,
 `relativity_type` and `version` using a string pattern (see `from_github` class method for the implementation)
-hence it is very important to follow the the same convention when creating new pseudopotential repositories on github.
+hence it is very important to follow the same convention when creating new pseudopotential repositories on github.
 
 To add a new PD repo to the website, the following operations are required:
 
 - Create a new PD repo following the conventions documented above.
 - Add the new PD repo to `self.repos`
+- Register the new table in index.html in the section `<select id="TYP" ... >`
 - Edit `js/dojo-tools.js` in particular the switch statement in `dynamic_dropdown` to register the new options.
 - Finally, execute
 
@@ -100,12 +101,14 @@ All these figures can be automatically generated from the output file of oncvpsp
 pages when we prepare the deployment rather than storying a bunch of HTML files in the repo itself.
 In the original version of the pseudodojo website we were also showing the results of the different
 validation tests (delta-gauge, GBVR benchmark, phonons, ghost test).
+This part is not yet coded as one should define the format for the json files with the validation results
+and implement plotting tools.
 
 The results of these validation tests are stored in the djrepo file.
 It seemed like a good idea at the time but there are also several drawbacks that should be taken into account:
 
 1) The size of the djrepo files is not small and this increases the size of the repo.
-   Well, per se it's not a problem for the users of the website, but it becomes more problematic
+   Well, per se it is not a problem for the users of the website, but it becomes more problematic
    for users interested in HTC calculations especially if they decide to download
    several repositories for the different XC functionals.
 
