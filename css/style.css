@@ -7,7 +7,7 @@ Table of Contents
 2.  ACCESSIBILITY
 3.  BACKGROUND LAYER
 4.  MAIN MENU
-5.  SKIP TO MAIN CONTENT BUTTO
+5.  SKIP TO MAIN CONTENT BUTTON
 6.  INTRO STUFF
       - logo (with link to song)
       - large arrow
@@ -348,6 +348,11 @@ and go straight to main functionality of page. */
   background: var(--crisp); 
 }
 
+.shepherd-button button:hover,
+.shepherd-button:not(:disabled):hover {
+  background: var(--rusty) !important;
+}
+
 .shepherd-cancel-icon {
   background-color: transparent !important;
 }
@@ -546,7 +551,7 @@ size is not WCAG AAA compliant */
 citations from citation box. NOTE: lies outside 
 of intro div. */
 .citation-toast {
-  z-index: 99;
+  z-index: 101;
   position: absolute;
   width: 300px !important;
   gap: 8px;
@@ -653,11 +658,11 @@ the information included for that element, including:
   - low, middle, high ecut suggestions
     (obtained through meta info in files.json).
 The box adopts the color of the element, not the availability
-information (like green or red or the checkmark/x-mark. It
+information (like green or red or the checkmark/x-mark). It
 is also not focusable or actionable itself. The box quantities
 are labeled using whimsical squiggles and text. Default 
 content is set in index.html and updated in js/dojo-tools.js
-through set_X() and rest(X). */
+through set_X() and reset(X). */
 
 /* Wraps detail box and squiggles/labels. */
 .detail-wrap {
@@ -1496,6 +1501,7 @@ downloadable SVG files. */
   text-decoration:none;
   border-radius:8px;
   transition:transform .15s ease;
+  height: auto;
 }
 
 .download-image img{

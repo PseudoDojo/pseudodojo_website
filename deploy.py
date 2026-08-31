@@ -456,7 +456,7 @@ class Website:
             for accuracy, table in repo.tables.items():
                 # accuracy is the accuracy level:
                 # standard, stringent, precision, ...
-    
+
                 files_xcf[accuracy] = defaultdict(dict)
                 targz_xcf[accuracy] = {}
     
